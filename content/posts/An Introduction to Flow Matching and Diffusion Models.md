@@ -4,7 +4,7 @@ lastmod: 2020-03-04T16:30:05+08:00
 draft: false
 title: "An Introduction to Flow Matching and Diffusion Models"
 
-authors: ["steven"]
+# authors: ["steven"]
 description: "description"
 
 tags: ["content", "Markdown"]
@@ -14,7 +14,7 @@ series_weight: 1
 lightgallery: true
 
 toc:
-  auto: false
+  auto: true
 math:
   enable: true
 ---

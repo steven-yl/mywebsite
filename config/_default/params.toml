@@ -29,11 +29,11 @@ license = '<a rel="license external nofollow noopener noreferrer" href="https://
 bundle = false
 
 [author]
-  name = "PCloud"
-  email = "heige.pcloud@outlook.com"
-  link = "https://github.com/HEIGE-PCloud"
+  name = "steven"
+  email = "steven@gmail.com"
+  link = "https://github.com/steven"
   avatar = "/images/avatar.webp"
-  gravatarEmail = "heige.pcloud@outlook.com"
+  gravatarEmail = "steven@gmail.com"
 
 [image]
   # cache remote images for better optimisations
@@ -488,16 +488,10 @@ bundle = false
       commentCount = true
   # Third-party library config
   # 第三方库配置
-  [page.library]
-    [page.library.css]
-      # someCSS = "some.css"
-      # [page.library.css.someOtherCSS]
-      #   src = "someOther.css"
-      #   defer = true
-      #   attr = "customAttribute"
-      # located in "assets/" 位于 "assets/"
-      # Or 或者
-      # someCSS = "https://cdn.example.com/some.css"
+    [page.library]
+      [page.library.css]
+        customDark = "css/custom-dark.css"
+
     [page.library.js]
       # someJavaScript = "some.js"
       # [page.library.js.someOtherJavaScript]
