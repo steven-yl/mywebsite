@@ -62,7 +62,7 @@ theme = "DoIt"
   # 网站关键词
   keywords = ["Theme", "Hugo"]
   #  网站默认主题样式 ("light", "dark", "black", "auto")
-  defaultTheme = "auto"
+  defaultTheme = "dark"
   # 公共 git 仓库路径, 仅在 enableGitInfo 设为 true 时有效
   gitRepo = ""
   #  哪种哈希函数用来 SRI, 为空时表示不使用 SRI
@@ -146,13 +146,13 @@ optimizeImages = true
   [params.header]
     #  主题切换模式
     # 主题切换模式 ("switch", "select")
-    themeChangeMode = "select"
+    themeChangeMode = "switch"
     #  页面头部导航栏标题配置
     [params.header.title]
       # LOGO 的 URL
       logo = ""
-      # 标题名称
-      name = ""
+      # 标题名称，留空则导航栏不显示文字标题
+      name = "mywebsite"
       # 你可以在名称 (允许 HTML 格式) 之前添加其他信息, 例如图标
       pre = ""
       # 你可以在名称 (允许 HTML 格式) 之后添加其他信息, 例如图标
@@ -221,9 +221,9 @@ optimizeImages = true
       # 头像的链接指向的 URL
       avatarLinkURL = ""
       #  主页显示的网站标题 (支持 HTML 格式)
-      title = ""
+      title = "mywebsite"
       # 主页显示的网站副标题
-      subtitle = "这是我的全新 Hugo 网站"
+      subtitle = "mywebsite.com"
       # 是否为副标题显示打字机动画
       typeit = true
       # 是否显示社交账号
