@@ -6,7 +6,6 @@ title: "An Introduction to Flow Matching and Diffusion Models"
 
 authors: ["steven"]
 description: "description"
-featuredImage: "featured-image.webp"
 
 tags: ["content", "Markdown"]
 categories: ["documentation", "test"]
@@ -19,7 +18,6 @@ toc:
 math:
   enable: true
 ---
-
 
 
 # 2 Flow and Diffusion Models
