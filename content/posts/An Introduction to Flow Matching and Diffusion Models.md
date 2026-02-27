@@ -1,8 +1,24 @@
-+++
-date = '2026-02-27T08:40:58+08:00'
-draft = false
-title = 'An Introduction to Flow Matching and Diffusion Models'
-+++
+---
+date: 2026-02-27T08:40:58+08:00
+lastmod: 2020-03-04T16:30:05+08:00
+draft: false
+title: "An Introduction to Flow Matching and Diffusion Models"
+
+authors: ["steven"]
+description: "description"
+featuredImage: "featured-image.webp"
+
+tags: ["content", "Markdown"]
+categories: ["documentation", "test"]
+series: ["getting-start"]
+series_weight: 1
+lightgallery: true
+
+toc:
+  auto: false
+math:
+  enable: true
+---
 
 
 
