@@ -20,7 +20,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      HUGO_VERSION: v0.157.0 # 建议使用最新的稳定版
+      HUGO_VERSION: 0.157.0 # 建议使用最新的稳定版
     steps:
       - name: Install Hugo CLI
         run: |
