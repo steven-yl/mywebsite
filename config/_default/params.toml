@@ -29,9 +29,9 @@ license = '<a rel="license external nofollow noopener noreferrer" href="https://
 bundle = false
 
 [author]
-  name = "steven"
+  name = "Steven"
   email = "steven@gmail.com"
-  link = "https://github.com/steven"
+  link = "https://github.com/steven-yl"
   avatar = "/images/avatar.webp"
   gravatarEmail = "steven@gmail.com"
 
@@ -158,11 +158,11 @@ bundle = false
   linkToMarkdown = true
   # configure the link to view source the post
   # 配置文章原始文件的链接
-  linkToSource = "https://github.com/HEIGE-PCloud/DoIt/blob/main/exampleSite/content/{path}"
+  linkToSource = "https://github.com/steven-yl/content/{path}"
   # "https://github.com/user/repo/blob/main/{path}"
   # configure the link to edit the post
   # 配置编辑文章的链接
-  linkToEdit = "https://github.com/HEIGE-PCloud/DoIt/edit/main/exampleSite/content/{path}"
+  linkToEdit = "https://github.com/steven-yl/edit/content/{path}"
   # https://github.com/user/repo/edit/main/{path}
   # https://gitlab.com/user/repo/-/edit/main/{path}
   # https://bitbucket.org/user/repo/src/main/{path}?mode=edit
@@ -299,9 +299,9 @@ bundle = false
     Evernote = false
     Facebook = true
     Flipboard = false
-    HackerNews = true
+    HackerNews = false
     Instapaper = false
-    Line = true
+    Line = false
     Linkedin = false
     Mix = false
     Myspace = false
@@ -312,21 +312,19 @@ bundle = false
     Renren = false
     Skype = false
     Stumbleupon = false
-    Telegram = true
+    Telegram = false
     Trello = false
     Tumblr = false
-    Twitter = true
+    Twitter = false
     VK = false
     Weibo = true
-    # Weixin API example: "https://tenapi.cn/qr/?txt="
-    # https://docs.tenapi.cn/qrcode.html
-    # https://www.free-api.com/doc/531
-    # http://www.alapi.cn/api/view/72
-    # OR self-hosted: https://github.com/yhf7952/QrCodeApi
-    Weixin = ""
+    # 微信分享：填「二维码 API 地址」，必须以参数结尾，主题会拼接当前页 URL
+    # 示例：tenapi "https://tenapi.cn/qr/?txt=" ；alapi "http://www.alapi.cn/api/view/72?url="
+    # 自建：https://github.com/yhf7952/QrCodeApi ；留空 "" 则不显示微信分享按钮
+    Weixin = "https://tenapi.cn/qr/?txt="
     Whatsapp = false
     Xing = false
-    Mastodon = true
+    Mastodon = false
   # PlantUML config
   # PlantUML 配置
   [page.plantuml]
@@ -488,10 +486,17 @@ bundle = false
       commentCount = true
   # Third-party library config
   # 第三方库配置
-    [page.library]
-      [page.library.css]
-        customDark = "css/custom-dark.css"
-
+ # 第三方库配置
+  [page.library]
+    [page.library.css]
+      # someCSS = "some.css"
+      # [page.library.css.someOtherCSS]
+      #   src = "someOther.css"
+      #   defer = true
+      #   attr = "customAttribute"
+      # located in "assets/" 位于 "assets/"
+      # Or 或者
+      # someCSS = "https://cdn.example.com/some.css"
     [page.library.js]
       # someJavaScript = "some.js"
       # [page.library.js.someOtherJavaScript]

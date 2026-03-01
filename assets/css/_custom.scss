@@ -1,0 +1,81 @@
+// ==============================
+// Custom style
+// 自定义样式
+// ==============================
+
+html.dark {
+    /* ========== primitives ========== */
+    --fgColor-default: #d4d4d4;       /* 主文字 */
+    --fgColor-secondary: #c8c8c8;     /* 次要文字 */
+    --fgColor-muted: #858585;         /* 更淡的文字 */
+    --fgColor-link: #3794ff;          /* 链接颜色 */
+    --fgColor-link-hover: #4fc1ff;    /* 链接 hover */
+  
+    --bgColor-default: #1e1e1e;       /* 编辑区背景 */
+    --bgColor-secondary: #252526;     /* 侧边/卡片背景 */
+    --bgColor-accent-emphasis: #007acc;    /* VS Code 蓝 */
+    --bgColor-accent-muted: rgba(0, 122, 204, 0.2);
+  
+    --borderColor-default: #3f3f46;
+    --bgColor-neutral-muted: #3e4451aa;
+    --selection-bgColor: #264f78;     /* 选区背景 */
+  
+    --button-default-bgColor-rest: #2d2d30;
+    --button-default-bgColor-hover: #3e3e42;
+    /* ========== primitives ========== */
+  
+    --global-background-color: var(--bgColor-default);
+    --global-font-color: var(--fgColor-default);
+    --global-font-secondary-color: var(--fgColor-secondary);
+    --global-link-color: var(--fgColor-default);
+    --global-link-hover-color: #ffffff;
+    --global-border-color: var(--borderColor-default);
+    --selection-color: var(--selection-bgColor);
+  
+    --header-background-color: var(--bgColor-secondary);
+    --header-hover-color: #ffffff;
+    --header-delimiter: var(--fgColor-muted);
+  
+    --search-background-color: var(--bgColor-default);
+    --search-empty-font-color: var(--fgColor-secondary);
+  
+    --single-h-font-weight: bolder;
+    --single-content-strong-color: var(--fgColor-default);
+    --single-link-color: var(--fgColor-link);
+    --single-link-hover-color: var(--fgColor-link-hover);
+  
+    --table-background-color: var(--bgColor-default);
+    --table-thead-color: var(--bgColor-secondary);
+    --table-border-color: var(--borderColor-default);
+  
+    --blockquote-color: var(--bgColor-accent-emphasis);
+    --blockquote-bg-color: var(--bgColor-accent-muted);
+  
+    --pagination-link-color: var(--fgColor-default);
+    --pagination-link-hover-color: white;
+  
+    --friend-link-background-color: var(--bgColor-secondary);
+    --friend-link-color: var(--fgColor-link);
+    --friend-link-hover-color: var(--fgColor-link-hover);
+  
+    --sponsor-button-background-color: var(--button-default-bgColor-rest);
+    --sponsor-button-hover-background-color: var(--button-default-bgColor-hover);
+  
+    --cookie-background-color: #1e1e1e;
+    --code-color: #dcdCAA;                 /* 接近 VS Code 函数黄 */
+    --code-background-color: #1e1e1e;
+    --code-header-color: var(--bgColor-secondary);
+    --code-background-color-darken-5: #252526;
+    --code-background-color-darken-6: #2a2d2e;
+    --code-background-color-code-header: var(--code-background-color-darken-6);
+    --code-background-color-code-hl: #264f78;
+    --code-info-color: #9ca3af;
+  
+    --related-background-color: var(--bgColor-secondary);
+    --related-color: var(--fgColor-default);
+    --related-hover-color: white;
+  
+    --showcase-background-color: var(--bgColor-secondary);
+    --showcase-color: var(--fgColor-default);
+    --showcase-hover-color: white;
+  }

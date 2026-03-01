@@ -90,10 +90,10 @@ keywords = ["Theme", "Hugo"]
     avatarLinkURL = ""
     # title shown in home page (HTML format is supported)
     # 主页显示的网站标题 (支持 HTML 格式)
-    title = ""
+    title = "mywebsite"
     # subtitle shown in home page
     # 主页显示的网站副标题
-    subtitle = "A Clean, Elegant but Advanced Hugo Theme"
+    subtitle = "mywebsite.com"
     # whether to use typeit animation for subtitle
     # 是否为副标题显示打字机动画
     typeit = false
@@ -109,7 +109,7 @@ keywords = ["Theme", "Hugo"]
     enable = true
     # special amount of posts in each home posts page
     # 主页每页显示文章数量
-    paginate = 7
+    paginate = 3
 # Social config in home page
 # 主页的社交信息设置
 [social]
@@ -125,7 +125,7 @@ keywords = ["Theme", "Hugo"]
   Douban = ""
   Dribbble = ""
   Email = "xxxx@xxxx.com"
-  Facebook = "xxxx"
+  Facebook =  ""
   Fivehundredpx = ""
   Flickr = ""
   Foursquare = ""
@@ -140,9 +140,9 @@ keywords = ["Theme", "Hugo"]
   Jsfiddle = ""
   Keybase = ""
   Kickstarter = ""
-  Ko-Fi = "xxx"
+  Ko-Fi =  ""
   Lastfm = ""
-  Liberapay = "xxx"
+  Liberapay = ""
   Linkedin = ""
   Linktree = ""
   Matrix = ""
@@ -167,11 +167,11 @@ keywords = ["Theme", "Hugo"]
   Stackoverflow = ""
   Steam = ""
   Strava = ""
-  Telegram = "xxxx"
+  Telegram = ""
   Thingiverse = ""
   Tumblr = ""
   Twitch = ""
-  Twitter = "xxxx"
+  Twitter = ""
   Vine = ""
   VK = ""
   Weibo = ""
@@ -181,15 +181,15 @@ keywords = ["Theme", "Hugo"]
   XMPP = ""
   Youtubechannel = ""
   Youtubecustom = ""
-  Youtubelegacy = "xxxx"
+  Youtubelegacy =  ""
   Zhihu = ""
-  Bluesky = "did:plc:z72i7hdynmk6r22z27h6tvur"
-  [social.Mastodon]
-    id = "@xxxx"
-    prefix = "https://mastodon.technology/"
-  [social.Diaspora]
-    id = "@xxxx"
-    prefix = "https://yyyy/"
+  Bluesky =  ""
+  # [social.Mastodon]
+  #   id = "@xxxx"
+  #   prefix = "https://mastodon.technology/"
+  # [social.Diaspora]
+  #   id = "@xxxx"
+  #   prefix = "https://yyyy/"
 # Sponsor config
 # 赞助设置
 [sponsor]
