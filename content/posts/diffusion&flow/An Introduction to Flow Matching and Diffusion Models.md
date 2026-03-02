@@ -19,6 +19,7 @@ hiddenFromSearch: false
 featuredImage: ""
 featuredImagePreview: "/mywebsite/posts/images/an-introduction-to-flow-matching-and-diffusion-models.webp"
 
+summary: "《An Introduction to Flow Matching and Diffusion Models》全文技术解读：从生成即采样与 ODE/SDE 基础出发，系统介绍流模型与扩散模型、连续性方程与福克-普朗克方程、流匹配与得分匹配训练目标及其与 DDPM 的对应，并涵盖条件生成、无分类器引导（CFG）与 U-Net/DiT 等架构。"
 ---
 ## 1 引言
 从数据中生成噪声很容易；从噪声中生成数据则是生成式建模的核心。

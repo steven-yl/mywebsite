@@ -19,7 +19,7 @@ hiddenFromSearch: false
 featuredImage: ""
 featuredImagePreview: "/mywebsite/posts/images/the-principles-of-diffusion-models.webp"
 
-
+summary: "《The Principles of Diffusion Models》（arXiv:2510.21890）全文技术解读：从前向破坏过程与反向生成出发，系统梳理扩散模型的三种表述——变分视角（VAE→DDPM）、基于分数的视角（EBM→NCSN→分数 SDE）、基于流的视角（NF→流匹配），阐明条件化技巧与福克–普朗克方程下的统一；并涵盖引导生成、数值求解器、蒸馏与从零学习的流映射模型（CM/CTM/MF）等。"
 ---
 
 **作者：**  
