@@ -18,7 +18,7 @@ hiddenFromSearch: false
 featuredImage: ""
 featuredImagePreview: "/mywebsite/posts/images/flow-matching-guide-and-code.webp"
 
-
+summary: "《Flow Matching Guide and Code》全文技术解读：从流模型数学基础与欧氏空间 FM（概率路径、速度场、条件流匹配、线性/仿射条件流），到黎曼流形、离散 FM 与 Generator Matching 统一框架，并阐明与扩散模型、去噪分数匹配的关系。"
 ---
 
 ## 1 Introduction
@@ -385,7 +385,7 @@ $
   2. $u_t$ 生成 $p_t$（即 $X_t = \psi_t(X_0) \sim p_t$）；
 - 两者互为充要条件——这是后续 FM 框架中“通过优化速度场生成目标概率路径”的核心理论依据。
 
-#### 3.6 瞬时变量替换：似然计算的关键  (TODO)
+#### 3.6 瞬时变量替换：似然计算的关键
 流模型的重要优势是“支持精确似然计算”，章节通过“瞬时变量替换”推导了似然的 ODE 表达式：
 
 ##### （1）似然的时间演化方程
@@ -1306,3 +1306,1460 @@ $
 >  核心思想完全不变：条件流 + 边缘化技巧；
 >  只把加减换成指数/对数映射，
 >  就能生成合法、约束满足、高质量的非欧数据。**
+
+
+## 6 Continuous Time Markov Chain Models
+本节将连续时间马尔可夫链（CTMC）作为流模型的替代生成模型，适用于生成离散数据（即位于离散（且有限）状态空间中的数据）。CTMC是马尔可夫过程，是后面第7节讨论的离散流匹配（DFM）（Campbell等人，2024；Gat等人，2024）生成模型范式的基础。因此，本节与第3节类似，在第3节中我们将流作为流匹配（FM）生成模型范式的基础进行介绍。
+
+### 6.1 离散状态空间和随机变量
+考虑有限版本的\(\mathbb{R}^{d}\)作为我们的状态空间\(S=T^{d}\)，其中\(T=[K]=\{1,2,...,K\}\)，有时也称为词汇表。样本和状态用\(x=(x^{1},...,x^{d}) \in S\)表示，其中\(x^{i} \in T\)是单个坐标或一个标记。我们同样使用状态\(y,z \in S\)。接下来，\(X\)表示取值于状态空间\(S\)的随机变量，其概率由概率质量函数（PMF）\(p_{X}: S \to \mathbb{R}_{≥0}\)控制，满足\(\sum_{x \in S} p_{X}(x)=1\)，事件\(A \subset S\)的概率为：
+\[
+\mathbb{P}(X \in A)=\sum_{x \in A} p_{X}(x) . (6.1)
+\]
+
+记号\(X \sim p_{X}\)或\(X \sim p_{X}(X)\)表示\(X\)服从概率质量函数\(p_{X}\)。离散情况下的δ概率质量函数定义为：
+\[
+\delta (x,z)=
+\begin{cases}
+1 & x=z, \\
+0 & else.
+\end{cases}
+\]
+有时我们也会在标记上定义δ概率质量函数，例如对于某些\(x^{i},y^{i} \in T\)，有\(\delta(x^{i}, y^{i})\)。
+
+### 6.2 CTMC生成模型
+CTMC模型是一族取值于\(S\)的时变随机变量\((X_{t})_{0 ≤t ≤1}\)，构成马尔可夫链，其特征由概率转移核\(p_{t+h | t}\)定义：
+\[
+p_{t+h|t}(y|x):=\mathbb{P}(X_{t+h}=y|X_{t}=x)=\delta (y,x)+hu_{t}(y,x)+o(h), 
+\]
+且\(\mathbb{P}(X_{0}=x)=p(x)\)，(6.3)
+其中\(p\)表示过程在时间\(t=0\)时的初始分布，\(o(h)\)是满足当\(t \to 0\)时\(o(h)/h \to 0\)的任意函数。
+
+值\(u_{t}(y, x)\)称为速率或速度，表示概率随时间在状态之间转移的速度。所谓“完全特征化”，是指对于任意\(0 ≤t_{1}<\cdots<t_{n} ≤1\)和\(x_{i} \in S\)（\(i \in[n]\)），所有联合概率\(\mathbb{P}(X_{t_{1}}=x_{1},...,X_{t_{n}}=x_{n})\)都通过这种方式定义。
+
+为确保转移概率\(p_{t+h | t}(y | x)\)通过(6.3)定义，速度需要满足以下速率条件：
+\[
+u_{t}(y, x) \geq 0 \text{ 对所有 } y \neq x, \text{ 且 } \sum_{y} u_{t}(y, x)=0. (6.4)
+\]
+
+如果其中一个条件不满足，那么对于任意小的\(h>0\)，转移概率\(p_{t+h | t}(\cdot | x)\)会变为负数或求和结果不等于1。式(6.3)与我们定义流生成模型时的式(3.16)和式(3.19)起着相同的作用。过程\(X_{t}\)的边际概率在时间\(t \in[0,1]\)时用概率质量函数\(p_{t}(x)\)表示。然后，与流的情况类似（式(3.24)），如果存在满足(6.3)且边际为\(p_{t}\)的\(p_{t+h | t}\)，则称\(u_{t}\)生成\(p_{t}\)。(6.5)
+
+<!-- ![CTMC模型通过指定状态间概率的速率（速度）来定义。](https://example.com/figure13) -->
+图13 CTMC模型通过指定状态间概率的速率（速度）来定义。
+
+#### 模拟CTMC
+要采样\(X_{t}\)，需从\(p\)中采样\(X_{0}\)，并使用（朴素的）欧拉方法逐步采样：
+\[
+\mathbb{P}(X_{t+h}=y | X_{t})=\delta (y,X_{t})+hu_{t}(y,X_{t}). (6.6)
+\]
+
+根据(6.3)，这些步骤会给更新概率带来\(o(h)\)的误差。在实际应用中，这意味着我们需要选择足够小的\(h>0\)，以确保式(6.6)右侧保持为有效的概率质量函数。为确保任意选择的\(h>0\)都能得到有效的概率质量函数，并保持概率中的\(o(h)\)局部误差，可采用以下欧拉方法：
+\[
+\mathbb{P}(X_{t+h}=y| X_{t})=
+\begin{cases}
+exp \left[ hu_{t}(X_{t},X_{t})\right] & y=X_{t} \\
+\frac{u_{t}(y,X_{t})}{|u_{t}(X_{t},X_{t})|}\left( 1-exp \left[ hu_{t}(X_{t},X_{t})\right] \right) & y\neq X_{t}
+\end{cases}.
+\]
+
+### 6.3 概率路径和科尔莫戈罗夫方程
+与连续情况下的连续性方程类似，CTMC模型\((X_{t})_{0 ≤t ≤1}\)的边际概率\(p_{t}\)由科尔莫戈罗夫方程表征：
+\[
+\frac{d}{d t} p_{t}(y)=\sum_{x} u_{t}(y, x) p_{t}(x) .
+\]
+
+以下经典定理（另见Coddington等人（1956）的定理5.1和5.2）描述了这个线性齐次常微分方程组解的存在唯一性。
+
+**定理12（线性常微分方程解的存在唯一性）**：如果\(u_{t}(y, x)\)在\(C([0,1))\)中（关于时间连续），则对于\(t \in[0,1)\)，存在唯一解\(p_{t}(x)\)满足科尔莫戈罗夫方程(6.8)，且满足初始条件\(p_{0}(x)=p(x)\)。
+
+对于CTMC，解保证在所有时间\(t \in[0,1)\)都存在，不需要额外条件（与定理1中的非线性情况不同）。科尔莫戈罗夫方程与连续性方程(3.25)有着密切的联系。利用速率条件重新排列式(6.8)的右侧：
+\[
+\begin{aligned}
+\sum_{x} u_{t}(y, x) p_{t}(x) & \stackrel{(6.4)}{=} \overbrace{\sum_{x \neq y} u_{t}(y, x) p_{t}(x)}^{入射通量} - \overbrace{\sum_{x \neq y} u_{t}(x, y) p_{t}(y)}^{出射通量} \\
+& =-\sum_{x \neq y}\left[j_{t}(x, y)-j_{t}(y, x)\right]
+\end{aligned}
+\]
+其中\(j_{t}(y, x):=u_{t}(y, x) p_{t}(x)\)是概率通量，表示单位时间内从状态\(x\)转移到状态\(y\)的概率。出射通量的超额部分定义为散度，使得科尔莫戈罗夫方程与第3.5节中描述的连续性方程具有相同的结构（Gat等人，2024）。
+
+以下结果是在CTMC框架中构建概率路径和速度的主要工具：
+
+**定理13（离散质量守恒）**：设\(u_{t}(y, x)\)在\(C([0,1))\)中，\(p_{t}(x)\)是时间\(t\)上\(C^{1}([0,1))\)中的概率质量函数。则以下表述等价：
+1. \(p_{t}\)、\(u_{t}\)满足\(t \in[0,1)\)时的科尔莫戈罗夫方程(6.8)，且\(u_{t}\)满足速率条件(6.4)。
+2. \(u_{t}\)在\(t \in[0,1)\)时按6.5的意义生成\(p_{t}\)。
+
+定理13的证明见附录A.1。
+
+#### 6.3.1 保概率速度
+作为离散质量守恒（定理13）的推论，如果速度\(u_{t}(y, x)\)生成概率路径\(p_{t}(x)\)，则：
+\[
+\tilde{u}_{t}(y, x)=u_{t}(y, x)+v_{t}(y, x) \text{ 生成 } p_{t}(x), (6.9)
+\]
+只要\(v_{t}(y, x)\)满足速率条件(6.4)并求解无散度速度方程：
+\[
+\sum_{x} v_{t}(y, x) p_{t}(x)=0 . (6.10)
+\]
+
+事实上，\(\tilde{u}_{t}(y, x)\)求解科尔莫戈罗夫方程：
+\[
+\sum_{x} \tilde{u}_{t}(y, x) p_{t}(x)=\sum_{x} u_{t}(y, x) p_{t}(x)=\dot{p}_{t}(y),
+\]
+这表明在采样过程中可以添加无散度速度，而不会改变边际概率。这在从离散流匹配模型采样时将是一个有用的性质，后续会详细介绍。
+
+
+## 7 Discrete Flow Matching
+值得注意的是，图2中的流匹配框架可无缝从连续情形扩展到离散情形，进而形成离散流匹配（DFM）框架（Campbell et al., 2024; Gat et al., 2024）。与连续情形类似，其核心步骤为：首先定义一条插值于源概率质量函数（PMF）p和目标概率质量函数q的概率路径\(p_t\)；其次，寻找一个由可学习速度\(u_t^\theta\)定义的连续时间马尔可夫链（CTMC）模型，使其生成该概率路径\(p_t\)；最后，通过最小化布雷格曼散度（Bregman divergence）定义的离散流匹配损失来训练\(u_t^\theta\)。综上，这一过程本质上是求解流匹配问题（4.1）的离散版本。
+
+### 7.1 数据与耦合
+我们的目标是将来自源概率质量函数p的样本\(X_0 \sim p\)转换为来自目标概率质量函数q的样本\(X_1 \in q\)，其中\(X_0\)和\(X_1\)是两个取值于状态空间S的随机变量。源样本和目标样本可通过独立耦合\((X_0, X_1) \sim p(X_0) q(X_1)\)相关联，也可通过一般的概率质量函数耦合\(\pi_{0,1}(x_0, x_1)\)建立关联。例如，文本翻译数据中的耦合数据\((x_0, x_1)\)表示同一文档的两种不同语言版本；而在文本生成等应用中，常采用独立配对方式，此时\(p(x_0)\)既可以是状态空间S上的均匀概率（所有状态具有相同概率），也可以通过在词汇表T中添加特殊标记m（即\(T \cup \{m\}\)），并令\(\pi_{0,1}(x_0, x_1) = \delta(x_0, m) q(x_1)\)实现。任何满足\(X_0 \sim \delta(X_0, m)\)的随机变量\(X_0\)均为常数随机变量\(X_0 = (m, ..., m)\)。
+
+### 7.2 离散概率路径
+流匹配流程的下一步的是定义一条插值于p和q的概率路径\(p_t\)。沿用4.4节的思路，我们将这些对象基于一个取值于任意空间Z的一般条件随机变量\(Z \sim p_Z\)进行条件化处理。边际概率路径的形式为：
+\[p_t(x) = \sum_{z \in \mathcal{Z}} p_{t|Z}(x|z) p_Z(z),\]
+其中\(p_{t|Z}(\cdot|z)\)是条件概率质量函数，且边际概率路径需满足边界约束\(p_0 = p\)和\(p_1 = q\)。
+
+### 7.3 边际化技巧（Marginalization Trick）
+边际化技巧（见4.4节）可直接推广到离散情形（Campbell et al., 2024; Gat et al., 2024）。假设条件速度场\(u_t(\cdot, \cdot|z)\)以（6.5）式的意义生成\(p_{t|Z}(x|z)\)，则边际速度场为：
+\[u_t(y,x) = \sum_z u_t(y,x|z) p_{Z|t}(z|x) = \mathbb{E}\left[ u_t(y,X_t|Z) | X_t = x \right],\]
+其定义适用于所有满足\(p_t(x) > 0\)的\(x, y \in S\)，且随机变量\(X_t \sim p_{t|Z}(\cdot|Z)\)。根据贝叶斯法则，有：
+\[p_{Z|t}(z|x) = \frac{p_{t|Z}(x|z) p_Z(z)}{p_t(x)}.\]
+
+为证明离散版本的边际化技巧定理（定理3），我们做出如下假设：
+
+**假设3**：对所有\(x \in S\)和\(t \in [0,1)\)，有\(p_{t|Z}(x|z) \in C^1([0,1))\)、\(u_t(y, x|z) \in C([0,1))\)且\(p_t(x) > 0\)。
+
+与连续情形类似，假设\(p_t > 0\)在实际应用中较为温和，因为我们总能通过\((1 - (1 - t)\epsilon) \cdot p_{Z|t} + (1 - t)\epsilon \cdot p_{uni}\)（其中\(p_{uni}\)是状态空间S上的均匀分布，\(\epsilon > 0\)为任意小的常数）来满足该假设。接下来，我们给出并证明这一结果。
+
+**定理14（离散边际化技巧）**：在假设3下，若\(u_t(y, x|z)\)生成\(p_{t|Z}(x|z)\)，则（7.2）式中的边际速度\(u_t(y, x)\)在\(t \in [0,1)\)内生成（7.1）式中的\(p_t(x)\)。
+
+**证明**：该证明的思路与连续情形类似。首先计算：
+\[
+\begin{aligned}
+\frac{d}{dt} p_t(y) & = \sum_z \frac{d}{dt} p_{t|Z}(y|z) p_Z(z) \\
+& \stackrel{(i)}{=} \sum_z \left[ \sum_x u_t(y, x|z) p_{t|Z}(x|z) \right] p_Z(z) \\
+& \stackrel{(ii)}{=} \sum_x \left[ \sum_z u_t(y, x|z) \frac{p_{t|Z}(x|z) p_Z(z)}{p_t(x)} \right] p_t(x) \\
+& \stackrel{(贝叶斯法则)}{=} \sum_x \overbrace{\sum_z u_t(y, x|z) p_{Z|t}(z|x)}^{u_t(y, x)} p_t(x),
+\end{aligned}
+\]
+其中等式（i）由定理13以及\(u_t(y, x|z)\)生成\(p_{t|Z}(y|z)\)这一事实推导得出；等式（ii）通过乘以并除以假设为正的\(p_t(x)\)得到。因此，\(u_t(y, x)\)满足与\(p_t\)相关的科尔莫戈罗夫方程（Kolmogorov Equation）。此外，由于每个\(u_t(y, x|z)\)均满足速率条件（6.4），故\(u_t(y, x)\)也满足该条件。最后，因为\(u_t(y, x|z)\)和\(p_{Z|t}(z|x)\)均属于\(C([0,1))\)，所以\(u_t(y, x) \in C([0,1))\)（特别地，\(p_{Z|t}(z|x) \in C([0,1))\)可由\(t \in [0,1)\)时\(p_t(x) > 0\)的假设推导得出）。根据定理13，由于\(u_t(x, y)\)满足与\(p_t\)相关的科尔莫戈罗夫方程和速率条件，因此它以（6.5）式的意义生成\(p_t\)。
+
+### 7.4 离散流匹配损失
+为构建连续时间马尔可夫链（CTMC）生成模型\((X_t)_{0 \leq t \leq 1}\)，我们通过参数θ对速度场\(u_t^\theta(y, x)\)进行参数化（例如使用神经网络）。构建神经网络时需满足速率条件方程（6.4）。训练连续时间马尔可夫链模型的离散流匹配损失定义为：
+\[
+\mathcal{L}_{DFM}(\theta) = \mathbb{E}_{t, X_t \sim p_t} D_{X_t}\left( u_t(\cdot, X_t), u_t^\theta(\cdot, X_t) \right),
+\]
+其中\(t \sim U[0,1]\)，且\(u_t(\cdot, x) \in \mathbb{R}^S\)满足速率条件。这意味着\(u_t(\cdot, x) \in \Omega_x\)，其中：
+\[
+\Omega_x = \left\{ v \in \mathbb{R}^{\mathcal{S}} \mid v(y) \geq 0 \forall y \neq x, \text{ 且 } v(x) = -\sum_{y \neq x} v(y) \right\} \subset \mathbb{R}^{\mathcal{S}},
+\]
+\(\Omega_x\)是一个凸集，\(D_x(u, v)\)是基于严格凸函数\(\Phi_x: \Omega_x \to \mathbb{R}\)定义的布雷格曼散度。条件离散流匹配损失的形式为：
+\[
+\mathcal{L}_{CDFM}(\theta) = \mathbb{E}_{t, Z, X_t \sim p_{t|Z}} D_{X_t}\left( u_t(\cdot, X_t|Z), u_t^\theta(\cdot, X_t) \right).
+\]
+同样，损失（7.4）和（7.6）提供相同的学习梯度。
+
+**定理15**：离散流匹配损失和条件离散流匹配损失的梯度一致：
+\[
+\nabla_\theta \mathcal{L}_{DFM}(\theta) = \nabla_\theta \mathcal{L}_{CDFM}(\theta).
+\]
+特别地，条件离散匹配损失的极小值点为边际速度：
+\[
+u_t^\theta(y, x) = \mathbb{E}\left[ u_t(y, X_t|Z) | X_t = x \right].
+\]
+
+**证明**：通过设定\(X = X_t\)、\(Y = (X_t, Z)\)，定义函数\(f: S^2 \to \mathbb{R}^S\)为\((x, z) \mapsto u_t(\cdot, x|z) \in \mathbb{R}^S\)，并对\(t \in [0,1]\)积分，应用命题1即可完成证明。
+
+### 7.5 因子化路径与速度
+若按上述方式直接实现离散流匹配（DFM），则需要一个可学习模型\(u_t^\theta(y, x)\)（例如神经网络）为所有可能的状态\(y \in S = T^d\)输出一个速率，这将导致输出维度达到\(K^d\)，对于常见的序列长度d和词汇表大小K而言是不可行的。解决这一问题的一种方法是考虑因子化速度（Campbell et al., 2022）：
+\[
+u_t(y, x) = \sum_i \delta\left( y^{\bar{i}}, x^{\bar{i}} \right) u_t^i\left( y^i, x \right),
+\]
+其中\(\bar{i} = (1, ..., i-1, i+1, ..., d)\)表示除i之外的所有索引。因此，上述因子化速度仅在状态x和状态y至多只有一个标记不同时建立连接。使用因子化速度时，我们只需对\(u_t^i(y^i, x)\)进行建模，即可完全定义\(u_t(y, x)\)。相应地，每个\(u_t^i(y^i, x)\)是一个可学习模型，接收\(x \in S\)并输出标量\(u_t^i(y^i, x) \in \mathbb{R}\)，适用于所有\(i \in [d] = \{1, 2, ..., d\}\)和\(y^i \in T\)。因此，模型的输出维度变为易于处理的\(d \cdot K\)。因子化速度\(u_t^i(y, x)\)的速率条件需针对每个维度\(i \in [d]\)满足：
+\[
+u_t^i\left( y^i, x \right) \geq 0 \text{ 对所有 } y^i \neq x^i, \text{ 且 } \sum_{y^i \in \mathcal{T}} u_t^i\left( y^i, x \right) = 0 \quad \text{ 对所有 } x \in \mathcal{S}.
+\]
+
+#### 7.5.1 含因子化速度的连续时间马尔可夫链（CTMC）模拟
+使用因子化速度时，可按坐标对连续时间马尔可夫链（CTMC）模型进行采样（Campbell et al., 2024）：
+\[
+\begin{aligned}
+\mathbb{P}\left( X_{t+h} = y | X_t = x \right) & = \delta(y, x) + h \sum_i \delta\left( y^{\bar{i}}, x^{\bar{i}} \right) u_t^i\left( y^i, x \right) + o(h) \\
+& = \prod_i \left[ \delta\left( y^i, x^i \right) + h u_t^i\left( y^i, x \right) + o(h) \right],
+\end{aligned}
+\]
+其中第二个等式由\(\delta(y, x) = \prod_i \delta(y^i, x^i)\)以及恒等式\(\prod_i \left[ a^i + h b^i \right] = \prod_i a^i + h \sum_i \left( \prod_{j \neq i} a^j \right) b^i + o(h)\)推导得出。因此，在\(o(h)\)阶近似下，转移核可因子化为坐标独立的转移：
+\[
+\mathbb{P}\left( X_{t+h}^i = y^i | X_t = x \right) = \delta\left( y^i, x^i \right) + h u^i\left( y^i, x \right) + o(h).
+\]
+这些转移可通过欧拉方法（6.7）按坐标进行采样。有趣的是，连续流匹配同样具有类似的因子化形式\(u_t(x) = [u_t^1(x), ..., u_t^d(x)] \in \mathbb{R}^d\)，其中\(\dot{X}_t^i(x) = u_t^i(X_t)\)决定坐标i的变化，且可独立采样（连续流匹配中的“采样”本质上是确定性的）。
+
+#### 7.5.2 含因子化速度的概率路径构建
+若以特定方式构建概率路径，则其速度将天然具有因子化形式（方程（7.9））。接下来我们将详细说明这一构建过程。为此，我们定义因子化概率路径为以下形式：
+\[
+q_t(x) = \prod_i q_t^i(x^i).
+\]
+随后，下述结果表明这些因子化概率路径具有因子化速度。
+
+**命题2**：设\(q_t(x)\)是如（7.12）式所示的因子化概率路径，其中\(u_t^i(y^i, x^i) \in C([0,1))\)生成\(q_t^i(x^i)\)。则\(q_t\)具有如下形式的因子化生成速度：
+\[
+u_t(y, x) = \sum_i \delta\left( y^{\bar{i}}, x^{\bar{i}} \right) u_t^i\left( y^i, x^i \right).
+\]
+
+为进行证明，我们先通过以下式子定义概率质量函数\(q(x)\)的边际分布：
+\[
+q^i\left( x^i \right) := \sum_{x^{\bar{i}}} q(x)
+\]
+
+**证明**：设\(q_t\)是因子化概率路径（7.12），\(u_t^i(y^i, x^i)\)是\(q_t^i(x^i)\)的生成速度。对t求导可得：
+\[
+\begin{aligned}
+\frac{d}{dt} q_t(y) & = \sum_i q_t^{\bar{i}}\left( y^{\bar{i}} \right) \frac{d}{dt} q_t^i\left( y^i \right) \\
+& \stackrel{(i)}{=} \sum_i \left[ \sum_{x^{\bar{i}}} \delta\left( y^{\bar{i}}, x^{\bar{i}} \right) q_t^{\bar{i}}\left( x^{\bar{i}} \right) \right] \left[ \sum_{x^i} u_t^i\left( y^i, x^i \right) q_t^i\left( x^i \right) \right] \\
+& \stackrel{(ii)}{=} \sum_x \left[ \sum_i \delta\left( y^{\bar{i}}, x^{\bar{i}} \right) u_t^i\left( y^i, x^i \right) \right] q_t(x),
+\end{aligned}
+\]
+其中等式（i）由\(q_t^{\bar{i}}(y^{\bar{i}}) = \sum_{x^{\bar{i}}} \delta(y^{\bar{i}}, x^{\bar{i}}) q_t^{\bar{i}}(x^{\bar{i}})\)和科尔莫戈罗夫方程（6.8）推导得出；等式（ii）通过改变求和顺序，并注意到根据\(q_t\)的定义，有\(q_t^{\bar{i}}(x^{\bar{i}}) q_t^i(x^i) = q_t(x)\)且\(\sum_{x^{\bar{i}}} \sum_{x^i} = \sum_x\)得出。
+
+接下来，我们将展示构建具有因子化速度且插值于任意p和q的路径\(p_t\)的核心工具（Campbell et al., 2024; Gat et al., 2024）。
+
+**定理16（离散因子化边际化技巧）**：考虑通过以下方式构建的边际概率路径：
+\[
+p_t(x) = \sum_z p_{t|Z}(x|z) p_Z(z), \text{ 其中 } p_{t|Z}(x|z) = \prod_i p_{t|Z}^i(x^i|z),
+\]
+即条件路径按（7.12）式的意义进行因子化。进一步假设\(u_t^i(y^i, x^i|z) \in C([0,1))\)生成\(C^1([0,1))\)中的\(p_{t|Z}^i(x^i|z)\)，且对所有\(x \in S\)和\(t \in [0,1)\)有\(p_t(x) > 0\)。则边际速度为：
+\[
+u_t(y, x) = \sum_i \delta\left( y^{\bar{i}}, x^{\bar{i}} \right) u_t^i\left( y^i, x \right)
+\]
+其中：
+\[
+u_t^i(y^i, x) = \sum_z u_t^i(y^i, x^i|z) p_{Z|t}(z|x) = \mathbb{E}\left[ u_t^i(y^i, X_t^i|Z) | X_t = x \right]
+\]
+生成\(p_t(x)\)。
+
+**证明**：根据命题2，因子化条件路径\(p_{t|Z}(x|z)\)具有因子化生成速度\(u_t(y, x|z) = \sum_i \delta(y^{\bar{i}}, x^{\bar{i}}) u_t^i(y^i, x^i|z)\)。因此：
+\[
+\begin{aligned}
+u_t(y, x) & \stackrel{(i)}{=} \sum_z u_t(y, x|z) p_{Z|t}(z|x) \\
+& \stackrel{(ii)}{=} \sum_z \left[ \sum_i \delta\left( y^{\bar{i}}, x^{\bar{i}} \right) u_t^i\left( y^i, x^i|z \right) \right] p_{Z|t}(z|x) \\
+& \stackrel{(iii)}{=} \sum_i \delta\left( y^{\bar{i}}, x^{\bar{i}} \right) \left[ \sum_z u_t^i\left( y^i, x^i|z \right) p_{Z|t}(z|x) \right].
+\end{aligned}
+\]
+等式（i）由（7.2）式得出；等式（ii）基于\(p_{t|Z}\)具有因子化速度的假设得出；等式（iii）通过改变求和顺序得出。由于\(p_{t|Z}^i(x^i|z) \in C^1([0,1))\)且\(p_t(x) > 0\)，可得\(p_{t|Z}(x|z) \in C^1([0,1))\)；同理，由于\(u_t^i(y^i, x^i|z) \in C([0,1))\)，可得\(u_t(y, x|z) \in C([0,1))\)。因此，定理14表明\(u_t(y, x)\)生成\(p_t(x)\)，符合要求。
+
+通过使用定理16，我们可按以下步骤设计具有因子化速度且插值于源概率质量函数p和目标概率质量函数q的概率路径\(p_t\)：
+1. 寻找因子化概率条件路径\(p_{t|Z}(x|z) = \prod_i p_{t|Z}^i(x^i|z)\)，使得边际\(p_t(x)\)满足\(p_0 = p\)和\(p_1 = q\)；
+2. 为\(p_{t|Z}^i(x^i|z)\)寻找生成速度\(u_t^i(y^i, x^i|z)\)。这可通过为所有\(y^i \in T\)、固定的\(i \in [d]\)、\(z \in Z\)和\(t \in [0,1)\)求解科尔莫戈罗夫方程实现：
+\[
+\sum_{x^i} u_t^i\left( y^i, x^i|z \right) p_{t|Z}^i\left( x^i|z \right) = \frac{d}{dt} p_{t|Z}^i\left( y^i|z \right).
+\]
+需要注意的是，（7.18）式是一个具有\(|T|\)个未知数的欠定线性方程组（未知数数量远少于整个状态空间\(|S|\)）。
+
+#### 7.5.3 因子化速度的条件离散流匹配损失
+将边际速度\(u_t^\theta\)表示为因子化速度\(u_t^\theta, i\)的形式，可得到如下条件流匹配损失：
+\[
+\mathcal{L}_{CDFM}(\theta) = \mathbb{E}_{t, Z, X_t \sim p_{t|Z}} \sum_i D_{X_t}^i\left( u_t^i(\cdot, X_t|Z), u_t^\theta, i(\cdot, X_t) \right),
+\]
+其中\(t \sim U[0,1]\)，且\(u_t^i(\cdot, x|z)\)、\(u_t^\theta, i(\cdot, x) \in \mathbb{R}^T\)满足速率条件。这意味着\(u_t^i(\cdot, x|z)\)、\(u_t^\theta, i(\cdot, x) \in \Omega_x\)，其中对于\(\alpha \in T\)，我们定义：
+\[
+\Omega_\alpha = \left\{ v \in \mathbb{R}^{\mathcal{T}} \mid v(\beta) \geq 0 \forall \beta \in \mathcal{T} \setminus \{\alpha\}, \text{ 且 } v(\alpha) = -\sum_{\beta \neq \alpha} v(\beta) \right\} \subset \mathbb{R}^{\mathcal{T}}.
+\]
+\(\Omega_\alpha\)是一个凸集，\(D_x^i(u, v)\)是基于凸函数\(\Phi_x^i: \Omega_{x^i} \to \mathbb{R}\)定义的布雷格曼散度。与之前类似，我们可通过设定\(X = X_t\)、\(Y = u_t^i(\cdot, X_t, Z) \in \mathbb{R}^\tau\)，令\(D_x^i(u, v)\)为\(\Omega_{x^i} \subset \mathbb{R}^T\)上的布雷格曼散度，并对\(t \in [0,1]\)积分，结合命题1来证明该损失的合理性。
+
+#### 7.5.4 混合路径（Mixture Paths）
+现在，我们将实施7.5.2节的内容，以构建实用的概率路径及其对应的条件速度。沿用Gat et al. (2024)的思路，我们基于\(Z = (X_0, X_1)\)进行条件化处理，以适应任意的数据耦合\((X_0, X_1) \sim \pi_{0,1}(X_0, X_1)\)。随后，我们构建因子化条件路径：
+\[
+p_{t|0,1}(x|x_0, x_1) = \prod_i p_{t|0,1}^i(x^i|x_0, x_1)
+\]
+作为混合分布：
+\[
+p_{t|0,1}^i(x^i|x_0, x_1) = \kappa_t \delta\left( x^i, x_1^i \right) + (1 - \kappa_t) \delta\left( x^i, x_0^i \right),
+\]
+其中\(\kappa: [0,1] \to [0,1]\)是\(C^1([0,1])\)调度器。需要注意的是，满足\(X_t^i \sim p_{t|0,1}^i(\cdot|x_0, x_1)\)的随机变量\(X_t^i\)服从：
+\[
+X_t^i = \begin{cases} 
+x_1^i & \text{ 概率为 } \kappa_t \\
+x_0^i & \text{ 概率为 } (1 - \kappa_t)
+\end{cases}
+\]
+即它以依赖于时间t的概率取源状态或目标状态。
+
+若\(\kappa_0 = 0\)且\(\kappa_1 = 1\)，则（7.1）式中的边际\(p_t(x)\)满足边界约束。我们还需要为\(p_{t|0,1}^i(x^i|x_0, x_1)\)寻找生成速度\(u_t^i(y^i, x^i|x_0, x_1)\)，它们是（7.18）式的解。推导过程如下：
+\[
+\begin{aligned}
+\frac{d}{dt} p_{t|Z}^i\left( y^i|z \right) & \stackrel{(7.22)}{=} \dot{\kappa}_t \left[ \delta\left( y^i, x_1^i \right) - \delta\left( y^i, x_0^i \right) \right] \\
+& \stackrel{(7.22)}{=} \dot{\kappa}_t \left[ \delta\left( y^i, x_1^i \right) - \frac{p_{t|Z}^i\left( y^i|z \right) - \kappa_t \delta\left( y^i, x_1^i \right)}{1 - \kappa_t} \right] \\
+& = \frac{\dot{\kappa}_t}{1 - \kappa_t} \left[ \delta\left( y^i, x_1^i \right) - p_{t|Z}^i\left( y^i|z \right) \right] \\
+& = \sum_{x^i} \frac{\dot{\kappa}_t}{1 - \kappa_t} \left[ \delta\left( y^i, x_1^i \right) - \delta\left( y^i, x^i \right) \right] p_{t|Z}^i\left( x^i|z \right),
+\end{aligned}
+\]
+为保持符号简洁，我们交替使用\(z = (x_0, x_1)\)和\(Z = (X_0, X_1)\)。综上，我们找到了生成（7.22）式中路径的条件速度：
+\[
+u_t^i\left( y^i, x^i|x_0, x_1 \right) = \frac{\dot{\kappa}_t}{1 - \kappa_t} \left[ \delta\left( y^i, x_1^i \right) - \delta\left( y^i, x^i \right) \right].
+\]
+
+**代码9**展示了flow_matching库中混合路径的定义方式。
+
+**代码9：离散概率路径**
+```python
+import torch
+from flow_matching.path import MixtureDiscreteProbPath
+from flow_matching.path.path_sample import DiscretePathSample
+
+## 创建离散概率路径对象
+path = MixtureDiscreteProbPath(scheduler=PolynomialConvexScheduler(n=1.0))
+
+## 采样条件路径
+## t、X0和X1的批量大小为2
+t = torch.tensor([0.25, 0.5])
+x_0 = torch.tensor([0, 0])
+x_1 = torch.tensor([1, 2])
+sample: DiscretePathSample = path.sample(t=t, x_0=x_0, x_1=x_1)
+sample.x_0  ## X0为[0, 0]
+sample.x_1  ## X1为[1, 2]
+## Xt的分布为：
+## [以0.75的概率取0，以0.25的概率取1,
+##  以0.5的概率取0，以0.5的概率取2]
+sample.x_t
+sample.t  ## t为[0.25, 0.5]
+```
+
+##### 速度后验参数化
+与连续情形类似（例如4.8.1节），我们可以通过多种方式对速度\(u_t^i(y^i, x)\)进行参数化。第一种方式是直接对其进行参数化，类似于流中的速度；此处我们采用的另一种方式是基于混合边际速度的下述计算（遵循（7.17）式）：
+\[
+\begin{aligned}
+u_t^i\left( y^i, x \right) & = \sum_{x_0, x_1} \frac{\dot{\kappa}_t}{1 - \kappa_t} \left[ \delta\left( y^i, x_1^i \right) - \delta\left( y^i, x^i \right) \right] p_{0,1|t}\left( x_0, x_1|x \right) \\
+& = \sum_{x_1^i} \frac{\dot{\kappa}_t}{1 - \kappa_t} \left[ \delta\left( y^i, x_1^i \right) - \delta\left( y^i, x^i \right) \right] p_{1|t}^i\left( x_1^i|x \right),
+\end{aligned}
+\]
+其中第二个等式中我们记后验\(p_{0,1|t}\)的边际为：
+\[
+p_{1|t}^i(x_1^i|x) = \sum_{x_0, x_1^{\bar{i}}} p_{0,1|t}(x_0, x_1|x) = \mathbb{E}\left[ \delta\left( x_1^i, X_1^i \right) | X_t = x \right].
+\]
+该推导通过可学习后验\(p_{1|t}^{\theta, i}(x_1^i|x)\)表示边际\(u_t^i(y^i, x)\)，这可理解为4.8.1节中\(x_1\)预测的离散版本。接下来，我们将探讨用于学习该后验的损失函数。
+
+##### 混合路径的条件离散流匹配（CDFM）损失
+我们提供两种学习\(p_{1|t}^{\theta, i}(x_1^i|x)\)的方案，均通过命题1证明其合理性。第一种方案是通过条件匹配损失学习边际后验（7.26）和（7.27）：
+\[
+\mathcal{L}_{CM}(\theta) = \mathbb{E}_{t, X_0, X_1, X_t} D_{X_t}\left( \delta\left( \cdot, X_1^i \right), p_{1|t}^{\theta, i}\left( \cdot|X_t \right) \right)
+\]
+由于\(\delta(\cdot, X_1^i)\)和\(p_{1|t}^{\theta, i}(\cdot|X_t)\)均为概率质量函数，因此我们可将布雷格曼散度设为KL散度\(D(p, q) = \sum_{\alpha \in T} p(\alpha) \log \frac{p(\alpha)}{q(\alpha)}\)（用于比较概率质量函数），得到：
+\[
+\mathcal{L}_{CM}(\theta) = -\mathbb{E}_{t, X_0, X_1, X_t} \log p_{1|t}^{\theta, i}\left( X_1^i|X_t \right) + const.
+\]
+另一种方案是沿用7.5.3节的思路，使用（7.19）式中的因子化损失，并通过\(p_{1|t}^{\theta, i}\)对\(u_t^{\theta, i}\)进行参数化。此时，我们可将布雷格曼散度设为广义KL散度（用于比较一般向量，不一定是概率向量）\(u, v \in \mathbb{R}_{≥0}^m\)：
+\[
+D(u, v) = \sum_j u^j \log \frac{u^j}{v^j} - \sum_j u_j + \sum_j v_j.
+\]
+选择该散度后，有：
+\[
+D\left( u_t^i\left( \cdot, x^i|x_0, x_1 \right), u_t^{\theta, i}(\cdot, x) \right) = \frac{\dot{\kappa}_t}{1 - \kappa_t} \left[ \left( \delta\left( x_1^i, x^i \right) - 1 \right) \log p_{1|t}^{\theta, i}\left( x_1^i|x \right) + \delta\left( x_1^i, x^i \right) - p_{1|t}^{\theta, i}\left( x^i|x \right) \right]
+\]
+当基于\(Z = (X_0, X_1)\)进行条件化处理时，上式即实现了损失（7.19）。广义KL损失（7.31）还为目标分布的似然提供了证据下界（ELBO）（Shaul et al., 2024）：
+\[
+-\log p_1^\theta\left( x_1 \right) \leq \mathbb{E}_{t, X_0, X_t \sim p_{t|0,1}} \sum_i D\left( u_t^i\left( \cdot, X_t^i|X_0, x_1 \right), u_t^{\theta, i}\left( \cdot, X_t \right) \right),
+\]
+其中\(p_1^\theta\)是模型在时间\(t=1\)时生成的边际。因此，除训练外，广义KL损失还常用于评估。
+
+##### 混合路径采样
+基于后验\(p_{1|t}^{\theta, i}\)的参数化方式，可得到如下采样算法。如7.5.1节所述，使用因子化速度可支持按坐标采样（7.11）。根据（7.17）和（7.25）式，有：
+\[
+\begin{aligned}
+\mathbb{P}\left( X_{t+h}^i = y^i | X_t = x \right) & = \delta\left( y^i, x^i \right) + h u^i\left( y^i, x \right) + o(h) \\
+& = \sum_{x_1^i} \left[ \delta\left( y^i, x^i \right) + h \frac{\dot{\kappa}_t}{1 - \kappa_t} \left[ \delta\left( y^i, x_1^i \right) - \delta\left( y^i, x^i \right) \right] + o(h) \right] p_{1|t}^i\left( x_1^i|x \right).
+\end{aligned}
+\]
+因此，给定\(X_t = x\)，我们可通过对每个\(i \in [d]\)执行以下两个步骤来完成单步采样：（i）从\(p_{1|t}^i(X_1^i|x)\)中采样\(X_1^i\)；（ii）使用速度\(\frac{\dot{\kappa}_t}{1 - \kappa_t} [\delta(y^i, X_1^i) - \delta(y^i, x^i)]\)，根据欧拉步骤（6.7）更新\(X_{t+h}^i\)。直观而言，步骤（ii）决定将\(X_{t+h}^i\)设为\(X_1^i\)还是保持为\(X_t^i\)。
+
+##### 单侧混合路径与概率保持速度
+通过添加如6.3.1节所述的散度无关分量（divergence-free component）来扩展采样算法的设计空间通常是有用的。对于因子化路径，散度无关速度\(v_t^i\)需满足（7.18）式，即：
+\[
+\sum_{x^i} v_t^i\left( y^i, x^i|z \right) p_{t|Z}^i\left( x^i|z \right) = 0.
+\]
+一般而言，若不学习额外的量（例如\(p_{0|t}^i\)），找到此类概率保持速度可能具有挑战性。然而，在假设源分布为独立同分布（即\(p(x) = \prod_i p(x^i)\)）且耦合为独立耦合\(\pi_{0,1}(x_0, x_1) = p(x_0) q(x_1)\)的情况下，可通过闭式解找到概率保持速度。此时，边际混合路径的形式为：
+\[
+p_t(x) = \sum_{x_1} p_{t|1}(x|x_1) q(x_1), \text{ 其中 } p_{t|1}(x|x_1) = \prod_i p_{t|1}^i(x^i|x_1),
+\]
+且\(p_{t|1}^i(x^i|x_1) = [\kappa_t \delta(x^i, x_1^i) + (1 - \kappa_t) p(x^i)]\)。（7.24）式中的条件速度，即：
+\[
+u_t^i\left( y^i, x^i|x_1 \right) = \frac{\dot{\kappa}_t}{1 - \kappa_t} \left[ \delta\left( y^i, x_1^i \right) - \delta\left( y^i, x^i \right) \right]
+\]
+同样生成\(p_{t|1}^i(x^i|x_1)\)。为找到散度无关速度，例如，我们可以从该速度中减去\(p_{t|1}^i(y^i, x^i|x_1)\)的反向时间速度\(\bar{u}_t^i\)（Gat et al., 2024），即其满足与\(p_{t|1}^i(y^i, x^i|x_1)\)相关的科尔莫戈罗夫方程，且\(-\bar{u}_t^i\)满足速率条件。此类速度可通过与（7.24）式类似的方式找到：
+\[
+\bar{u}_t^i\left( y^i, x^i|x_1 \right) = \frac{\dot{\kappa}_t}{\kappa_t} \left[ \delta\left( y^i, x^i \right) - p(x^i) \right].
+\]
+因此，\(p_{t|1}^i(x^i|x_1)\)条件路径的散度无关速度可通过下式定义：
+\[
+v_t^i\left( y^i, x^i|x_1 \right) = u_t^i\left( y^i, x^i|x_1 \right) - \bar{u}_t^i\left( y^i, x^i|x_1 \right).
+\]
+根据6.3.1节，若将散度无关场\(v_t^i(y^i, x^i|x_1)\)添加到速度\(u_t^i(y^i, x^i|x_1)\)中，后者仍会生成相同的概率路径\(p_{t|1}^i(x^i|x_1)\)。因此，定理16表明，由下式定义的边际速度\(u_t^i(y^i, x)\)：
+\[
+\begin{aligned}
+u_t^i\left( y^i, x \right) & = \sum_{x_1} \left[ u_t^i\left( y^i, x^i|x_1 \right) + c_t v_t^i\left( y^i, x^i|x_1 \right) \right] p_{1|t}(x_1|x) \\
+& = \sum_{x_1^i} \left[ u_t^i\left( y^i, x^i|x_1^i \right) + c_t v_t^i\left( y^i, x^i|x_1^i \right) \right] p_{1|t}^i\left( x^i|x \right),
+\end{aligned}
+\]
+仍会生成相同的边际路径\(p_t(x)\)，其中第二个等式源于混合路径的\(u_t^i(y^i, x^i|x_1) = u_t^i(y^i, x^i|x_1^i)\)，\(v_t^i(y^i, x^i|x_1)\)同理。综上，给定\(X_t = x\)，广义采样算法的单步包括：（i）从\(p_{1|t}^i(X_1^i|x)\)中采样\(X_1^i\)；（ii）使用速度执行欧拉步骤（6.7）：
+\[
+u_t^i(y^i, x^i|x_1) = \frac{\dot{\kappa}_t}{1 - \kappa_t} \left[ \delta(y^i, X_1^i) - \delta(y^i, x^i) \right] + c_t \left[ \frac{\dot{\kappa}_t}{1 - \kappa_t} \left[ \delta(y^i, x_1^i) - \delta(y^i, x^i) \right] - \frac{\dot{\kappa}_t}{\kappa_t} \left[ \delta(y^i, x^i) - p(x^i) \right] \right],
+\]
+其中\(c_t > 0\)是时间相关常数。
+
+与代码1中的连续流匹配示例类似，我们在代码11中提供了纯PyTorch实现的离散流匹配独立代码。代码10展示了如何使用flow_matching库训练具有任意数据耦合的离散流。
+
+**代码10：使用混合路径和任意数据耦合训练与采样离散流匹配（DFM）**
+```python
+import torch
+from flow_matching.path import MixtureDiscreteProbPath, DiscretePathSample
+from flow_matching.path.scheduler import PolynomialConvexScheduler
+from flow_matching.loss import MixturePathGeneralizedKL
+from flow_matching.solver import MixtureDiscreteEulerSolver
+from flow_matching.utils import ModelWrapper
+
+model = ...  ## 定义可训练的速度模型
+optimizer = torch.optim.Adam(model.parameters())
+
+scheduler = PolynomialConvexScheduler(n=1.0)
+path = MixtureDiscreteProbPath(scheduler=scheduler)
+loss_fn = MixturePathGeneralizedKL(path=path)  ## 广义KL布雷格曼散度
+
+for x_0, x_1 in dataloader:  ## 来自π0,1的样本，形状为[batch_size, *data_dim]
+    t = torch.rand(batch_size) * (1.0 - 1e-3)  ## 随机时间t ∼ U[0, 1−10−3]
+    sample: DiscretePathSample = path.sample(t=t, x_0=x_0, x_1=x_1)  ## 采样条件路径
+    model_output = model(sample.x_t, sample.t)
+    
+    loss = loss_fn(logits=model_output, x_1=sample.x_1, x_t=sample.x_t, t=sample.t)  ## 条件离散流匹配（CDFM）损失
+    
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+
+class ProbabilityDenoiser(ModelWrapper):
+    def forward(self, x: torch.Tensor, t: torch.Tensor, **extras) -> torch.Tensor:
+        logits = self.model(x, t, **extras)
+        return torch.nn.functional.softmax(logits.float(), dim=-1)
+
+## 采样X1
+probability_denoiser = ProbabilityDenoiser(model=model)
+x_0 = torch.randint(size=[batch_size, *data_dim])  ## 指定初始条件
+solver = MixtureDiscreteEulerSolver(
+    model=probability_denoiser,
+    path=path,
+    vocabulary_size=vocabulary_size
+)
+
+step_size = 1 / 100
+x_1 = solver.sample(x_init=x_0, step_size=step_size, time_grid=torch.tensor([0.0, 1.0 - 1e-3]))
+```
+
+**代码11：独立离散流匹配代码（flow_matching/examples/standalone_discrete_flow_matching.ipynb）**
+```python
+import torch
+import matplotlib.pyplot as plt
+from torch import nn, Tensor
+from sklearn.datasets import make_moons
+
+class DiscreteFlow(nn.Module):
+    def __init__(self, dim: int = 2, h: int = 128, v: int = 128):
+        super().__init__()
+        self.v = v
+        self.embed = nn.Embedding(v, h)
+        self.net = nn.Sequential(
+            nn.Linear(dim * h + 1, h), nn.ELU(),
+            nn.Linear(h, h), nn.ELU(),
+            nn.Linear(h, h), nn.ELU(),
+            nn.Linear(h, dim * v))
+    
+    def forward(self, x_t: Tensor, t: Tensor) -> Tensor:
+        return self.net(torch.cat((t[:, None], self.embed(x_t).flatten(1, 2)), -1)).reshape(list(x_t.shape) + [self.v])
+
+batch_size = 256
+vocab_size = 128
+
+model = DiscreteFlow(v=vocab_size)
+optim = torch.optim.Adam(model.parameters(), lr=0.001)
+
+for _ in range(10000):
+    x_1 = Tensor(make_moons(batch_size, noise=0.05)[0])
+    x_1 = torch.round(torch.clip(x_1 * 35 + 50, min=0.0, max=vocab_size - 1)).long()
+    x_0 = torch.randint(low=0, high=vocab_size, size=(batch_size, 2))
+    
+    t = torch.rand(batch_size)
+    x_t = torch.where(torch.rand(batch_size, 2) < t[:, None], x_1, x_0)
+    
+    logits = model(x_t, t)
+    loss = nn.functional.cross_entropy(logits.flatten(0, 1), x_1.flatten(0, 1)).mean()
+    optim.zero_grad()
+    loss.backward()
+    optim.step()
+
+x_t = torch.randint(low=0, high=vocab_size, size=(200, 2))
+t = 0.0
+results = [(x_t, t)]
+while t < 1.0 - 1e-3:
+    p1 = torch.softmax(model(x_t, torch.ones(200) * t), dim=-1)
+    h = min(0.1, 1.0 - t)
+    one_hot_x_t = nn.functional.one_hot(x_t, vocab_size).float()
+    
+    u = (p1 - one_hot_x_t) / (1.0 - t)
+    x_t = torch.distributions.Categorical(probs=one_hot_x_t + h * u).sample()
+    t += h
+    results.append((x_t, t))
+
+fig, axes = plt.subplots(1, len(results), figsize=(15, 2), sharex=True, sharey=True)
+for (x_t, t), ax in zip(results, axes):
+    ax.scatter(x_t.detach()[:, 0], x_t.detach()[:, 1], s=10)
+    ax.set_title(f't={t:.1f}')
+plt.tight_layout()
+plt.show()
+```
+
+
+## 8 Continuous Time Markov Process Models
+在前面的章节中，我们已经在\(\mathbb{R}^{d}\)空间和黎曼流形上构建了流模型（参见第3章和第5章），并为离散数据构建了连续时间马尔可夫链（CTMC）模型（参见第6章）。在本章中，我们希望将这些模型统一并扩展为一种生成模型，使其能够适用于：（1）一般状态空间；（2）一般马尔可夫过程。这种生成模型将使我们能够在第9章中将流匹配（Flow Matching）的原理扩展到适用于多种模态的各类生成模型。
+
+### 8.1 一般状态空间与随机变量
+#### 多模态适配
+我们的核心目标是不限制所使用的模态。因此，在本章中，设\(S\)为一般状态空间。重要的例子包括\(S=\mathbb{R}^{d}\)（例如图像、向量）、离散\(S\)（例如语言）、黎曼流形\(S\)（例如几何数据），或它们的乘积空间（用于联合生成多种数据模态的多模态模型）。对于所有模态，我们都可以在\(S\)上定义一个度量（或距离函数）\(d: S ×S \to \mathbb{R}_{≥0}\)，即\((x, y) \mapsto d(x, y)\)。例如，对于离散\(S\)，度量定义为：若\(y ≠x\)，则\(d(x, y)=1\)；对所有\(x \in S\)，则\(d(x, x)=0\)。对于\(S=\mathbb{R}^{d}\)，我们使用\(d(x, y)=\|x-y\|\)。我们需要做出一个技术假设：\((S, d)\)是波兰度量空间（Polish metric space），即它是完备的（任何柯西序列都收敛）且可分的（存在可数稠密子集）。机器学习中所有感兴趣的模态都满足这一性质。
+
+#### 一般状态空间上的密度
+到目前为止，在本文中我们假设状态空间\(S\)上的概率分布\(p\)由密度函数\(p: S \to \mathbb{R}_{≥0}\)表示。对于一般状态空间，我们采用一般参考测度\(\nu\)，此时密度函数即为拉东-尼科迪姆导数\(\frac{d p}{d \nu}\)。换句话说，概率可以表示为关于\(\nu\)的积分：
+\[
+\mathbb{P}(A)=\int_{A} p(x) \nu(d x) \quad \text{对所有可测集 } A \subset \mathcal{S}
+\]
+
+对于离散\(S\)，\(\nu\)是计数测度（因此积分本质上是求和），而\(p(x)\)就是概率质量函数（PMF）。对于\(S=\mathbb{R}^{d}\)，\(\nu\)是勒贝格测度（因此积分是“常规”积分），而\(p(x)\)就是概率密度函数（PDF）。上述定义将这一概念推广到了任意状态空间。
+
+#### （可选）任意分布的处理
+需要注意的是，并非所有概率分布都存在关于参考测度的密度函数。对于不熟悉一般测度论的读者，可将此视为技术说明而忽略，只需关注具有密度函数\(p(x)\)的感兴趣分布即可。但需指出，这并非仅存在于理论中的特殊情况，在机器学习应用中也有实际场景需要考虑：例如，在\(S=\mathbb{R}^{d}\)上，连接两点\(x, y \in \mathbb{R}^{d}\)的直线型概率路径\(p_{t}=\delta_{(1-t) x+t y}\)——该分布无法用密度函数表示；另一个例子是状态空间\(S=C([0,1], \mathbb{R})\)上的概率分布（例如用于轨迹建模），这类分布通常不存在关于常见参考测度的密度函数。为了在数学上处理这类情况，我们将框架扩展到状态空间\(S\)上的一般概率测度\(p\)。为此，我们使用符号\(p(d x)\)，其中“\(d x\)”是表示关于变量\(x\)在测度\(p\)下积分的符号表达式。例如，对于有界可测函数\(f: S \to \mathbb{R}\)，我们将\(f\)在\(p\)下的勒贝格积分或期望值表示为：
+\[
+\mathbb{E}_{X \sim p}[f(X)]=\int f(x) p(d x)
+\]
+与前文一致，我们（略微滥用符号）使用相同的记号\(p(x)\)来表示测度\(p(d x)\)的密度函数。
+
+### 8.2 连续时间马尔可夫过程（CTMP）生成模型
+同样，我们的核心目标是构建一个适用于任意演化过程的模型——无论该过程是流、扩散过程、连续时间马尔可夫链（CTMC）、它们的组合，还是其他类型。因此，在本节中，我们定义一种通用的演化过程，该过程满足构建生成模型所需的基本正则性假设。对于\(t \in[0,1]\)，设\(X_{t} \in S\)为随机变量。若\((X_{t})_{0 ≤t ≤1}\)满足以下条件，则称其为连续时间马尔可夫过程（CTMP）：
+\[
+\mathbb{P}[X_{t_{n+1}}\in A|X_{t_{1}},X_{t_{2}},...,X_{t_{n}}]=\mathbb{P}[X_{t_{n+1}}\in A|X_{t_{n}}] \quad (0\leq t_{1}<\cdots <t_{n+1}\leq 1,A\subseteq \mathcal{S})
+\]
+
+通俗地说，上述条件意味着该过程具有“无记忆性”：若已知当前状态，则了解过去的状态不会影响对未来的预测。表2概述了几类重要的马尔可夫过程。例如，流形上的流是具有确定性转移的马尔可夫过程，扩散过程是由布朗运动驱动转移的马尔可夫过程，而连续时间马尔可夫链（CTMC）是由速率决定的马尔可夫过程（我们将在8.2.2节详细解释）。每个马尔可夫过程都有一个转移核\((p_{t+h | t})_{0 ≤t<t+h ≤1}\)，该转移核为每个\(x \in S\)分配一个概率分布\(p_{t+h | t}(\cdot | x)\)，使得：
+\[
+\mathbb{P}\left[X_{t+h} \in A | X_{t}=x\right]=p_{t+h | t}(A | x) \quad \text{对所有 } t, h \geq 0, A \subset \mathcal{S} \text{ 可测}
+\]
+
+| 名称 | 流（Flow） | 扩散过程（Diffusion） | 跳跃过程（Jump process） | 连续时间马尔可夫链（Continuous-time Markov chain） |
+| --- | --- | --- | --- | --- |
+| 状态空间\(S\) | \(S=\mathbb{R}^{d}\) | \(S=\mathbb{R}^{d}\) | 任意\(S\) | 有限\(S\)（\(|S|<\infty\)） |
+| 参数 | 速度场：\(u_{t}(x) \in \mathbb{R}^{d}\) | 扩散系数：\(\sigma_{t}(x) \in \mathbb{R}^{d \times d}\)（半正定矩阵） | 跳跃测度\(Q_{t}(d y, x)\) | 速率矩阵：\(u_{t} \in \mathbb{R}^{S \times S}\)，满足\(1^{T} u_{t}=0\)且\(u_{t}(x';x) \geq 0\)（\(x'\neq x\)） |
+| 采样方式 | \(X_{t+h}=X_{t}+h u_{t}\left(X_{t}\right)\) | \(X_{t+h}=X_{t}+\sqrt{h} \sigma_{t}\left(X_{t}\right) \epsilon_{t}\)，其中\(\epsilon_{t} \sim \mathcal{N}(0, I)\) | 以概率\(1-h \int Q_{t}(d y, x)\)保持\(X_{t+h}=X_{t}\)；以概率\(h \int Q_{t}(d y, x)\)从\(\frac{Q_{t}(d y, x)}{\int Q_{t}(d y, x)}\)中采样\(X_{t+h}\) | \(X_{t+h} \sim\left(I+h u_{t}\right)\left(\cdot ; X_{t}\right)\) |
+| 生成器\(\mathcal{L}_{t}\) | \(\nabla f^{T} u_{t}\) | \(\frac{1}{2} \nabla^{2} f \cdot \sigma_{t}^{2}\) | \(\int [f(y)-f(x)]Q_{t}(dy,x)\) | \(f^{T} u_{t}\) |
+| 科尔莫戈罗夫前向方程（KFE，伴随形式） | 连续性方程：\(\partial_{t} p_{t}=-div\left(p_{t} u_{t}\right)\) | 福克-普朗克方程：\(\partial_{t} p_{t}=\frac{1}{2} \nabla^{2} \cdot\left(p_{t} \sigma_{t}^{2}\right)\) | 跳跃连续性方程：\(\partial_{t} p_{t}(x)=\int \left[Q_{t}(x, y) p_{t}(y)-Q_{t}(y, x) p_{t}(x)\right] \nu(d y)\) | 质量守恒：\(\partial_{t} p_{t}=u_{t} p_{t}\) |
+| 边际形式 | \(\mathbb{E}_{Z \sim p_{Z \mid t}(\cdot \mid x)}\left[u_{t}(x \mid Z)\right]\) | \(\mathbb{E}_{Z \sim p_{Z \mid t}(\cdot \mid x)}\left[\sigma_{t}^{2}(x \mid Z)\right]\) | \(\mathbb{E}_{Z \sim p_{Z \mid t}(\cdot \mid x)}\left[Q_{t}(y, x \mid Z)\right]\) | \(\mathbb{E}_{Z \sim p_{Z \mid t}(\cdot \mid x)}\left[u_{t}(y ; x \mid Z)\right]\) |
+| 生成器匹配（GM）损失示例 | \(\left\|u_{t}(X \mid Z)-u_{t}^{\theta}(X)\right\|^{2}\) | \(\left\|\sigma_{t}^{2}(X \mid Z)-\left(\sigma_{t}^{\theta}\right)^{2}(X)\right\|_{2}^{2}\) | \(\int Q_{t}(y,X|Z)\log \frac{Q_{t}(y,X|Z)}{Q_{t}^{\theta}(y;X)} \nu(d y)\) | \(\sum_{y \neq x} u_{t}(y;X|Z)\log \frac{u_{t}(y;X|Z)}{u_{t}^{\theta}(y;X)}\) |
+
+表2 连续时间马尔可夫过程（CTMP）生成模型的部分示例及其通过生成器匹配（GM）的学习方式。此列表并非详尽无遗，推导过程见第8章。对于扩散过程，我们假设漂移项为零（漂移项相关内容已包含在“流”列中）。科尔莫戈罗夫前向方程（KFE）以伴随形式列出，即假设跳跃核\(Q_{t}(y, x)\)和密度\(p_{t}(x)\)关于参考测度\(\nu\)存在。“半正定矩阵（p.s.d.）”：正定半正定矩阵。
+
+基于马尔可夫假设，一个马尔可夫过程由转移核和\(X_{0}\)的分布唯一确定；反之，任意转移核和初始分布都能定义一个马尔可夫过程。因此，两者之间存在一一对应关系。
+
+我们的下一个目标是定义连续时间马尔可夫过程（CTMP）中与速度场相对应的通用概念。通俗地说，它是转移核在时间\(t\)处的一阶导数：
+\[
+\mathcal{L}_{t}:=\left.\frac{d}{d h}\right|_{h=0} p_{t+h | t}
+\]
+
+我们将这个一阶导数\(\mathcal{L}_{t}\)称为\(p_{t+h | t}\)的生成器（Ethier and Kurtz, 2009; Rüschendorf et al., 2016）。与导数类似，生成器是一阶线性近似，比\(p_{t+h | t}\)更易于参数化。
+
+正如我们将看到的，扩散过程、流以及其他生成模型都可以被视为学习马尔可夫过程生成器的算法（见表2）。这引出了连续时间马尔可夫过程（CTMP）生成模型的一般形式：
+\[
+\text{CTMP模型（非正式）：} \quad p_{t+h | t}(\cdot | x):=\delta_{x}+h \mathcal{L}_{t}(x)+o(h), \quad X_{0} \sim p.
+\]
+
+然而，由于转移核\(p_{t+h | t}\)并非实值函数，方程（8.3）和（8.4）仅为启发式表达，尚未严格定义。因此，本节的首要目标是提供生成器和连续时间马尔可夫过程（CTMP）生成模型的正式定义。
+
+#### 8.2.1 生成器的正式定义
+方程（8.3）的第一个问题是：导数通常定义在映射到向量空间的函数上，但\(p_{t+h | t}\)映射到分布。不过，这一问题可以通过使用测试函数来解决。
+
+测试函数是一种“探测”概率分布的工具，它作为理论工具，能将分布视为实值函数处理。具体来说，测试函数集是一族有界可测函数\(f: S \to \mathbb{R}\)，这些函数能完全表征概率分布，即对于状态空间\(S\)上的两个概率分布\(\mu_{1}\)和\(\mu_{2}\)，满足：
+\[
+\mu_{1}=\mu_{2} \Leftrightarrow \mathbb{E}_{X \sim \mu_{1}}[f(X)]=\mathbb{E}_{X \sim \mu_{2}}[f(X)] \quad \text{对所有 } f\in \mathcal{T}
+\]
+
+一般而言，我们会选择尽可能“良好”（或正则）的测试函数集\(\mathcal{T}\)。例如，若\(S=\mathbb{R}^{d}\)，则具有紧支撑的无穷可微函数空间\(\mathcal{T}=C_{c}^{\infty}(\mathbb{R}^{d})\)满足这一性质。对于离散\(S\)，\(\mathcal{T}=\mathbb{R}^{S}\) simply consists of all functions（在这种情况下，函数本质上就是向量）。设\(X_{t} \sim p_{t}\)，我们定义边际作用和转移作用如下：
+\[
+\left< p_{t}, f\right>:=\int f(x) p_{t}(d x)=\mathbb{E}_{X \sim p_{t}}[f(X)]
+\]
+\[
+\left< p_{t+h | t}, f\right>(x):=\left< p_{t+h | t}(\cdot | x), f\right>=\mathbb{E}\left[f\left(X_{t+h}\right) | X_{t}=x\right]
+\]
+其中，边际作用将每个测试函数\(f\)映射到标量\(< p_{t}, f> \in \mathbb{R}\)，而转移作用将实值函数\(x \mapsto f(x)\)映射到另一个实值函数\(x \mapsto< p_{t+h | t}, f>(x)\)。塔性质（Tower Property）意味着\(< p_{t},< p_{t+h | t}, f>>=< p_{t+h}, f>\)。需要注意的是，上述表达式仅为“符号化”的点积，但当密度函数\(p_{t}(x)\)存在时，它会成为“真正的”点积，即\(< p_{t}, f>=\int f(x) p_{t}(x) \nu(d x)\)。
+
+要正式定义方程（8.3）中的导数，第二步是为马尔可夫过程赋予某种“光滑性”，我们定义如下：设\(C_{0}(S)\)为在无穷远处消失的连续函数\(f: S \to \mathbb{R}\)构成的空间，即对于所有\(\epsilon>0\)，存在紧集\(K \subset S\)，使得对于所有\(x \in S \setminus K\)，有\(|f(x)|<\epsilon\)。我们在\(C_{0}(S)\)上使用上确界范数\(\|\cdot\|_{\infty}\)。若连续时间马尔可夫过程（CTMP）\(X_{t}\)满足以下两个条件，则称其为费勒过程（Feller process）（Feller, 1955; Rüschendorf et al., 2016）：
+1. 强连续性：\(p_{t+h | t}\)的作用在时间上是连续的：
+\[
+\lim_{h^{\prime} \to h,t^{\prime} \to t}\left\| \left< p_{t^{\prime}+h^{\prime}|t^{\prime}},f\right> -\left< p_{t+h| t},f\right> \right\| _{\infty }=0 \quad \text{对所有 } h,t\geq 0,f\in C_{0}(\mathcal{S})
+\]
+2. 无穷远不可达性：\(p_{t+h | t}\)的作用保持在无穷远处消失的函数性质：
+\[
+\left< p_{t+h | t}, f\right> \in C_{0}(\mathcal{S}) \quad \text{对所有 } h, t \geq 0, f \in C_{0}(\mathcal{S})
+\]
+
+**假设4**：连续时间马尔可夫过程（CTMP）\((X_{t})_{0 ≤t ≤1}\)是费勒过程（Feller process）。
+
+这一假设对于将\(X_{t}\)用于机器学习模型是合理的：我们定义的概率路径中，生成过程\(X_{t}\)的分布是平滑变化的，且我们的所有数据通常都位于某个有界（紧）集内。
+
+现在，我们回到（8.3），尝试定义\(p_{t+h | t}\)的导数。结合测试函数的视角，我们可以对每个\(x \in S\)求\(< p_{t+h | t}, f>(x)\)的导数，并定义：
+\[
+\left.\frac{d}{d h}\right|_{h=0}\left< p_{t+h | t}, f\right>(x)=\lim _{h \to 0} \frac{\left< p_{t+h | t}, f\right>(x)-f(x)}{h}:=\left[\mathcal{L}_{t} f\right](x)
+\]
+
+我们将这一作用称为生成器\(\mathcal{L}_{t}\)，并将其定义于所有使上述极限在上确界范数\(\|\cdot\|_{\infty}\)下一致存在的测试函数\(f\)上。直观地说，生成器被定义为测试函数上的算子。表2列出了几个生成器的例子，我们将在8.2.2节中推导这些例子。生成器与费勒过程（Feller process）之间存在一一对应关系（Rogers and Williams, 2000; Ethier and Kurtz, 2009; Pazy, 2012）——这与流和向量场之间的对应关系类似（见定理1）。这使得我们后续能够通过神经网络对费勒过程（Feller process）进行参数化。
+
+有了这一定义，（8.4）中的连续时间马尔可夫过程（CTMP）模型就有了严格的形式：
+\[
+\left< p_{t+h | t}, f\right>=f+h \mathcal{L}_{t} f+o(h) \quad (\text{对所有 } f \in \mathcal{T}) \quad \text{且 } X_{0} \sim p
+\]
+其中，\(o(h)\)表示误差项\(E(h) \in C_{0}(S)\)，满足\(\lim _{h \to 0} \frac{1}{h}\|E(h)\|_{\infty}=0\)。与流的情况（方程（3.24））和连续时间马尔可夫链（CTMC）的情况（方程（6.5））类似，若存在满足（8.9）的连续时间马尔可夫过程（CTMP）\(X_{t}\)，使得\(X_{t} ~ p_{t}\)，则称\(\mathcal{L}_{t}\)生成\(p_{t}\)：
+\[
+\mathcal{L}_{t} \text{ 生成 } p_{t} \Leftrightarrow \exists p_{t+h | t} \text{ 满足（8.9），且 } X_{t} \sim p_{t}
+\]
+
+换句话说，若一个生成器\(\mathcal{L}_{t}\)满足：（1）以\(p=p_{0}\)初始化；（2）通过\(\mathcal{L}_{t}\)模拟得到的马尔可夫过程的边际分布为\(p_{t}\)，则该生成器\(\mathcal{L}_{t}\)生成概率路径\(p_{t}\)。
+
+#### 8.2.2 连续时间马尔可夫过程（CTMP）模型示例
+我们通过几个例子来说明如何计算马尔可夫过程的生成器。本节的结果总结于表2。
+
+##### 流（Flows）
+设\(S=\mathbb{R}^{d}\)，\(u:[0,1] ×\mathbb{R}^{d} \to \mathbb{R}^{d}\)（即\((t, x) \mapsto u_{t}(x)\)）是一个时间依赖的速度场，定义了一个流\(\psi_{t}\)（见第3章）。设\(\mathcal{T}=C_{c}^{\infty}(\mathbb{R}^{d})\)为具有紧支撑的无穷可微光滑函数空间。则生成器可计算如下：
+\[
+\begin{aligned}
+\left[\mathcal{L}_{t} f\right](x) & = \lim _{h \to 0} \frac{\mathbb{E}\left[f\left(X_{t+h}\right) | X_{t}=x\right]-f(x)}{h} \\
+& \stackrel{(i)}{=} \lim _{h \to 0} \frac{\mathbb{E}\left[f\left(X_{t}+h u_{t}\left(X_{t}\right)+o(h)\right) | X_{t}=x\right]-f(x)}{h} \\
+& \stackrel{(ii)}{=} \lim _{h \to 0} \frac{\mathbb{E}\left[f\left(X_{t}\right)+h \nabla f\left(X_{t}\right)^{T} u_{t}\left(X_{t}\right)+o(h) | X_{t}=x\right]-f(x)}{h} \\
+& = \lim _{h \to 0} \frac{f(x)+h \nabla f(x)^{T} u_{t}(x)+o(h)-f(x)}{h} \\
+& = \nabla f(x)^{T} u_{t}(x),
+\end{aligned}
+\]
+其中，（i）来自流的欧拉近似；（ii）来自\(f\)在\(X_{t}\)附近的一阶泰勒展开。因此，流的生成器为：
+\[
+\mathcal{L}_{t} f(x)=\nabla f(x)^{T} u_{t}(x)
+\]
+
+##### 扩散过程（Diffusion）
+设\(S=\mathbb{R}^{d}\)，\(\sigma_{t}: [0, 1] ×\mathbb{R}^{d} \to \mathbb{R}^{d×d}\)（即\((t, x) \mapsto \sigma_{t}(x)\)）是一个时间依赖的函数，映射到对称半正定矩阵\(\sigma_{t}\)，且映射过程连续。扩散系数为\(\sigma_{t}\)的扩散过程由随机微分方程（SDE）\(d X_{t}=\sigma_{t}(X_{t}) d W_{t}\)定义，其中\(W_{t}\)是维纳过程（Wiener process）（Øksendal, 2003）。该过程可通过无穷小采样过程近似：
+\[
+X_{t+h}=X_{t}+\sqrt{h} \sigma_{t}\left(X_{t}\right) \epsilon_{t}, \quad \epsilon_{t} \sim \mathcal{N}(0, I)
+\]
+
+设\(\mathcal{T}=C_{c}^{\infty}(\mathbb{R}^{d})\)，则生成器可计算如下：
+\[
+\begin{aligned}
+\left[\mathcal{L}_{t} f\right](x) & = \lim _{h \to 0} \frac{\mathbb{E}\left[f\left(X_{t}+\sqrt{h} \sigma_{t}\left(X_{t}\right) \epsilon_{t}+o(h)\right) | X_{t}=x\right]-f(x)}{h} \\
+& \stackrel{(i)}{=} \lim _{h \to 0} \frac{\mathbb{E}_{\epsilon_{t}}\left[ f(x)+\nabla f(x)^{T} \sqrt{h} \sigma_{t}(x) \epsilon_{t}+\frac{1}{2} h\left[\sigma_{t}(x) \epsilon_{t}\right]^{T} \nabla^{2} f(x)\left[\sigma_{t}(x) \epsilon_{t}\right]+o(h)-f(x)\right]}{h} \\
+& = \lim _{h \to 0} \frac{\nabla f(x)^{T} \sqrt{h} \sigma_{t}(x) \mathbb{E}_{\epsilon_{t}}\left[ \epsilon_{t}\right] + \frac{1}{2} h \mathbb{E}_{\epsilon_{t}}\left[ \left[\sigma_{t}(x) \epsilon_{t}\right]^{T} \nabla^{2} f(x)\left[\sigma_{t}(x) \epsilon_{t}\right] \right] + o(h)}{h} \\
+& = \frac{1}{2} \mathbb{E}_{\epsilon_{t}}\left[ \epsilon_{t}^{T}\left[\sigma_{t}(x)\right]^{T} \nabla^{2} f(x)\left[\sigma_{t}(x)\right] \epsilon_{t}\right] \\
+& \stackrel{(ii)}{=} \frac{1}{2} tr\left(\sigma_{t}(x)^{T} \nabla^{2} f(x) \sigma_{t}(x)\right) \\
+& \stackrel{(iii)}{=} \frac{1}{2} tr\left(\sigma_{t}(x) \sigma_{t}(x)^{T} \nabla^{2} f(x)\right) \\
+& \stackrel{(iv)}{=} \frac{1}{2} \sigma_{t}^{2}(x) \cdot \nabla^{2} f(x),
+\end{aligned}
+\]
+其中，（i）使用了二阶泰勒展开（由于\(\mathbb{E}[\left\|\sqrt{h} \epsilon_{t}\right\|^{2}] \propto h\)，因此需要二阶展开）；（ii）使用了矩阵迹的性质\(tr(A)=\mathbb{E}_{\epsilon_{t}}[\epsilon_{t}^{T} A \epsilon_{t}]\)（对\(A \in \mathbb{R}^{d ×d}\)）；（iii）使用了迹的循环性质；（iv）利用了\(\sigma_{t}\)的对称性。此外，我们使用\(A \cdot B:=tr(A^{T} B)\)表示矩阵\(A, B \in \mathbb{R}^{d ×d}\)的矩阵内积。因此，扩散过程的生成器为：
+\[
+\mathcal{L}_{t} f(x)=\frac{1}{2} \sigma_{t}^{2}(x) \cdot \nabla^{2} f(x)
+\]
+
+##### 跳跃过程（Jump processes）
+接下来，设\(S\)为任意状态空间，考虑跳跃过程。跳跃过程由时间依赖的核\(Q_{t}(d y, x)\)定义，即对于每个\(0 ≤t ≤1\)和每个\(x \in S\)，\(Q_{t}(d y, x)\)是\(S \setminus \{x\}\)上的正测度。跳跃过程的核心思想是：分配给\(S \setminus \{x\}\)的总测度
+\[
+\lambda _{t}(x)=\int Q_{t}(dy,x)
+\]
+表示跳跃强度（即无穷小时间内发生跳跃的可能性）。此外，若\(\lambda_{t}(x)>0\)，则可通过归一化\(Q_{t}\)得到跳跃分布的概率核：
+\[
+J_{t}( d y, x)=\frac{Q_{t}( d y, x)}{\lambda_{t}(x)}
+\]
+
+跳跃过程可通过如下无穷小采样过程近似：
+\[
+X_{t+h}= \begin{cases}X_{t} & \text{ 概率为 } 1-h \lambda_{t}\left(X_{t}\right)+o(h) \\ \sim J_{t}\left( d y, X_{t}\right) & \text{ 概率为 } h \lambda_{t}\left(X_{t}\right)+o(h)\end{cases}
+\]
+
+关于跳跃过程的严格处理，可参考（Davis, 1984）。其生成器为：
+\[
+\begin{aligned}
+\mathcal{L}_{t} f(x) & = \lim _{h \to 0} \frac{\mathbb{E}\left[f\left(X_{t+h}\right)-f\left(X_{t}\right) | X_{t}=x\right]}{h} \\
+& = \lim _{h \to 0} \frac{\mathbb{E}\left[f\left(X_{t+h}\right)-f\left(X_{t}\right) | X_{t}=x, \text{ 在 } [t, t+h) \text{ 内跳跃}\right] \mathbb{P}\left[ \text{ 在 } [t, t+h) \text{ 内跳跃} | X_{t}=x\right]}{h} \\
+& \quad + \lim _{h \to 0} \frac{\mathbb{E}\left[f\left(X_{t+h}\right)-f\left(X_{t}\right) | X_{t}=x, \text{ 在 } [t, t+h) \text{ 内不跳跃}\right] \mathbb{P}\left[ \text{ 在 } [t, t+h) \text{ 内不跳跃} | X_{t}=x\right]}{h} \\
+& = \lim _{h \to 0} \frac{\mathbb{E}_{Y \sim J_{t}( d y, x)}[f(Y)-f(x)] h \lambda_{t}(x)}{h} \\
+& = \lambda_{t}(x) \mathbb{E}_{Y \sim J_{t}( d y, x)}[f(Y)-f(x)] \\
+& = \int (f(y)-f(x)) Q_{t}(dy,x),
+\end{aligned}
+\]
+其中，我们利用了如下事实：若\(X_{t}\)在\([t, t+h]\)内不跳跃，则\(X_{t+h}=X_{t}\)。因此，跳跃过程的生成器为：
+\[
+\mathcal{L}_{t} f(x)=\int (f(y)-f(x)) Q_{t}(dy,x)=\lambda _{t}(x)\mathbb{E}_{Y\sim J_{t}(dy,x)}[f(Y)-f(x)]
+\]
+
+##### 连续时间马尔可夫链（CTMC）
+考虑有限离散状态空间\(S\)（即\(|S|<\infty\)）上的连续时间马尔可夫链\(X_{t}\)。实际上，这是离散状态空间上的一种特殊参数化跳跃过程。为了说明这一点，考虑离散状态空间\(S\)上由矩阵\(Q_{t} \in \mathbb{R}_{≥0}^{S ×S}\)定义的标准跳跃核，结合方程（8.36），其生成器为：
+\[
+\mathcal{L}_{t} f(x)=\sum_{y \in \mathcal{S}}[f(y)-f(x)] Q_{t}(y, x)=\sum_{y \neq x}[f(y)-f(x)] Q_{t}(y, x) \quad \forall x \in \mathcal{S}, f \in \mathbb{R}^{\mathcal{S}}
+\]
+即\(Q_{t}(x, x)\)的值不影响生成器，且是欠定的。因此，一个自然的约定是通过速率对离散状态空间上的跳跃核进行重新参数化：
+\[
+u_{t}(y, x)= \begin{cases}Q_{t}(y, x) & \text{ 若 } y \neq x \\ -\sum_{z \neq x} Q_{t}(z, x) & \text{ 若 } y=x\end{cases}
+\]
+
+通过这种参数化，我们从第6章中恢复了满足速率条件（6.4）的速率\(u_{t}(y, x)\)。因此，这表明离散空间上的跳跃模型与连续时间马尔可夫链（CTMC）模型（第6章）是一致的。将此代入方程（8.37），可得连续时间马尔可夫链（CTMC）的生成器为：
+\[
+\mathcal{L}_{t} f(x)=\sum_{y \in \mathcal{S}} f(y) u_{t}(y, x)=f^{T} u_{t}
+\]
+其中，我们将\(f=(f(x))_{x \in S}\)视为列向量，将\(u_{t} \in \mathbb{R}^{S ×S}\)视为矩阵。因此，生成器函数本质上是左侧的向量乘法。
+
+##### 流形上的流（Flows on manifolds）
+接下来，考虑第5章中介绍的黎曼流形\(S=M\)上的流。流\(\psi:[0,1] ×M \to M\)通过向量场\(u:[0,1] ×M \to T M\)由方程（3.19）中的常微分方程（ODE）定义。设\(\psi_{t | s}(x)=\psi_{t}(\psi_{s}^{-1}(x))\)表示从时间\(s\)到时间\(t\)的转移（如（3.17）所示）。则对于光滑函数\(f: M \to \mathbb{R}\)，黎曼流的生成器为：
+\[
+\mathcal{L}_{t} f(x)=\lim_{h\to 0}\frac {f(\psi _{t+h|t}(x))-f(x)}{h}=\left< \nabla f(x),\frac {d}{dh}\bigg |_{h=0}\psi _{t+h| t}(x)\right> _{g}=\left< \nabla f(x),u_{t}(x)\right> _{g}
+\]
+其中，\(<\cdot, \cdot>_{g}\)表示定义黎曼度量\(g\)的点积，\(\nabla f\)表示\(f\)关于\(g\)的梯度。实际上，该生成器与函数的李导数（Lie derivative）一致（Jost, 2008），这是微分几何中的一个基本概念。
+
+### 8.3 概率路径与科尔莫戈罗夫方程（Kolmogorov Equation）
+对于\(S=\mathbb{R}^{d}\)上的流匹配（Flow Matching），连续性方程（见（3.25））是核心数学方程，它使我们能够构建生成期望概率路径的速度场（见3.5节）。在本节中，我们推导连续时间马尔可夫过程（CTMP）的对应（更通用）方程。设\(X_{t}\)是具有生成器\(\mathcal{L}_{t}\)的连续时间马尔可夫过程（CTMP），且\(X_{t} ~ p_{t}\)，则有：
+\[
+\frac{d}{dt}\left< p_{t},f\right> =\frac{d}{dh}\bigg | _{h=0}\left< p_{t+h},f\right> =\left. \frac{d}{dh}\bigg | _{h=0}\left< p_{t},\left< p_{t+h|t},f\right> \right> =\bigg < p_{t},\frac{d}{dh}\bigg |_{h=0}\left< p_{t+h|t},f\right> \bigg> =\left< p_{t},\mathcal{L}_{t}f\right>
+\]
+其中，我们利用了\(< p_{t}, \cdot>\)运算的线性性质来交换导数，并且通过塔性质（Tower Property）可知\(< p_{t},< p_{t+h | t}, f>>=< p_{t+h}, f>\)。这表明：给定马尔可夫过程\(X_{t}\)的生成器\(\mathcal{L}_{t}\)，我们可以通过其无穷小变化恢复其边际概率，即得到科尔莫戈罗夫前向方程（KFE）：
+\[
+\frac{d}{d t}\left< p_{t}, f\right>=\left< p_{t}, \mathcal{L}_{t} f\right> \quad \text{对所有 } f \in \mathcal{T}
+\]
+
+方程（8.40）中的科尔莫戈罗夫前向方程（KFE）描述了测试函数\(f\)的期望演化。这对于处理不存在密度的概率分布是必要的。若密度存在，则可使用更易理解的科尔莫戈罗夫前向方程（KFE）形式，直接描述概率密度的变化。为了呈现这一形式，我们引入伴随生成器\(\mathcal{L}_{t}^{*}\)，它作用于关于参考测度\(\nu\)的概率密度\(p_{t}(x)\)，即\(\mathcal{L}_{t}^{*} p_{t}(x)\)通过以下恒等式隐式定义：
+\[
+\int p_{t}(x) \mathcal{L}_{t} f(x) \nu(d x)=\int \mathcal{L}_{t}^{*} p_{t}(x) f(x) \nu(d x) \quad \forall f \in \mathcal{T}
+\]
+
+此外，我们需要假设\(p_{t}\)关于时间\(t\)是可微的。现在，将（8.41）应用于科尔莫戈罗夫前向方程（KFE）（8.40），可得：
+\[
+\begin{aligned}
+\int \frac{d}{d t} p_{t}(x) f(x) \nu(d x) & =\frac{d}{d t} \int p_{t}(x) f(x) \nu(d x) \\
+& =\frac{d}{d t}\left< p_{t}, f\right> \\
+& =\left< p_{t}, \mathcal{L}_{t} f\right> \\
+& =\int p_{t}(x) \mathcal{L}_{t} f(x) \nu(d x) \\
+& =\int \mathcal{L}_{t}^{*} p_{t}(x) f(x) \nu(d x)
+\end{aligned}
+\]
+
+由于这一等式对所有测试函数\(f\)都成立，结合方程（8.5），我们可以得出结论：这等价于伴随科尔莫戈罗夫前向方程（KFE）：
+\[
+\frac{d}{d t} p_{t}(x)=\mathcal{L}_{t}^{*} p_{t}(x) \quad \text{对所有 } x \in \mathcal{S}
+\]
+
+正如我们将在以下例子中推导的，伴随科尔莫戈罗夫前向方程（KFE）推广了许多用于开发生成模型的著名方程，例如连续性方程或福克-普朗克方程（Song et al., 2021; Lipman et al., 2022）（见表2）。只要概率密度存在，我们就使用伴随科尔莫戈罗夫前向方程（KFE）——以避免使用测试函数，直接处理概率密度。我们将研究结果总结如下：
+
+**定理17（一般质量守恒）**：设\(\mathcal{L}_{t}\)是\((X_{t})_{0 ≤t ≤1}\)的生成器。通俗地说，以下条件等价：
+1. \(p_{t}\)和\(\mathcal{L}_{t}\)满足科尔莫戈罗夫前向方程（KFE）（8.40）。
+2. \(\frac{d p_{t}}{d \nu}(x)\)和\(\mathcal{L}_{t}\)满足伴随科尔莫戈罗夫前向方程（KFE）（8.47）。
+3. \(\mathcal{L}_{t}\)以方程（8.10）的意义生成\(p_{t}\)。
+
+严格来说，当\(\frac{d p_{t}}{d \nu}\)存在且关于时间\(t\)连续可微时，（1）和（2）等价。此外，对于任意状态空间，（3）蕴含（1）。存在一些弱正则性假设可确保（1）蕴含（3）（附录A.3列出了相关假设）。在本文中，我们假设这些假设成立，即假设（3）蕴含（1）。
+
+据我们所知，目前尚无针对抽象一般状态空间的已知结果能确保定理17中条件（3）蕴含（1）。因此，我们在此直接假设这一结论成立。对于机器学习研究人员而言，这一假设在所有感兴趣的状态空间中均成立，因此无需担忧（见附录A.3）。
+
+#### 8.3.1 科尔莫戈罗夫前向方程（KFE）示例
+##### 流的伴随科尔莫戈罗夫前向方程（KFE）
+设\(S=\mathbb{R}^{d}\)，假设\(p_{t}\)关于勒贝格测度存在密度\(p_{t}(x)\)，且该密度有界且连续可微。则可通过以下方式计算伴随生成器\(\mathcal{L}_{t}^{*}\)：
+\[
+\begin{aligned}
+\left< p_{t}, \mathcal{L}_{t} f\right> & =\mathbb{E}_{x \sim p_{t}}\left[\mathcal{L}_{t} f(x)\right] \\
+& =\int \mathcal{L}_{t} f(x) p_{t}(x) d x \\
+& \stackrel{(i)}{=} \int \nabla f(x)^{T} u_{t}(x) p_{t}(x) d x \\
+& \stackrel{(ii)}{=} \int f(x) \underbrace{\left[-div\left(p_{t} u_{t}\right)(x)\right]}_{=: \mathcal{L}_{t}^{*} p_{t}(x)} d x \\
+& =\int f(x) \mathcal{L}_{t}^{*} p_{t}(x) d x
+\end{aligned}
+\]
+其中，（i）来自方程（8.15）；（ii）来自分部积分。上述推导表明，伴随生成器为\(\mathcal{L}_{t}^{*} p_{t}=-div(p_{t} u_{t})(x)\)（因为它满足方程（8.41）中的条件）。利用伴随科尔莫戈罗夫前向方程（KFE），我们恢复了连续性方程（见方程（3.25））：
+\[
+\frac{d}{d t} p_{t}(x)=-div\left(p_{t} u_{t}\right)(x)
+\]
+这是我们在3.4节中详细研究的方程。
+
+##### 扩散过程的伴随科尔莫戈罗夫前向方程（KFE）
+设\(S=\mathbb{R}^{d}\)，假设\(p_{t}\)关于勒贝格测度存在密度\(p_{t}(x)\)，且该密度有界且连续可微。则可通过以下方式计算伴随生成器\(\mathcal{L}_{t}^{*}\)：
+\[
+\begin{aligned}
+\left< p_{t}, \mathcal{L}_{t} f\right> & =\mathbb{E}_{x \sim p_{t}}\left[\mathcal{L}_{t} f(x)\right] \\
+& =\int \mathcal{L}_{t} f(x) p_{t}(x) d x \\
+& \stackrel{(i)}{=} \frac{1}{2} \int \sigma_{t}^{2}(x) \cdot \nabla^{2} f(x) p_{t}(x) d x \\
+& \stackrel{(ii)}{=} \int f(x) \underbrace{\frac{1}{2} \nabla^{2} \cdot\left(p_{t} \sigma_{t}^{2}\right)(x)}_{=: \mathcal{L}_{t}^{*} p_{t}(x)} d x \\
+& =\int f(x) \mathcal{L}_{t}^{*} p_{t}(x) d x
+\end{aligned}
+\]
+其中，（i）来自方程（8.26）；（ii）来自两次分部积分。上述推导表明，伴随生成器为\(\mathcal{L}_{t}^{*} p_{t}=\frac{1}{2} \nabla^{2} \cdot(p_{t} \sigma_{t}^{2})(x)\)（因为它满足方程（8.41）中的条件）。伴随科尔莫戈罗夫前向方程（KFE）进而恢复了著名的福克-普朗克方程（Fokker-Planck Equation）：
+\[
+\frac{d}{dt}p_{t}(x)=\frac{1}{2}\nabla ^{2}\cdot (p_{t}\sigma _{t}^{2})(x)
+\]
+
+##### 跳跃过程的伴随科尔莫戈罗夫前向方程（KFE）
+假设\(p_{t}\)关于勒贝格测度存在密度\(p_{t}(x)\)，且该密度有界且连续可微。假设跳跃测度\(Q_{t}(d y, x)\)由核函数\(Q_{t}: S ×S \to \mathbb{R}_{≥0}\)（即\((y, x) \mapsto Q_{t}(y, x)\)）表示，使得：
+\[
+\int f(y) Q_{t}( d y, x)=\int f(y) Q_{t}(y, x) \nu(d y) \quad \text{对所有可积函数 } f: \mathcal{S} \to \mathbb{R}
+\]
+
+则可按以下方式推导伴随生成器：
+\[
+\begin{aligned}
+\left< p_{t}, \mathcal{L}_{t} f\right> & =\iint(f(y)-f(x)) Q_{t}(y, x) \nu(d y) p_{t}(x) \nu(d x) \\
+& =\iint f(y) Q_{t}(y, x) p_{t}(x) \nu(d y) \nu(d x)-\iint f(x) Q_{t}(y, x) p_{t}(x) \nu(d y) \nu(d x) \\
+& \stackrel{(i)}{=} \iint f(x) Q_{t}(x, y) p_{t}(y) \nu(d y) \nu(d x)-\iint f(x) Q_{t}(y, x) p_{t}(x) \nu(d y) \nu(d x) \\
+& =\int f(x) \underbrace{\left[\int Q_{t}(x, y) p_{t}(y)-Q_{t}(y, x) p_{t}(x) \nu(d y)\right]}_{=: \mathcal{L}_{t}^{*} p_{t}(x)} \nu(d x) \\
+& =\int f(x) \mathcal{L}_{t}^{*} p_{t}(x) \nu(d x)
+\end{aligned}
+\]
+其中，（i）仅交换了变量\(x\)和\(y\)。上述推导表明，上述定义的\(\mathcal{L}_{t}^{*}\)满足方程（8.41）中的条件，确实描述了跳跃过程的伴随生成器。由此，伴随科尔莫戈罗夫前向方程（KFE）成为跳跃连续性方程（Jump Continuity Equation）：
+\[
+\frac{d}{d t} p_{t}(x)=\int\left[Q_{t}(x, y) p_{t}(y)-Q_{t}(y, x) p_{t}(x)\right] \nu(d y)=\int \lambda_{t}(y) J_{t}(x, y) p_{t}(y) \nu(d y)-\lambda_{t}(x) p_{t}(x)
+\]
+其中，我们利用了分解式\(Q_{t}(y, x)=\lambda_{t}(x) J_{t}(y, x)\)，将其分解为跳跃强度\(\lambda_{t}\)和跳跃分布\(J_{t}\)（见方程（8.28））。
+
+##### 连续时间马尔可夫链（CTMC）的伴随科尔莫戈罗夫前向方程（KFE）
+对于离散状态空间\(S\)，生成器由方程（8.38）中的\(f^{T} u_{t}\)给出，则有：
+\[
+\begin{aligned}
+\left< p_{t}, \mathcal{L}_{t} f\right> & =\int p_{t}(x) \mathcal{L}_{t} f(x) \nu(d x) \\
+& =\sum_{x \in \mathcal{S}} p_{t}(x) \sum_{y \in \mathcal{S}} u_{t}(y, x) f(y) \\
+& =\sum_{y \in \mathcal{S}} \underbrace{\left[\sum_{x \in \mathcal{S}} p_{t}(x) u_{t}(y, x)\right]}_{=: \mathcal{L}_{t}^{*} p_{t}(y)} f(y) \\
+& =\int \mathcal{L}_{t}^{*} p_{t}(y) f(y) \nu(d y)
+\end{aligned}
+\]
+其中，此处的\(\nu\)仅表示计数测度。因此，伴随科尔莫戈罗夫前向方程（KFE）可简单表示为：
+\[
+\frac{d}{d t} p_{t}(x)=\sum_{y \in \mathcal{S}} u_{t}(x, y) p_{t}(y)
+\]
+
+这与方程（6.8）中推导的连续时间马尔可夫链（CTMC）的科尔莫戈罗夫前向方程（KFE）一致（为了与本节推导保持一致，交换了\(x\)和\(y\)的位置）。
+
+### 8.4 通用表示定理（Universal representation theorem）
+生成器使我们能够表征可能的马尔可夫过程空间。具体而言，以下结果不仅能表征一类广泛的连续时间马尔可夫过程（CTMP）生成模型，还能对\(S=\mathbb{R}^{d}\)或离散\(S\)的设计空间进行完整表征。
+
+**定理18（生成器的通用表征）**：在弱正则性假设下，费勒过程（Feller process）\(X_{t}(0 ≤t ≤1)\)的生成器具有以下形式：
+1. 离散状态空间（\(|S|<\infty\)）：生成器由速率转移矩阵\(u_{t}\)给出，对应的马尔可夫过程为连续时间马尔可夫链（CTMC）。
+2. 欧几里得空间（\(S=\mathbb{R}^{d}\)）：生成器可表示为表2中描述的各分量之和，即：
+\[
+\mathcal{L}_{t} f(x)=\underbrace{\nabla f(x)^{T} u_{t}(x)}_{\text{流（Flow）}}+\underbrace{\frac{1}{2} \nabla^{2} f(x) \cdot \sigma_{t}^{2}(x)}_{\text{扩散过程（Diffusion）}}+\underbrace{\int[f(y)-f(x)] Q_{t}( d y, x)}_{\text{跳跃过程（Jump）}}
+\]
+其中，\(u:[0,1] ×\mathbb{R}^{d} \to \mathbb{R}^{d}\)是速度场，\(\sigma:[0,1] ×\mathbb{R}^{d} \to S_{d}^{++}\)是扩散系数（\(S_{d}^{++}\)表示正定半正定矩阵），\(Q_{t}(d y ; x)\)是跳跃测度；\(\nabla^{2} f(x)\)表示\(f\)的黑塞矩阵（Hessian），\(\nabla^{2} f(x) \cdot \sigma_{t}^{2}(x)\)表示弗罗贝尼乌斯内积（Frobenius inner product）。
+
+该证明改编自数学文献中的已知结果（Courrege, 1965; von Waldenfels, 1965），详细证明可参见（Holderrieth et al., 2024）。
+
+
+
+## 9 生成器匹配（Generator Matching）
+在本章中，我们将介绍生成器匹配（Generator Matching, GM）（Holderrieth et al., 2024）——一种适用于（1）任意数据模态和（2）通用马尔可夫过程的生成建模框架。GM 统一了近年来开发的绝大多数生成模型，包括扩散模型、“离散扩散”模型以及前几节中描述的流匹配（FM）变体。为引入 GM，我们在第 8 章中定义了基于马尔可夫过程生成器构建的连续时间马尔可夫过程（CTMP）生成模型。GM 提出了一种可扩展的生成器训练算法——这也是该方法名称的由来。除了提供统一框架外，GM 还催生了多种新型模型，允许组合不同类别的模型，并能为任意模态（包括跨多种数据模态的模型）构建生成模型。
+
+### 9.1 数据与耦合
+与前文一致，我们的目标是将来自分布 \(p\) 的样本 \(X_0 \sim p\) 转换为来自目标分布 \(q\) 的样本 \(X_1 \sim q\)，其中 \(X_0\) 和 \(X_1\) 是两个取值于状态空间 \(S\) 的随机变量。源样本和目标样本可通过独立耦合 \((X_0, X_1) \sim p \otimes q\)（乘积分布）建立关联，也可通过一般的概率质量函数（PMF）耦合 \(\pi_{0,1}\)（即定义在 \(S \times S\) 上、边缘分布为 \(\pi_0 = p\) 和 \(\pi_1 = q\) 的分布）建立关联。与前文唯一的区别在于，此处的 \(S\) 是通用状态空间，而 \(p\) 和 \(q\) 可以是任意概率测度。
+
+### 9.2 通用概率路径
+生成器匹配（GM）流程的下一步，与前文一致，是定义一条插值于 \(p\) 和 \(q\) 的概率路径 \(p_t\)。沿用 4.4 节的思路，我们采用条件概率路径 \(p_{t|Z}(dx|z)\)，即一组依赖于潜在状态 \(z \in Z\) 的时变概率测度。给定 \(Z\) 上的分布 \(p_Z\)，我们通过分层采样过程定义对应的边际概率路径 \(p_t(dx)\)：
+\[Z \sim p_Z, X_t \sim p_{t|Z}(dx|z) \implies X_t \sim p_t(dx)\]
+也就是说，要从 \(p_t\) 中采样，需先从 \(p_Z\) 中采样 \(Z\)，再从 \(p_{t|Z}(dx|z)\) 中采样 \(X_t\)。与前文相同，边际概率路径需满足边界约束 \(p_0 = p\) 和 \(p_1 = q\)。
+
+我们已介绍过两种常见的构造方式（当 \(Z = S\) 且 \(p_Z = q\) 时）：
+1. 适用于 \(S = \mathbb{R}^d\) 的仿射条件流（用于连续流匹配；见第 4 章），定义为：
+\[Z \sim q, X_0 \sim p, X_t = \sigma_t X_0 + \alpha_t Z \implies X_t \sim p_t(dx)\]
+其中 \(\alpha_t, \sigma_t \in \mathbb{R}_{\geq 0}\) 是可微函数，满足 \(\alpha_0 = \sigma_1 = 0\) 和 \(\alpha_1 = \sigma_0 = 1\)。
+2. 适用于任意 \(S\) 的混合路径（用于离散状态空间的离散流匹配，见方程（7.22））：
+\[Z \sim q, X_0 \sim p, X_t \sim \begin{cases} Z & \text{概率为 } \kappa_t \\ X_0 & \text{概率为 } (1 - \kappa_t) \end{cases} \implies X_t \sim p_t(dx)\]
+其中 \(\kappa_t \in \mathbb{R}_{\geq 0}\) 是可微函数，满足 \(\kappa_0 = 0\)、\(\kappa_1 = 1\) 且 \(0 \leq \kappa_t \leq 1\)。
+
+不难看出，仿射条件概率路径和混合概率路径均能插值于 \(p\) 和 \(q\)，即满足 \(p_0 = p\) 和 \(p_1 = q\)。
+
+### 9.3 通过神经网络参数化生成器
+给定概率路径 \(p_t\)，我们的目标是构建一个由生成器 \(\mathcal{L}_t\) 指定的连续时间马尔可夫过程（CTMP）模型，使其生成该概率路径（见方程（8.10））。为了通过神经网络实现这一目标，我们首先需要说明如何用带参数 \(\theta\) 的神经网络 \(\mathcal{L}_t^\theta\) 对生成器 \(\mathcal{L}_t\) 进行参数化，具体如下。
+
+设 \(\mathcal{T}\) 为测试函数族（见 8.2.1 节）。生成器 \(\mathcal{L}_t\) 的线性参数化定义如下：对于每个 \(x \in S\)，需满足：
+1. 存在凸闭集 \(\Omega_x \subset V_x\)（\(V_x\) 是带有内积 \(\langle \cdot, \cdot \rangle_x\) 的向量空间）；
+2. 存在线性算子 \(\mathcal{K}: \mathcal{T} \to C(S; V_x)\)，使得所有待考虑的生成器 \(\mathcal{L}_t\) 均可表示为：
+\[
+\mathcal{L}_t f(x) = \langle \mathcal{K} f(x), F_t(x) \rangle_x
+\]
+其中函数 \(F_t\) 满足对所有 \(x \in S\)，\(F_t(x) \in \Omega_x\)。关键在于，算子 \(\mathcal{K}\) 不能依赖于 \(\mathcal{L}_t\)——即仅需学习 \(F_t\)。由此得到：
+
+**参数化生成器**：\(\mathcal{L}_t^\theta f(x) = \langle \mathcal{K} f(x), F_t^\theta(x) \rangle_x\)，其中 \(F_t^\theta\) 是带参数 \(\theta\) 的神经网络，且 \(F_t^\theta\) 将 \(x \in S\) 映射到 \(F_t^\theta(x) \in \Omega_x\)。
+
+下面通过多个示例具体说明这一定义：
+
+#### 流的线性参数化
+设 \(S = \mathbb{R}^d\)，\(\Omega_x = \mathbb{R}^d = V_x\)。考虑所有流，其生成器族由下式给出（见方程（8.15））：
+\[
+\mathcal{L}_t f = \nabla f^T u_t, \quad u_t: \mathbb{R}^d \to \mathbb{R}^d
+\]
+令 \(\mathcal{K} f = \nabla f\) 且 \(F_t = u_t\)，即可恢复方程（9.3）的形式。这为通过向量场对流生成器进行线性参数化提供了自然方式。
+
+#### 扩散过程的线性参数化
+设 \(S = \mathbb{R}^d\)，\(\Omega_x = S_{d}^{++} \subset \mathbb{R}^{d \times d} = V_x\)（其中 \(S_{d}^{++}\) 表示所有半正定矩阵的集合）。扩散过程的生成器由下式给出（见方程（8.26））：
+\[
+\mathcal{L}_t f = \nabla^2 f \cdot \sigma_t^2, \quad \sigma_t: \mathbb{R}^d \to S_{d}^{++}
+\]
+令 \(\mathcal{K} f = \nabla^2 f\) 且 \(F_t = \sigma_t^2\)，即可恢复方程（9.3）的形式。这为扩散生成器的线性参数化提供了自然方式。
+
+#### 跳跃过程的线性参数化
+设 \(\Omega_x = \{a: S \setminus \{x\} \to \mathbb{R}_{\geq 0} \mid a \text{ 可积}\} \subset L^2(S \setminus \{x\}) = V_x\)，内积定义为 \(\langle a, b \rangle_x = \int_{S \setminus \{x\}} a(x) b(x) \nu(dx)\)。跳跃过程的生成器由下式给出（见方程（8.36））：
+\[
+\mathcal{L}_t f(x) = \int [f(y) - f(x)] Q_t(y, x) \nu(dy) = \langle \mathcal{K} f(x), Q_t(\cdot; x) \rangle_x
+\]
+其中我们令 \(\mathcal{K} f(x)\) 为函数 \(y \mapsto f(y) - f(x)\)。令 \(F_t = Q_t\)，即可恢复方程（9.3）的形式——实现对跳跃生成器的线性参数化。需注意，上述参数化仅适用于带有跳跃核 \(Q_t(y, x)\) 的跳跃过程，并非包含所有跳跃测度。
+
+#### 连续时间马尔可夫链（CTMC）的线性参数化
+设 \(S\) 为离散空间，\(u_t \in \mathbb{R}^{S \times S}\) 是连续时间马尔可夫链的速率矩阵。与离散流匹配（见方程（7.5））类似，定义：
+\[
+\Omega_x = \left\{ v \in \mathbb{R}^S \mid v(y) \geq 0 \ \forall y \neq x, \text{ 且 } v(x) = -\sum_{y \neq x} v(y) \right\} \subset V_x = \mathbb{R}^S
+\]
+由方程（8.38）可知，对于 \(f \in \mathbb{R}^S\)，生成器可表示为：
+\[
+\mathcal{L}_t f(x) = f^T u_t(\cdot, x) = \langle f, u_t(\cdot, x) \rangle_x
+\]
+其中 \(V_x = \mathbb{R}^S\)，\(\mathcal{K} f = f\)，\(\langle \cdot, \cdot \rangle_x\) 是标准欧几里得内积。由此可恢复方程（9.3）的形式，为通过速率 \(u_t\) 对连续时间马尔可夫链（CTMC）进行线性参数化提供了自然方式。
+
+#### 流形上的流的线性参数化
+设 \(S = M\) 为黎曼流形，考虑 5 节中介绍的流形上的流。由方程（8.39）可知，生成器可表示为：
+\[
+\mathcal{L}_t f(x) = \langle \nabla f(x), u_t(x) \rangle_g
+\]
+其中 \(u_t\) 是时变光滑向量场 \(u_t: [0,1] \times M \to TM\)，且对所有 \(x \in M\)，\(u_t(x) \in T_x M\)。令 \(\Omega_x = V_x = T_x M\)，\(\mathcal{K} = \nabla f\)（梯度算子），即可恢复方程（9.3）的形式。这为黎曼流生成器的线性参数化提供了自然方式。
+
+### 9.4 边际生成器与条件生成器
+本节将说明如何为边际概率路径寻找生成器。核心流程如下：我们可以先为条件概率路径 \(p_{t|Z}(dx|z)\) 找到生成器（通常可通过解析方法），再利用这些生成器构造边际路径的生成器。具体来说，假设对于每个 \(z \in Z\)，我们找到了（条件）生成器 \(\mathcal{L}_t^z\)，使其生成 \(p_{t|Z}(dx|z)\)——根据定理 17，这等价于满足科尔莫戈罗夫方程（KFE，方程（8.40））：
+\[
+\frac{d}{dt} \langle p_{t|Z}(\cdot|z), f \rangle = \langle p_{t|Z}(\cdot|z), \mathcal{L}_t^z f \rangle \quad \forall f \in \mathcal{T}
+\]
+进一步假设我们找到了如下线性参数化（见方程（9.3））：
+\[
+\mathcal{L}_t^z f(x) = \langle \mathcal{K} f(x), F_t(x|z) \rangle_x \quad z \in Z
+\]
+其中函数 \(F_t(x|z) \in \Omega_x \subset V_x\)。例如，\(F_t(x|z)\) 可以是连续流匹配中的条件速度场（见 4.3 节）或离散流匹配中的条件速率（见方程（7.2））。这使我们能够得到边际路径生成器的公式：
+
+**定理 19（通用边际化技巧）**：边际概率路径 \((p_t)_{0 \leq t \leq 1}\) 由马尔可夫过程 \(X_t\) 生成，其生成器为：
+\[
+\mathcal{L}_t f(x) = \mathbb{E}_{Z \sim p_{Z|t}(\cdot|x)} \left[ \mathcal{L}_t^Z f(x) \right]
+\]
+其中 \(p_{Z|t}(dz|x)\) 是后验分布（即给定 \(x\) 时 \(z\) 的条件分布）。生成器 \(\mathcal{L}_t\) 的线性参数化为：
+\[
+F_t(x) = \mathbb{E}_{Z \sim p_{Z|t}(\cdot|x)} \left[ F_t(x|Z) \right]
+\]
+
+上述定理为我们提供了训练目标：用神经网络近似方程（9.13）中的 \(\mathcal{L}_t\)。前几章中的边际化技巧（定理 3、定理 10、定理 14）都是该定理的特例。下面给出证明，并展示几个新的实例化场景。
+
+**证明**：要证明 \(\mathcal{L}_t\) 生成 \(p_t\)，需根据定理 17 证明其满足科尔莫戈罗夫方程（KFE）。设 \(p_{t+h|t}(\cdot|x, z)\) 是 \(\mathcal{L}_t^z\) 的转移核，则：
+\[
+\begin{aligned}
+\frac{d}{dt} \langle p_t, f \rangle &= \lim_{h \to 0} \frac{1}{h} \left( \langle p_{t+h}, f \rangle - \langle p_t, f \rangle \right) \\
+&= \lim_{h \to 0} \frac{1}{h} \left( \mathbb{E}_{Z \sim p_Z, X' \sim p_{t+h|t}(\cdot|Z)} [f(X')] - \mathbb{E}_{Z \sim p_Z, X \sim p_{t|Z}(\cdot|Z)} [f(X)] \right) \\
+&= \lim_{h \to 0} \frac{1}{h} \left( \mathbb{E}_{Z \sim p_Z, X \sim p_{t|Z}(\cdot|Z), X' \sim p_{t+h|t}(\cdot|X, Z)} [f(X') - f(X)] \right) \\
+&= \mathbb{E}_{X \sim p_t} \left( \mathbb{E}_{Z \sim p_{Z|t}(\cdot|X)} \left( \lim_{h \to 0} \frac{1}{h} \left( \mathbb{E}_{X' \sim p_{t+h|t}(\cdot|X, Z)} [f(X') - f(X)] \right) \right) \right) \\
+&= \mathbb{E}_{X \sim p_t} \left( \mathbb{E}_{Z \sim p_{Z|t}(\cdot|X)} [\mathcal{L}_t^Z f(X)] \right) \\
+&= \langle p_t, \mathcal{L}_t f \rangle
+\end{aligned}
+\]
+
+关于 \(F_t\) 形式的证明如下：
+\[
+\begin{aligned}
+\mathbb{E}_{Z \sim p_{Z|t}(\cdot|X)} [\mathcal{L}_t^z f(x)] &\stackrel{(9.12)}{=} \mathbb{E}_{Z \sim p_{Z|t}(\cdot|X)} \left( \langle \mathcal{K} f(x), F_t(x|z) \rangle_x \right) \\
+&= \langle \mathcal{K} f(x), \mathbb{E}_{Z \sim p_{Z|t}(\cdot|X)} [F_t(x|z)] \rangle_x \\
+&= \langle \mathcal{K} f(x), F_t(x) \rangle_x
+\end{aligned}
+\]
+其中我们利用内积的线性性质，将其与期望交换顺序。这表明 \(F_t\) 是边际生成器的线性参数化（见方程（9.3））。
+
+#### 示例 1：跳跃过程
+设 \(S\) 为任意状态空间，\(Q_t(y, x|z)\) 是条件跳跃核（\(y, x \in S\)，\(z \in Z\)），生成条件概率路径 \(p_{t|Z}(dx|z)\)。利用跳跃核的线性参数化（见方程（9.7）），边际跳跃核：
+\[
+Q_t(y, x) = \mathbb{E}_{Z \sim p_{Z|t}(\cdot|x)} [Q_t(y, x|z)]
+\]
+生成边际概率 \(p_t(dx)\)。
+
+#### 示例 2：边际扩散系数
+设 \(S = \mathbb{R}^d\)，\(\sigma_t^2(x|z)\) 是扩散系数，生成条件概率路径 \(p_{t|Z}(dx|z)\)。利用扩散系数的线性参数化（见方程（9.6）），边际扩散系数：
+\[
+\sigma_t^2(x) = \mathbb{E}_{Z \sim p_{Z|t}(\cdot|x)} [\sigma_t^2(x|Z)]
+\]
+生成边际概率路径 \(p_t(dx)\)。
+
+### 9.5 生成器匹配损失
+接下来，我们将开发用于训练连续时间马尔可夫过程（CTMP）模型的训练目标。假设我们有神经网络 \(F_t^\theta\)，其通过方程（9.4）给出生成器参数化 \(\mathcal{L}_t^\theta\)。根据定理 19 推导，我们的目标是近似方程（9.14）给出的真实边际线性参数化 \(F_t\)。与前文一致，假设对于每个 \(x \in S\)，我们有通过下式定义的布雷格曼散度 \(D_x: \Omega_x \times \Omega_x \to \mathbb{R}\)：
+\[
+D_x(a, b) = \Phi_x(a) - \left[ \Phi_x(b) + \langle a - b, \nabla \Phi_x(b) \rangle \right], \quad a, b \in \Omega_x
+\]
+其中 \(\Phi_x: \Omega_x \to \mathbb{R}\) 是严格凸函数（见图 10）。用于训练连续时间马尔可夫过程（CTMP）模型的生成器匹配损失定义为：
+\[
+\mathcal{L}_{GM}(\theta) = \mathbb{E}_{t, X_t \sim p_t} D_{X_t} \left( F_t(X_t), F_t^\theta(X_t) \right)
+\]
+其中 \(t \sim U[0,1]\)。
+
+遗憾的是，上述训练目标难以直接计算——因为我们既不知道边际生成器 \(\mathcal{L}_t\)，也不知道其参数化 \(F_t\)（仅知道方程（9.14）给出的难以计算的公式）。因此，我们引入条件生成器匹配损失作为可计算的替代方案，形式如下：
+\[
+\mathcal{L}_{CGM}(\theta) = \mathbb{E}_{t, Z, X_t \sim p_{t|Z}} D_{X_t} \left( F_t(X_t|Z), F_t^\theta(X_t) \right)
+\]
+
+该目标具有可计算性，因为在许多情况下我们可以通过解析方法推导 \(F_t(x|z)\)（见 9.6 节）。如下定理所示，损失（9.16）和（9.17）提供相同的学习梯度：
+
+**定理 20**：生成器匹配损失和条件生成器匹配损失的梯度一致：
+\[
+\nabla_\theta \mathcal{L}_{GM}(\theta) = \nabla_\theta \mathcal{L}_{CGM}(\theta)
+\]
+特别地，条件生成器匹配损失的极小值点是边际生成器的线性参数化（方程（9.14））：
+\[
+F_t^\theta(x) = \mathbb{E}_{Z \sim p_{Z|t}(\cdot|x)} [F_t(x|Z)]
+\]
+此外，要满足上述性质，\(D_x\) 必须是布雷格曼散度。
+
+上述定理将前几节推导的定理 4、定理 11 和定理 15 推广到了通用连续时间马尔可夫过程（CTMP）模型。它允许我们通过最小化条件生成器匹配损失，以可扩展的方式轻松训练任何由神经网络 \(F_t^\theta\) 参数化的连续时间马尔可夫过程（CTMP）模型。此外，它还全面表征了损失函数的空间。定理 20 的证明与定理 4 相同，只需将 \(u_t\) 替换为 \(F_t\)。关于 \(D\) 必须是布雷格曼散度的必要性证明，可参考（Holderrieth et al., 2024）。
+
+#### 示例：训练扩散系数
+我们将说明定理 20 如何用于训练随机微分方程（SDE）的扩散系数。设 \(S = \mathbb{R}^d\)，\(\sigma_t^2(x|z)\) 是生成条件概率路径 \(p_{t|Z}(dx|z)\) 的扩散系数。我们可以用神经网络 \((\sigma_t^2)^\theta(x) \in \mathbb{R}^{d \times d}\) 对扩散系数进行参数化。此时，条件生成器匹配损失为：
+\[
+\mathcal{L}_{CGM}(\theta) = \mathbb{E}_{t, Z, X_t \sim p_{t|Z}} \left\| \sigma_t^2(X_t|Z) - (\sigma_t^2)^\theta(X_t) \right\|^2
+\]
+其中我们使用均方误差作为布雷格曼散度（也可选择其他形式）。（Holderrieth et al., 2024）中给出了此类模型的训练示例。
+
+### 9.6 寻找作为科尔莫戈罗夫方程（KFE）解的条件生成器
+为了通过条件生成器匹配损失实现可扩展训练（见定理 20），我们需要找到满足科尔莫戈罗夫方程（KFE）的条件生成器 \(\mathcal{L}_t^z\)：
+\[
+\frac{d}{dt} \langle p_{t|Z}(\cdot|z), f \rangle = \langle p_{t|Z}(\cdot|z), \mathcal{L}_t^z f \rangle \quad \forall f \in \mathcal{T}, z \in Z
+\]
+
+如果 \(p_{t|Z}(dx|z)\) 关于参考测度 \(\nu\) 存在密度 \(p_{t|Z}(x|z)\)，则可等价求解伴随科尔莫戈罗夫方程（KFE）：
+\[
+\frac{d}{dt} p_{t|Z}(x|z) = \left[ (\mathcal{L}_t^z)^* p_{t|Z}(\cdot|z) \right](x) \quad \forall x \in S, z \in Z
+\]
+
+一般而言，方程（9.20）和（9.21）是难以解析求解的方程，目前尚无适用于任意生成器的通用求解公式。因此，我们通过两个示例说明如何求解，以作参考。
+
+此处我们以跳跃模型为例（适用于任意状态空间）进行说明。如 8.2.2 节所述，跳跃模型由跳跃测度 \(Q_t\) 定义，可分解为：
+\[
+Q_t(dy, x) = \lambda_t(x) J_t(dy, x) \quad \forall x \in S
+\]
+\[
+\lambda_t(x) \geq 0 \quad \forall x \in S
+\]
+\[
+\int J_t(dy, x) = 1 \quad \forall x \in S
+\]
+其中 \(\lambda_t(x)\) 表示跳跃强度，\(J_t\) 表示指定跳跃分布的概率核。为简化符号，我们省略了对 \(z \in Z\) 的依赖（为避免与边际概率路径混淆，保留了 \(p_{t|Z}(dx|z)\) 中对 \(z\) 的依赖）。
+
+#### 凸混合的跳跃模型
+考虑由下式给出的混合概率路径（见方程（7.22））：
+\[
+p_{t|Z}(dx|z) = \kappa_t \delta_z(dx) + (1 - \kappa_t) p(dx), \quad z \in S
+\]
+
+利用跳跃过程生成器的形式（见方程（8.36）），科尔莫戈罗夫方程（KFE）可表示为：
+\[
+\frac{d}{dt} \langle p_{t|Z}(dx|z), f \rangle = \mathbb{E}_{X \sim p_{t|Z}(\cdot|z)} \left[ \lambda_t(X) \mathbb{E}_{Y \sim J_t(dy, X)} [f(Y) - f(X)] \right] \quad \forall f \in \mathcal{T}, x \in S
+\]
+其中 \(\lambda_t, J_t\) 满足方程（9.23）和（9.24）中的约束。我们断言，对于如下跳跃模型，上述方程成立：
+\[
+Q_t(dy, x) = \lambda_t(x) J_t(dy, x), \quad \lambda_t(x) = \frac{\dot{\kappa}_t}{1 - \kappa_t}, \quad J_t(dy, x) = \delta_z(dy)
+\]
+即跳跃强度由 \(\lambda_t\) 给出，且一旦决定跳跃，将直接跳至 \(z \in S\)。为验证这一点，我们证明上述跳跃过程满足科尔莫戈罗夫方程（KFE）：
+\[
+\begin{aligned}
+&\mathbb{E}_{X \sim p_{t|Z}(\cdot|z)} \left[ \lambda_t(X) \mathbb{E}_{Y \sim J_t(\cdot, X)} [f(Y) - f(X)] \right] \\
+&= \frac{\dot{\kappa}_t}{1 - \kappa_t} \mathbb{E}_{X \sim p_{t|Z}(\cdot|z)} [f(z) - f(X)] \\
+&= \frac{\dot{\kappa}_t}{1 - \kappa_t} \left[ f(z) - \mathbb{E}_{X \sim p_{t|Z}(\cdot|z)} [f(X)] \right] \\
+&= \frac{\dot{\kappa}_t}{1 - \kappa_t} \left[ f(z) - \left( \kappa_t f(z) + (1 - \kappa_t) \mathbb{E}_{X \sim p} [f(X)] \right) \right] \\
+&= \dot{\kappa}_t f(z) - \dot{\kappa}_t \mathbb{E}_{X \sim p} [f(X)] \\
+&= \frac{d}{dt} \left[ \kappa_t f(z) + (1 - \kappa_t) \mathbb{E}_{X \sim p} [f(X)] \right] \\
+&= \frac{d}{dt} \langle p_{t|Z}(\cdot|z), f \rangle
+\end{aligned}
+\]
+
+因此，上述过程满足跳跃科尔莫戈罗夫方程（KFE）（方程（9.26）），即我们已构建了一个跳跃模型。我们在 7.24 节中已见过该模型在离散状态空间中的特例；此处我们证明，也可在欧几里得空间 \(\mathbb{R}^d\) 等其他空间中构建类似的跳跃模型。
+
+#### 具有密度的任意路径的跳跃模型
+假设概率 \(p_{t|Z}(dx|z)\) 关于 \(S\) 上的参考测度 \(\nu\) 存在密度 \(p_{t|Z}(x|z)\)，且该密度关于 \(t\) 可微（注意，方程（9.25）中的混合路径在 \(S = \mathbb{R}^d\) 时不满足这一条件）。进一步假设跳跃核 \(J_t(y, x)\) 存在密度。此时，伴随科尔莫戈罗夫方程（KFE）变为跳跃连续性方程（方程（8.66））：
+\[
+\frac{d}{dt} p_{t|Z}(x|z) = \int \lambda_t(y) J_t(x, y) p_{t|Z}(y|z) dy - p_{t|Z}(x|z) \lambda_t(x)
+\]
+\[
+\Leftrightarrow p_{t|Z}(x|z) \left[ \frac{d}{dt} \log p_{t|Z}(x|z) + \lambda_t(x) \right] = \int \lambda_t(y) J_t(x, y) p_{t|Z}(y|z) dy
+\]
+
+令 \(J_t(x, y) = J_t(x)\)（“目标状态无关”），并使用 \(\partial_t = \frac{d}{dt}\)，则上式等价于：
+\[
+p_{t|Z}(x|z) \left[ \partial_t \log p_{t|Z}(x|z) + \lambda_t(x) \right] = J_t(x) \int \lambda_t(y) p_{t|Z}(y|z) \nu(dy)
+\]
+\[
+\Leftrightarrow \frac{p_{t|Z}(x|z) \left[ \partial_t \log p_{t|Z}(x|z) + \lambda_t(x) \right]}{\int \lambda_t(y) p_{t|Z}(y|z) \nu(dy)} = J_t(x)
+\]
+
+为定义有效的跳跃过程，需满足 \(\lambda_t(x) \geq 0\) 和 \(J_t(x) \geq 0\)。因此：
+\[
+\lambda_t(x) \geq 0, J_t(x) \geq 0 \Leftrightarrow \lambda_t(x) \geq \left[ -\partial_t \log p_{t|Z}(x|z) \right]_+
+\]
+其中 \([x]_+ = \max(x, 0)\) 表示ReLU操作。进一步，需确保 \(J_t\) 定义有效的跳跃分布（即积分等于 1），这一点可验证如下：
+\[
+\begin{aligned}
+1 &= \int J_t(x) dx \\
+\Leftrightarrow \int \lambda_t(x) p_{t|Z}(x|z) \nu(dx) &= \int p_{t|Z}(x|z) \left[ \partial_t \log p_{t|Z}(x|z) + \lambda_t(x) \right] \nu(dx) \\
+\Leftrightarrow 0 &= \int \partial_t p_{t|Z}(x|z) \nu(dx) \\
+\Leftrightarrow 0 &= \partial_t \int p_{t|Z}(x|z) \nu(dx) \\
+\Leftrightarrow 0 &= 0
+\end{aligned}
+\]
+即 \(J_t\) 的积分确实等于 1。选择最小的 \(\lambda_t(x)\)，可得如下定义的跳跃模型是跳跃连续性方程的解，因此生成条件概率路径 \(p_{t|Z}(x|z)\)：
+\[
+\lambda_t(x) = \left[ -\partial_t \log p_{t|Z}(x|z) \right]_+
+\]
+\[
+J_t(x) = \frac{p_{t|Z}(x|z) \left[ \partial_t \log p_{t|Z}(x|z) \right]_+}{\int p_{t|Z}(y|z) \left[ \partial_t \log p_{t|Z}(y|z) \right]_+ \nu(dy)} = \frac{\left[ \partial_t p_{t|Z}(x|z) \right]_+}{\int \left[ \partial_t p_{t|Z}(y|z) \right]_+ \nu(dy)}
+\]
+
+初看之下，跳跃分布与位置无关似乎并不理想。然而，若将该模型扩展到多维空间，跳跃分布将依赖于位置，从而形成强大的生成模型（Holderrieth et al., 2024）。
+
+### 9.7 组合模型
+本节将说明生成器匹配（GM）如何允许以不同方式组合同一状态空间 \(S\) 上的生成模型。核心原理很简单：生成器是线性算子，而科尔莫戈罗夫方程（KFE）\(\partial_t \langle p_t, f \rangle = \langle p_t, \mathcal{L}_t f \rangle\) 是线性方程——因此，我们可以像在线性代数中组合矩阵方程的解一样组合该方程的解。具体来说，设 \(\mathcal{L}_t\) 和 \(\mathcal{L}_t'\) 是两个生成器，分别对应两个求解概率路径 \(p_t\) 的科尔莫戈罗夫方程（KFE）的马尔可夫过程。则对于 \(\alpha_t^1, \alpha_t^2 \in \mathbb{R}\) 且 \(\alpha_t^1 + \alpha_t^2 = 1\)，有：
+\[
+\begin{aligned}
+\langle p_t, (\alpha_t^1 \mathcal{L}_t + \alpha_t^2 \mathcal{L}_t') f \rangle &= \alpha_t^1 \langle p_t, \mathcal{L}_t f \rangle + \alpha_t^2 \langle p_t, \mathcal{L}_t' f \rangle \\
+&= \alpha_t^1 \partial_t \langle p_t, f \rangle + \alpha_t^2 \partial_t \langle p_t, f \rangle \\
+&= (\alpha_t^1 + \alpha_t^2) \partial_t \langle p_t, f \rangle \\
+&= \partial_t \langle p_t, f \rangle
+\end{aligned}
+\]
+即 \(\alpha_t^1 \mathcal{L}_t + \alpha_t^2 \mathcal{L}_t'\) 仍是科尔莫戈罗夫方程（KFE）的解。一个需要注意的细节是，\(\alpha_t^1, \alpha_t^2\) 的正负性，以及 \(\mathcal{L}_t\) 和 \(\mathcal{L}_t'\) 对应前向时间还是后向时间的马尔可夫过程。由此得到：
+
+**命题 3（组合模型）**：设 \(p_t\) 是边际概率路径，则以下生成器均求解 \(p_t\) 的科尔莫戈罗夫方程（KFE），因此定义了以 \(p_t\) 为边际的生成模型：
+1. 马尔可夫叠加：\(\alpha_t^1 \mathcal{L}_t + \alpha_t^2 \mathcal{L}_t'\)，其中 \(\mathcal{L}_t, \mathcal{L}_t'\) 是两个求解 \(p_t\) 的科尔莫戈罗夫方程（KFE）的马尔可夫过程生成器，且 \(\alpha_t^1, \alpha_t^2 \geq 0\) 满足 \(\alpha_t^1 + \alpha_t^2 = 1\)。
+2. 无散度分量：\(\mathcal{L}_t + \beta_t \mathcal{L}_t^{div}\)，其中 \(\mathcal{L}_t^{div}\) 是满足对所有 \(f \in \mathcal{T}\) 有 \(\langle p_t, \mathcal{L}_t^{div} f \rangle = 0\) 的生成器，且 \(\beta_t \geq 0\)。此类 \(\mathcal{L}_t^{div}\) 称为无散度生成器。
+3. 预测-校正：\(\alpha_t^1 \mathcal{L}_t + \alpha_t^2 \overline{\mathcal{L}}_t\)，其中 \(\mathcal{L}_t\) 是前向时间内求解 \(p_t\) 的科尔莫戈罗夫方程（KFE）的生成器，\(\overline{\mathcal{L}}_t\) 是后向时间内求解 \(p_t\) 的科尔莫戈罗夫方程（KFE）的生成器，且 \(\alpha_t^1, \alpha_t^2 \geq 0\) 满足 \(\alpha_t^1 - \alpha_t^2 = 1\)。
+
+下面通过马尔可夫叠加和无散度分量的示例说明命题 3。预测-校正方案的强大之处可参考（Gat et al., 2024）。
+
+#### 示例 1：马尔可夫叠加——组合跳跃模型和流模型
+马尔可夫叠加可用于组合不同类别的生成模型。这些模型可以是两个单独训练的网络，也可以是在一个网络中同时训练的两个生成器匹配（GM）模型（Holderrieth et al., 2024）。此处我们以组合 \(S = \mathbb{R}^d\) 上的跳跃模型和流模型为例进行说明。假设我们有两个模型，每个模型都生成概率路径 \(p_t\)：（1）流模型 \(u_t\)；（2）带有跳跃强度 \(\lambda_t\) 和跳跃分布 \(J_t\) 的跳跃模型。根据命题 3，对于 \(\alpha_t^1, \alpha_t^2 \geq 0\) 且 \(\alpha_t^1 + \alpha_t^2 = 1\)，以下生成器定义了生成 \(p_t\) 的有效生成器匹配（GM）模型：
+\[
+\begin{aligned}
+\mathcal{L}_t f(x) &= \alpha_t^1 \mathcal{L}_t^{jump} f(x) + \alpha_t^2 \mathcal{L}_t^{flow} f(x) \\
+&= \left( \alpha_t^1 \lambda_t(x) \right) \mathbb{E}_{Y \sim J_t(\cdot, x)} [f(Y) - f(x)] + \nabla f^T(x) \left( \alpha_t^2 u_t(x) \right)
+\end{aligned}
+\]
+其中我们使用了方程（8.17）和（8.36）。实际上，上述生成器描述了分段确定性马尔可夫过程——一种组合常微分方程（ODE）和跳跃模型的模型（Davis, 1984）。如上述方程所示，需将跳跃强度按 \(\alpha_t^1\) 缩放，将向量场按 \(\alpha_t^2\) 缩放。由此得到的生成器匹配（GM）模型的采样过程如下：
+\[
+X_0 \sim p_0 = p
+\]
+\[
+X_{t+h} = \begin{cases} \sim J_t(dy, X_t) & \text{概率为 } h \alpha_t^1 \lambda_t(X_t) \\ X_t + h \alpha_t^2 u_t(X_t) & \text{概率为 } 1 - h \alpha_t^1 \lambda_t(X_t) \end{cases}
+\]
+
+（Holderrieth et al., 2024）中给出了多个跳跃模型和流模型的马尔可夫叠加示例，并证明其能带来性能提升。
+
+#### 示例 2：无散度分量——马尔可夫链蒙特卡洛（MCMC）算法
+要找到无散度分量，可利用现有的马尔可夫链蒙特卡洛（MCMC）算法——所有这些算法都提供了寻找无散度分量的通用方案。此处我们通过两个著名示例进行说明。假设给定带有密度 \(p_t(x)\) 的通用概率路径 \(p_t\)。则生成器 \(\mathcal{L}_t^{div}\) 为无散度的等价条件是其伴随算子将 \(p_t\) 映射为零：
+\[
+\langle p_t, \mathcal{L}_t^{div} f \rangle = 0 \quad \forall f \in \mathcal{T} \Leftrightarrow [\mathcal{L}_t^{div}]^* p_t(x) = 0 \quad \forall x \in S
+\]
+
+##### 示例 2.1：朗之万动力学（Langevin Dynamics）
+设 \(S = \mathbb{R}^d\)，朗之万动力学对应于带有速度场 \(\frac{1}{2} \beta_t^2 \nabla \log p_t(x)\) 和扩散系数 \(\beta_t\) 的随机微分方程（SDE），即动力学由下式给出：
+\[
+dX_t = \frac{1}{2} \beta_t^2 \nabla \log p_t(x) dt + \beta_t dW_t
+\]
+
+该随机微分方程（SDE）的伴随生成器为：
+\[
+[\mathcal{L}_t^{div}]^* p_t \stackrel{(i)}{=} -div\left( p_t \frac{1}{2} \beta_t^2 \nabla \log p_t \right)(x) + \frac{1}{2} \beta_t^2 \Delta p_t(x)
+\]
+\[
+\stackrel{(ii)}{=} -\frac{1}{2} div\left( \beta_t^2 \nabla p_t \right)(x) + \frac{1}{2} \beta_t^2 \Delta p_t(x)
+\]
+\[
+\stackrel{(iii)}{=} -\frac{1}{2} \beta_t^2 \Delta p_t(x) + \frac{1}{2} \beta_t^2 \Delta p_t(x) = 0
+\]
+其中（i）由 8.3.1 节推导的流和扩散的伴随算子形式得出；（ii）因 \(\nabla \log p_t = \nabla p_t / p_t\) 得出；（iii）由散度-拉普拉斯恒等式 \(div \nabla = \Delta\) 得出。上述结果表明，朗之万动力学的生成器满足方程（9.37），因此在命题 3 的意义下是无散度的。这一事实在统计物理和马尔可夫链蒙特卡洛（MCMC）中被广泛应用（Roberts and Tweedie, 1996）。命题 3 表明，我们可以将这些动力学（对于任意 \(\beta_t \geq 0\)）添加到任何生成模型中。在第 10 节中，我们将利用这一点推导扩散模型的随机采样。
+
+##### 示例 2.2：梅特罗波利斯-黑斯廷斯算法（Metropolis-Hastings Algorithm）
+设 \(S\) 为通用状态空间。梅特罗波利斯-黑斯廷斯算法（Hastings, 1970）描述了满足细致平衡条件的跳跃核 \(Q_t(y, x)\) 的构造：
+\[
+Q_t(y, x) p_t(x) = Q_t(x, y) p_t(y) \quad \forall x, y \in S
+\]
+\[
+\Rightarrow [\mathcal{L}_t^{div}]^* p_t(x) \stackrel{(i)}{=} \int Q_t(y, x) p_t(x) - Q_t(x, y) p_t(y) = 0
+\]
+其中（i）使用了方程（8.66）。这表明方程（9.37）得到满足，\(Q_t\) 是无散度的。命题 3 表明，可将此类梅特罗波利斯方案任意添加到任何遵循概率路径 \(p_t\) 的生成器匹配（GM）模型中。
+
+### 9.8 多模态模型
+最后，我们简要说明生成器匹配（GM）如何支持联合构建多种数据模态的生成模型。例如，生成图像及其对应的文本描述的模型。两种模态可表示为两个状态空间 \(S_1, S_2\)（例如，\(S_1\) 对应图像，\(S_2\) 对应文本），而多模态模型则是定义在乘积空间 \(S = S_1 \times S_2\) 上的生成模型。由于 \(S\) 本身也是一个状态空间，且生成器匹配（GM）适用于任意状态空间，我们可以像构建其他生成器匹配（GM）模型一样构建多模态模型。
+
+然而，有一种特定的概率路径构造方式允许我们重用为单个模态构建的生成器匹配（GM）模型。例如，我们可以通过组合离散流匹配（DFM）模型和连续流匹配（FM）模型来构建联合文本-图像模型。这种特定构造依赖于因子化条件概率路径。我们已在 7.5.2 节中见过离散流匹配（DFM）中的简单案例——因子化概率路径会产生因子化速度。这一结论适用于更通用的任意模态。尽管该构造简单直观，但要以完全通用的形式表达则较为繁琐。有关严格处理，可参考（Holderrieth et al., 2024）。（Campbell et al., 2024）中也实现了该构造的一个特定实例，用于多模态蛋白质生成。这表明生成器匹配（GM）能够以原则性和严谨的方式支持多模态模型的构建。
+
+
+## 10 与扩散模型及其他去噪模型的关系
+本章将生成器匹配（GM）与当前广泛使用的去噪类生成模型建立联系，包括**扩散模型**、**去噪分数匹配**、**条件去噪概率模型**等。我们会说明：所有这些模型都可以被**生成器匹配**统一解释，并且可以直接从第9章的框架中推导出来。
+
+### 10.1 连续时间扩散模型
+我们首先回顾连续时间扩散模型的标准形式，然后证明它是生成器匹配的特例。
+
+设状态空间 \(S=\mathbb{R}^d\)。正向扩散过程（噪声过程）为：
+\[
+dX_t = b_t(X_t)dt + \sigma_t dW_t
+\]
+其中：
+- \(b_t\) 为漂移项
+- \(\sigma_t\) 为标量噪声强度
+- \(W_t\) 为标准布朗运动
+
+对应的**生成器**为：
+\[
+\mathcal{L}_t f(x) = \nabla f(x)^\top b_t(x) + \frac12 \sigma_t^2 \Delta f(x)
+\]
+其中 \(\Delta = \mathrm{tr}(\nabla^2)\) 为拉普拉斯算子。
+
+对应的**科尔莫戈罗夫前向方程**（福克-普朗克方程）为：
+\[
+\partial_t p_t(x) = -\nabla\cdot\left(b_t(x)p_t(x)\right) + \frac12\sigma_t^2\Delta p_t(x)
+\]
+
+在标准扩散模型中，通常选择：
+\[
+b_t(x) = 0,\qquad \sigma_t > 0
+\]
+即**无漂移、纯扩散**。此时生成器简化为：
+\[
+\mathcal{L}_t f(x) = \frac12 \sigma_t^2 \Delta f(x)
+\]
+福克-普朗克方程简化为：
+\[
+\partial_t p_t = \frac12 \sigma_t^2 \Delta p_t
+\]
+
+#### 10.1.1 反向过程
+连续时间扩散模型的核心是**反向过程**：
+\[
+dX_t = \left( b_{1-t}(X_t) - \sigma_{1-t}^2 \nabla\log p_{1-t}(X_t) \right)dt + \sigma_{1-t} d\widetilde{W}_t
+\]
+其中 \(\widetilde{W}_t\) 是反向时间的布朗运动。
+
+在无漂移情况下 \(b_t=0\)，反向过程为：
+\[
+dX_t = -\sigma_{1-t}^2 \nabla\log p_{1-t}(X_t) dt + \sigma_{1-t} d\widetilde{W}_t
+\]
+这里的 \(-\sigma_t^2\nabla\log p_t\) 被称为**分数函数**（score function）。
+
+#### 10.1.2 扩散模型是生成器匹配的特例
+我们现在证明：**标准连续时间扩散模型等价于一种特殊的生成器匹配**。
+
+在生成器匹配中，我们学习生成器：
+\[
+\mathcal{L}_t^\theta f(x) = \nabla f(x)^\top u_t^\theta(x) + \frac12 (\sigma_t^2)^\theta(x) \Delta f(x)
+\]
+它同时学习**流（漂移）**和**扩散**两部分。
+
+在标准扩散模型中：
+- 扩散部分固定为 \(\sigma_t^2\)，不学习
+- 只学习漂移项 \(u_t^\theta(x) = -\sigma_t^2\nabla\log p_t(x)\)
+
+这对应生成器匹配中**只学习流分量、固定扩散分量**的特殊情况。
+
+因此：
+> 所有连续时间扩散模型 = 只学习漂移项、固定扩散项的生成器匹配。
+
+### 10.2 与去噪分数匹配的联系
+去噪分数匹配（DSM）是训练扩散模型的经典方法。我们证明它也包含在生成器匹配框架中。
+
+#### 10.2.1 去噪分数匹配回顾
+给定条件分布 \(p_{t|Z}(x|z)\)（通常是带噪声的目标分布），分数匹配目标为：
+\[
+\mathcal{L}_{\text{DSM}}(\theta)
+= \mathbb{E}_{t,Z,X_t\sim p_{t|Z}}
+\big\| \nabla\log p_{t|Z}(X_t|Z) - \nabla\log p_t^\theta(X_t) \big\|^2
+\]
+模型学习近似条件分数 \(\nabla\log p_{t|Z}(x|z)\)。
+
+#### 10.2.2 从生成器匹配直接推导出分数匹配
+在生成器匹配中，对于**纯扩散过程**：
+\[
+\mathcal{L}_t^z f(x) = \frac12 \sigma_t^2 \Delta f(x)
+\]
+对应的**边际生成器**为：
+\[
+\mathcal{L}_t f(x) = \mathbb{E}_{Z|t,x}[\mathcal{L}_t^Z f(x)]
+= \frac12 \sigma_t^2 \Delta f(x)
+\]
+
+但我们可以在生成器中**额外加入一个流分量**，使其仍然生成同一条概率路径 \(p_t\)。根据第9.7节的无散度分量理论，朗之万动力学是无散度的，因此可以叠加：
+\[
+\widetilde{\mathcal{L}}_t f(x)
+= \frac12 \sigma_t^2 \Delta f(x)
++ \nabla f(x)^\top \left( \sigma_t^2 \nabla\log p_t(x) \right)
+\]
+
+这个新生成器**仍然生成相同的 \(p_t\)**。
+它对应的反向过程正是标准扩散的反向SDE：
+\[
+dX_t = -\sigma_t^2\nabla\log p_t(X_t)dt + \sigma_t dW_t
+\]
+
+在生成器匹配中，我们直接拟合**条件速度**：
+\[
+u_t(x|z) = \sigma_t^2 \nabla\log p_{t|Z}(x|z)
+\]
+对应的损失为：
+\[
+\mathcal{L}_{\text{CGM}}(\theta)
+= \mathbb{E}\big\| \sigma_t^2\nabla\log p_{t|Z}(X_t|Z) - u_t^\theta(X_t) \big\|^2
+\]
+
+这**完全等价于去噪分数匹配损失**（只差一个常数 \(\sigma_t^4\)）。
+
+因此：
+> 去噪分数匹配 = 生成器匹配在纯扩散过程下的特例。
+
+### 10.3 与条件去噪概率模型的联系
+条件去噪概率模型（CDPM）直接学习**去噪分布** \(p_{t|t+h}(x_t|x_{t+h})\) 或 \(p_{\text{target}|t}(z|x_t)\)。我们证明它同样是生成器匹配的特例。
+
+#### 10.3.1 条件去噪概率模型
+这类模型的典型训练目标是：
+\[
+\mathcal{L}_{\text{CDPM}}(\theta)
+= \mathbb{E}_{t,Z,X_t\sim p_{t|Z}}
+-\log p^\theta(Z|X_t,t)
+\]
+即用 \(X_t\) 去预测原始干净样本 \(Z\)。
+
+在生成器匹配中：
+- 对于仿射概率路径，条件速度为 \(u_t(x|z) = \dot{\alpha}_t z + \dot{\sigma}_t x\)
+- 对于离散混合路径，条件速率由 \(\dot{\kappa}_t\) 决定
+
+这些条件信号都可以写成**从 \(X_t\) 预测 \(Z\)** 的形式。因此：
+\[
+\text{条件去噪概率模型}
+\quad\Longleftrightarrow\quad
+\text{生成器匹配的条件形式}
+\]
+
+#### 10.3.2 离散扩散模型
+离散状态空间上的扩散模型（如用于文本、分子的离散扩散）等价于：
+- 连续时间马尔可夫链（CTMC）
+- 由速率矩阵 \(u_t(y,x)\) 定义
+
+而第9章已经证明：
+> 所有离散扩散模型 = 离散状态空间上的生成器匹配。
+
+这统一了**连续扩散**与**离散扩散**。
+
+### 10.4 与流匹配的联系
+流匹配（Flow Matching）是生成器匹配在**纯确定性流**下的特例：
+- 生成器只有流分量：\(\mathcal{L}_t f = \nabla f^\top u_t\)
+- 无扩散、无跳跃
+- 损失为 \(\mathbb{E}\|u_t(x|z)-u_t^\theta(x)\|^2\)
+
+因此：
+> 流匹配 = 无扩散、无跳跃的生成器匹配。
+
+### 10.5 统一视图
+本章所有结论可以总结为一张统一关系图：
+
+- **生成器匹配（GM）**：最通用框架，学习任意马尔可夫过程生成器
+  - 包含**流分量**：对应流匹配
+  - 包含**扩散分量**：对应扩散模型、分数匹配
+  - 包含**跳跃分量**：对应离散扩散、CTMC
+
+- **扩散模型**：GM的子集，固定扩散、只学漂移
+- **去噪分数匹配**：GM在纯扩散下的特例
+- **条件去噪概率模型**：GM的条件预测形式
+- **流匹配**：GM在纯流、无噪声下的特例
+- **离散扩散**：GM在离散状态空间下的特例
+
+这意味着：
+> 所有主流去噪类生成模型，都是生成器匹配的**特殊情况**。
+
+### 10.6 实际意义
+这种统一带来了直接的实践价值：
+
+1. **混合模型**：可以在一个模型里同时学习流、扩散、跳跃，自动获得更好的采样与训练稳定性。
+2. **统一训练**：所有模型都可以用同一个条件生成器匹配损失训练。
+3. **任意模态**：同一套理论适用于连续数据、离散数据、流形、多模态数据。
+4. **设计自由**：可以按需设计概率路径、生成器结构、损失函数。
+
+换句话说，生成器匹配提供了一个**完整、统一、可扩展**的生成模型设计与训练范式。
+
+
+## 附录（Appendix）
+### A 补充证明（Additional proofs）
+#### A.1 离散质量守恒（Discrete Mass Conservation）
+**引理1（满足速率条件的科尔莫戈罗夫方程的概率质量函数解）**：考虑科尔莫戈罗夫方程（6.8）的解\(f_t(x)\)，其初始条件为\(f_0(x)=p(x)\)（其中\(p\)是概率质量函数（PMF）），且\(u_t(y,x)\)关于时间\(t\)是连续函数（\(C([0,1])\)）并满足速率条件（6.4）。则对于所有\(t \in [0,1]\)，\(f_t(x)\)均为概率质量函数（PMF）。
+
+**证明**：设\(f_t(x)\)（\(t \in [0,1]\)）是科尔莫戈罗夫方程的解，定理12已保证其存在性和唯一性。\(f_t(x)\)为概率质量函数（PMF）的充要条件是满足：
+\[f_t(x) \geq 0 \quad \text{且} \quad \sum _{x} f_t(x) = 1 \tag{A.1}\]
+
+后一个条件可通过对科尔莫戈罗夫方程两侧求和证明：
+\[
+\frac{d}{dt} \sum _{x} f_t(x) = \sum _{x} \sum _{z} u_t(x, z) p_t(z) = 0
+\]
+其中第二个等式源于速率条件中\(\sum _{y} u_t(y, x) = 0\)。由于\(\sum _{x} f_0(x) = \sum _{x} p(x) = 1\)，因此对于所有\(t \in [0,1]\)，恒有\(\sum _{x} f_t(x) \equiv 1\)。
+
+为证明对所有\(x \in S\)，\(f_t(x) \geq 0\)，我们利用动力系统的凸不变集相关结论。具体而言，Prüss等人（2010）的定理7.3.4指出：只要初始条件\(f_0 = p\)满足该约束（显然成立），且当\(w(z)\)位于约束边界（即\(w\)是概率质量函数（PMF）且对某些\(z \in S\)有\(w(z)=0\)）时，约束外法向量的内积非负（即\(\sum _{x,y} u_t(y, x) w(x) \delta(y, z) \geq 0\)），则解\(f_t(x)\)对所有\(t \in [0,1]\)和\(x \in S\)均满足\(f_t(x) \geq 0\)。验证该条件如下：
+\[
+\sum _{x,y} u_t(y, x) w(x) \delta(y, z) = \sum _{x} u_t(z, x) w(x) = \sum _{x \neq z} u_t(z, x) w(x) \geq 0
+\]
+其中第二个等式利用了\(w(z)=0\)，最后一个不等式源于速率条件（6.4）中\(z \neq x\)时\(u_t(z, x) \geq 0\)且对所有\(y\)有\(w(y) \geq 0\)。
+
+**定理13（离散质量守恒）**：设\(u_t(y,x)\)关于时间\(t\)是连续函数（\(C([0,1))\)），且\(p_t(x)\)是关于时间\(t\)的一阶连续可微概率质量函数（PMF）（\(C^1([0,1))\)）。则以下条件等价：
+1. \(p_t\)与\(u_t\)满足\(t \in [0,1)\)时的科尔莫戈罗夫方程（6.8），且\(u_t\)满足速率条件（6.4）；
+2. 按（6.5）的定义，\(u_t\)生成\(t \in [0,1)\)时的\(p_t\)。
+
+**证明**：首先假设条件2成立。此时，概率转移核\(p_{t+h|t}(y|x)\)满足（6.3）：
+\[p_{t+h|t}(y|x) = \delta(y, x) + h u_t(y, x) + o(h) \tag{A.2}\]
+
+根据全概率公式，边际分布\(p_{t+h}(y)\)可表示为：
+\[p_{t+h}(y) = \sum _{x} p_{t+h|t}(y|x) p_t(x) \tag{A.3}\]
+
+将（A.2）代入（A.3）并整理得：
+\[
+\frac{p_{t+h}(y) - p_t(y)}{h} = \sum _{x} u_t(y, x) p_t(x) + o(1)
+\]
+其中\(o(1) = o(h)/h\)，且当\(h \to 0\)时\(o(1) \to 0\)（符合\(o(h)\)的定义）。对\(h \to 0\)取极限，可得\((p_t, u_t)\)满足科尔莫戈罗夫方程（6.8）。
+
+接下来证明\(u_t\)满足速率条件（6.4）：若存在\(y \neq x\)使得\(u_t(y, x) < 0\)，则由（A.2）可知，对于足够小的\(h > 0\)，\(p_{t+h|t}(y|x) < 0\)，这与\(p_{t+h|t}\)是概率核矛盾；若\(\sum _{y} u_t(y, x) = c \neq 0\)，则由（A.2）可知\(1 = \sum _{y} p_{t+h|t}(y|x) = 1 + h c + o(h)\)，对于足够小的\(h > 0\)，这同样矛盾。
+
+反之，假设条件1成立，即\((u_t, p_t)\)满足初始条件为\(p_0 = p\)的科尔莫戈罗夫方程（6.8）。根据定理12，设\(p_{s|t}(y|x)\)是以下科尔莫戈罗夫方程的唯一解：
+\[
+\frac{d}{ds} p_{s|t}(y|x) = \sum _{z} u_t(y, z) p_{s|t}(z|x) \tag{A.4}
+\]
+其初始条件为\(p_{t|t}(y, x) = \delta(y, x)\)，其中\(0 \leq t \leq s < 1\)，且\(t\)和\(y\)为常数。由引理1可知，\(p_{s|t}(\cdot|x)\)是概率质量函数（PMF）。
+
+\(\sum _{x} p_{s|t}(y|x) p(x)\)同样满足科尔莫戈罗夫方程，因为：
+\[
+\frac{d}{dt} \sum _{x} p_{s|t}(y|x) p(x) = \sum _{x} \left[ \sum _{z} u_t(y, z) p_{s|t}(z|x) \right] p(x) = \sum _{z} u_t(y, z) \left[ \sum _{x} p_{s|t}(z|x) p(x) \right] \tag{A.5}
+\]
+其初始条件为\(\sum _{x} p_{t|t}(y|x) p(x) = p(y)\)。由于科尔莫戈罗夫方程的解具有唯一性（定理12），因此\(\sum _{x} p_{s|t}(y|x) p(x) = p_s(y)\)，符合要求。
+
+最后，对于\(0 \leq t \leq r \leq s < 1\)，转移核的半群性质\(\sum _{z} p_{s|r}(y|z) p_{r|t}(z|x) = p_{s|t}(y|x)\)，可通过将\(p_{r|t}\)作为时间\(r\)处的初始条件，重复（A.5）中的推导过程证明。综上，我们找到了生成\(p_t\)的转移核\(p_{t+h|t}\)，条件2成立。
+
+#### A.2 流形边际化技巧（Manifold Marginalization Trick）
+**定理10（流形边际化技巧）**：在假设2下，若\(u_t(x|x_1)\)是条件可积的且生成条件概率路径\(p_t(\cdot|x_1)\)，则边际速度场\(u_t(\cdot)\)生成边际概率路径\(p_t(\cdot)\)。
+
+**证明**：为证明\(u_t(\cdot)\)生成\(p_t(\cdot)\)，我们需验证它们满足质量守恒定理的条件。首先，验证\(u_t(x)\)与\(p_t(x)\)满足连续性方程（5.1）：
+\[
+\frac{d}{dt} p_t(x) \stackrel{(i)}{=} \int_{\mathcal{M}} \frac{d}{dt} p_{t|1}(x|x_1) q(x_1) dvol_{x_1} \tag{A.6}
+\]
+\[
+\stackrel{(ii)}{=} -\int_{\mathcal{M}} div_g\left[ u_t(x|x_1) p_{t|1}(x|x_1) \right] q(x_1) dvol_{x_1} \tag{A.7}
+\]
+\[
+\stackrel{(i)}{=} -div_g \int_{\mathcal{M}} u_t(x|x_1) p_{t|1}(x|x_1) q(x_1) dvol_{x_1} \tag{A.8}
+\]
+\[
+\stackrel{(iii)}{=} -div_g\left[ u_t(x) p_t(x) \right] \tag{A.9}
+\]
+其中：
+- （i）通过莱布尼茨法则交换微分（\(\frac{d}{dt}\)和\(div_g\)）与积分运算，且\(p_{t|1}(x|x_1)\)和\(u_t(x|x_1)\)关于\(t\)是一阶连续可微的（\(C^1\)），同时\(q\)具有有界支撑或流形\(\mathcal{M}\)是紧的，确保积分可交换；
+- （ii）利用\(u_t(\cdot|x_1)\)生成\(p_{t|1}(\cdot|x_1)\)这一事实及定理9；
+- （iii）通过乘以并除以\(p_t(x)\)（由假设知其严格为正），结合（5.10）中\(u_t\)的定义推导得出。
+
+最后，采用与定理3证明相同的论证，可证明\(u_t\)是可积且局部利普希茨连续的。
+
+#### A.3 科尔莫戈罗夫方程的正则性假设（Regularity assumptions for KFE）
+需说明的是，假设5在相对较弱的条件下成立，数学文献中存在大量关于不同场景下科尔莫戈罗夫方程（KFE）解\(p_t\)唯一性的研究。然而，据我们所知，目前尚无针对一般状态空间和马尔可夫过程的正则性假设相关已知结果，因此在此直接将其作为假设陈述。对于机器学习实践者而言，该假设在所有感兴趣的状态空间中均成立。为佐证这一点，我们列举数学文献中关于特定空间和马尔可夫过程类别的唯一性结果及对应的正则性假设：
+1. \(\mathbb{R}^d\)和流形上的流：（Villani等人，2009，质量守恒公式，第15页）、（DiPerna和Lions，1989）、（Ambrosio，2004）；
+2. \(\mathbb{R}^d\)和流形上的扩散过程：（Villani等人，2009，扩散定理，第16页）；
+3. \(\mathbb{R}^d\)上的一般伊藤随机微分方程（Ito-SDEs）：（Figalli，2008，定理1.3和1.4）、（Kurtz，2011，推论1.3）、（Bogachev等人，2022）；
+4. 离散状态空间：此处科尔莫戈罗夫方程（KFE）为线性常微分方程（ODE），在系数连续的假设下，其解具有唯一性（见定理13）。
