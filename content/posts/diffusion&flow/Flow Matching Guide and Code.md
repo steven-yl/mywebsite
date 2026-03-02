@@ -880,6 +880,53 @@ $
 ##### 证明核心逻辑
 利用Bregman散度的仿射不变性（$\nabla_v D(\mathbb{E}[Y],v) = \mathbb{E}[\nabla_v D(Y,v)]$），将FM损失的梯度转化为条件速度场的期望梯度，最终与CFM损失的梯度等价。
 
+**证明**：证明过程如下直接计算所示：
+\[
+\begin{aligned}
+\nabla_{\theta} \mathcal{L}_{FM}(\theta) & =\nabla_{\theta} \mathbb{E}_{t, X_{t} \sim p_{t}} D\left(u_{t}\left(X_{t}\right), u_{t}^{\theta}\left(X_{t}\right)\right) \\
+& =\mathbb{E}_{t, X_{t} \sim p_{t}} \nabla_{\theta} D\left(u_{t}\left(X_{t}\right), u_{t}^{\theta}\left(X_{t}\right)\right) \\
+& \stackrel{(i)}{=} \mathbb{E}_{t, X_{t} \sim p_{t}} \nabla_{v} D\left(u_{t}\left(X_{t}\right), u_{t}^{\theta}\left(X_{t}\right)\right) \nabla_{\theta} u_{t}^{\theta}\left(X_{t}\right) \\
+& \stackrel{(4.12)}{=} \mathbb{E}_{t, X_{t} \sim p_{t}} \nabla_{v} D\left(\mathbb{E}_{Z \sim p_{Z | t}\left(\cdot | X_{t}\right)}\left[u_{t}\left(X_{t} | Z\right)\right], u_{t}^{\theta}\left(X_{t}\right)\right) \nabla_{\theta} u_{t}^{\theta}\left(X_{t}\right) \\
+& \stackrel{(ii)}{=} \mathbb{E}_{t, X_{t} \sim p_{t}} \mathbb{E}_{Z \sim p_{Z | t}\left(\cdot | X_{t}\right)}\left[\nabla_{v} D\left(u_{t}\left(X_{t} | Z\right), u_{t}^{\theta}\left(X_{t}\right)\right) \nabla_{\theta} u_{t}^{\theta}\left(X_{t}\right)\right] \\
+& \stackrel{(iii)}{=} \mathbb{E}_{t, X_{t} \sim p_{t}} \mathbb{E}_{Z \sim p_{Z | t}\left(\cdot | X_{t}\right)}\left[\nabla_{\theta} D\left(u_{t}\left(X_{t} | Z\right), u_{t}^{\theta}\left(X_{t}\right)\right)\right] \\
+& \stackrel{(iv)}{=} \mathbb{E}_{t, Z, X_{t} \sim p_{t | Z}(\cdot | Z)} \nabla_{\theta} D\left(u_{t}\left(X_{t} | Z\right), u_{t}^{\theta}\left(X_{t}\right)\right) \\
+& =\nabla_{\theta} \mathcal{L}_{CFM}(\theta),
+\end{aligned}
+\]
+其中 (i) 和 (iii) 使用了链式法则；(ii) 由式（4.21）在 \(X_{t}\) 上条件应用得到；(iv) 使用了贝叶斯法则。
+
+#### 用于学习条件期望的 Bregman 散度 TODO
+定理 4 是一个更一般结果的特例，该结果利用 Bregman 散度学习条件期望，具体如下。这一结果将贯穿全文，为流匹配背后所有可扩展损失提供理论基础：
+
+**命题 1（用于学习条件期望的 Bregman 散度）**：设 \(X \in S_{X}\)、\(Y \in S_{Y}\) 是定义在状态空间 \(S_{X}\)、\(S_{Y}\) 上的随机变量，\(g: \mathbb{R}^{p} ×S_{X} \to \mathbb{R}^{n}\)，\((\theta, x) \mapsto g^{\theta}(x)\)，其中 \(\theta \in \mathbb{R}^{p}\) 表示可学习参数。设 \(D_{x}(u, v)\)（\(x \in S_{X}\)）是定义在凸集 \(\Omega \subset \mathbb{R}^{n}\) 上的 Bregman 散度，且该凸集包含 \(f\) 的像。则：
+\[
+\nabla_{\theta} \mathbb{E}_{X, Y} D_{X}\left(Y, g^{\theta}(X)\right)=\nabla_{\theta} \mathbb{E}_{X} D_{X}\left(\mathbb{E}[Y | X], g^{\theta}(X)\right) . (4.25)
+\]
+特别地，对于所有满足 \(p_{X}(x)>0\) 的 \(x\)，\(g^{\theta}(x)\) 关于 \(\theta\) 的全局最小值满足：
+\[
+g^{\theta}(x)=\mathbb{E}[Y | X=x] . \quad(4.26)
+\]
+
+**证明**：假设 \(g^{\theta}\) 关于 \(\theta\) 可微，且 \(X\) 和 \(Y\) 的分布、\(D_{x}\) 以及 \(g\) 允许交换微分和积分的顺序，则有：
+\[
+\begin{aligned}
+\nabla_{\theta} \mathbb{E}_{X, Y} D_{X}\left(Y, g^{\theta}(X)\right) & \stackrel{(i)}{=} \mathbb{E}_{X}\left[\mathbb{E}\left[\nabla_{v} D_{X}\left(Y, g^{\theta}(X)\right) \nabla_{\theta} g^{\theta}(X) | X\right]\right] \\
+& \stackrel{(ii)}{=} \mathbb{E}_{X}\left[\nabla_{v} D_{X}\left(\mathbb{E}[Y | X], g^{\theta}(X)\right) \nabla_{\theta} g^{\theta}(X)\right] \\
+& \stackrel{(iii)}{=} \mathbb{E}_{X}\left[\nabla_{\theta} D_{X}\left(\mathbb{E}[Y | X], g^{\theta}(X)\right)\right] \\
+& =\nabla_{\theta} \mathbb{E}_{X} D_{X}\left(\mathbb{E}[Y | X], g^{\theta}(X)\right),
+\end{aligned}
+\]
+其中 (i) 由链式法则和期望的塔性质（3.11）得到；等式 (ii) 由式（4.21）得到；等式 (iii) 再次使用了链式法则。最后，对于每个满足 \(p_{X}(x)>0\) 的 \(x \in S_{X}\)，我们可以选择 \(g^{\theta}(x)=\mathbb{E}[Y | X=x]\)，此时 \(\mathbb{E}_{X} D_{X}(\mathbb{E}[Y | X], g^{\theta}(X))=0\)，这必然是关于 \(\theta\) 的全局最小值。
+
+令 \(X=X_{t}\)、\(Y=u_{t}(X_{t} | Z)\)、\(g^{\theta}(x)=u_{t}^{\theta}(x)\)，并对 \(t \sim U[0,1]\) 求期望，即可由命题 1 直接推出定理 4。
+
+#### 一般时间分布 TODO
+FM 损失的一个有用变体是从均匀分布以外的其他分布中采样时间 \(t\)。具体来说，考虑 \(t \sim \omega(t)\)，其中 \(\omega(t)\) 是 [0, 1] 上的概率密度函数（PDF）。这将得到以下加权目标函数：
+\[
+\mathcal{L}_{CFM}(\theta)=\mathbb{E}_{t \sim \omega, Z, X_{t}} D\left(u_{t}\left(X_{t} | Z\right), u_{t}^{\theta}\left(X_{t}\right)\right)=\mathbb{E}_{t \sim U, Z, X_{t}} \omega(t) D\left(u_{t}\left(X_{t} | Z\right), u_{t}^{\theta}\left(X_{t}\right)\right) .
+\]
+尽管在数学上是等价的，但在大规模图像生成任务中，从 \(\omega\) 中采样 \(t\) 比使用权重 \(\omega(t)\) 能获得更好的性能（Esser 等人, 2024）。
+
 #### 意义
 CFM损失是FM可落地的关键：通过条件速度场提供监督信号，避免了边际速度场的直接计算，同时保证了优化目标与FM损失一致。在实际训练中，只需采样 $t$、$Z$（如目标样本 $X_1$）和 $X_t$（从条件路径采样），即可计算损失并更新参数。
 
@@ -971,80 +1018,231 @@ $
 3. 源预测（$x_{0|t}$）：$u_t(x) = \frac{\dot{\alpha}_t}{\alpha_t}x + \left(\dot{\sigma}_t - \sigma_t \frac{\dot{\alpha}_t}{\alpha_t}\right) \mathbb{E}[X_0 | X_t=x]$。
 三种参数化可通过贝叶斯法则和条件期望相互转换（见表1）。
 
-##### 4.8.2 训练后调度器切换
-仿射流支持训练后更换调度器（如从方差保持调度器切换到OT调度器），无需重新训练：
-通过尺度-时间变换（ST变换）$\psi_r(x_0|x_1) = s_r \psi_{t_r}(x_0|x_1)$，可将基于原调度器 $(\alpha_t, \sigma_t)$ 的速度场 $u_t(x)$ 转换为新调度器 $(\bar{\alpha}_r, \bar{\sigma}_r)$ 的速度场 $\bar{u}_r(x)$，且保证最终生成样本一致（$\bar{\psi}_1(x_0) = \psi_1(x_0)$）。
+**目标预测形式的推导**：由仿射关系 $X_t = \alpha_t X_1 + \sigma_t X_0$ 得 $X_0 = (X_t - \alpha_t X_1)/\sigma_t$（$\sigma_t \neq 0$）。代入边际速度场 $u_t(x) = \mathbb{E}[\dot{\alpha}_t X_1 + \dot{\sigma}_t X_0 | X_t = x]$ 得
+$
+u_t(x) = \mathbb{E}\left[\dot{\alpha}_t X_1 + \dot{\sigma}_t \frac{X_t - \alpha_t X_1}{\sigma_t} \;\bigg|\; X_t = x\right].
+$
+在条件 $X_t = x$ 下，$X_t$ 为常数 $x$，故
+$
+u_t(x) = \frac{\dot{\sigma}_t}{\sigma_t}x + \left(\dot{\alpha}_t - \alpha_t \frac{\dot{\sigma}_t}{\sigma_t}\right) \mathbb{E}[X_1 | X_t=x].
+$
+源预测形式同理，用 $X_1 = (X_t - \sigma_t X_0)/\alpha_t$ 代入即可。
 
-##### 4.8.3 高斯路径
-当源分布为高斯分布 $p = N(0,I)$ 时，仿射条件流对应的条件路径为高斯分布：
-$
-p_{t|1}(x|x_1) = \mathcal{N}(x | \alpha_t x_1, \sigma_t^2 I)
-$
-该路径与扩散模型的前向过程等价，且速度场可通过分数函数（score function）参数化：
-$
-u_t(x) = \frac{\dot{\alpha}_t}{\alpha_t}x - \frac{\dot{\sigma}_t \sigma_t \alpha_t - \dot{\alpha}_t \sigma_t^2}{\alpha_t} \nabla \log p_t(x)
-$
-其中 $\nabla \log p_t(x)$ 是边际路径的分数函数，与源预测 $x_{0|t}$ 成正比（$\nabla \log p_t(x) = -\frac{1}{\sigma_t}x_{0|t}(x)$）。
+##### 4.8.2 训练后速度调度器更换（Post-training velocity scheduler change） TODO
+
+仿射条件流的一个重要性质是：**在训练完成后可以更换速度调度器，而无需重新训练模型**。例如，模型可用方差保持调度器（variance preserving scheduler，如 VPScheduler）训练，推理时则可切换到最优传输型调度器（如 CondOTScheduler）或 CosineScheduler，以改善采样轨迹或数值稳定性。
+
+**尺度–时间变换（ST 变换）** 是实现上述切换的核心。设原调度器为 $(\alpha_t, \sigma_t)$，新调度器为 $(\bar{\alpha}_r, \bar{\sigma}_r)$，其中 $t,r \in [0,1]$。原仿射条件流为 $\psi_t(x_0|x_1) = \alpha_t x_1 + \sigma_t x_0$，对应速度场为 $u_t(x)$。我们通过“新时间” $r$ 与尺度因子 $s_r$ 构造一条在新时间 $r$ 下的路径，使其在 $r=1$ 时与原始流在 $t=1$ 时的输出一致。
+
+**时间重参数化**：令信噪比（SNR）$\rho(t) = \alpha_t/\sigma_t$，$\bar{\rho}(r) = \bar{\alpha}_r/\bar{\sigma}_r$。将新时间 $r$ 映射到原时间 $t_r$，使得新调度器在 $r$ 处的 SNR 与原调度器在 $t_r$ 处的 SNR 相同，即
+\[
+t_r = \rho^{-1}(\bar{\rho}(r)).
+\]
+这样，在 $r$ 时刻的“等效”样本若按原流定义，应落在原路径的 $X_{t_r}$ 上。
+
+**尺度因子**：为让新路径在 $r$ 处的边际分布与“缩放后的原路径”一致，引入尺度因子
+\[
+s_r = \frac{\bar{\sigma}_r}{\sigma_{t_r}}.
+\]
+新路径上的样本定义为
+\[
+\bar{X}_r = s_r X_{t_r}.
+\]
+由仿射形式 $X_t = \alpha_t X_1 + \sigma_t X_0$ 可知，$X_{t_r}$ 的“尺度”由 $\sigma_{t_r}$ 决定；乘以 $s_r = \bar{\sigma}_r/\sigma_{t_r}$ 后，$\bar{X}_r$ 在统计上对应新调度器 $(\bar{\alpha}_r, \bar{\sigma}_r)$ 下、从同一 $X_0,X_1$ 生成的路径样本。特别地，在 $r=1$ 时 $\bar{\sigma}_1=0$、$\alpha_1=1$，故 $\bar{X}_1 = s_1 X_{t_1}$；若 $t_1=1$（由 $\rho^{-1}(\bar{\rho}(1))$ 保证），则 $X_{t_1}=X_1$，且 $s_1 = \bar{\sigma}_1/\sigma_1=0$ 的极限给出 $\bar{X}_1 = X_1$，即**终点样本不变**：$\bar{\psi}_1(x_0|x_1) = \psi_1(x_0|x_1)$。
+
+**变换后的速度场**：对新路径 $\bar{X}_r = s_r X_{t_r}$ 关于 $r$ 求导，并利用原速度场 $d X_{t}/dt = u_t(X_t)$，可得
+\[
+\frac{d\bar{X}_r}{dr} = \dot{s}_r X_{t_r} + s_r \dot{t}_r \, u_{t_r}(X_{t_r}) = \frac{\dot{s}_r}{s_r} \bar{X}_r + s_r \dot{t}_r \, u_{t_r}\left(\frac{\bar{X}_r}{s_r}\right).
+\]
+因此，在新时间 $r$ 和新样本位置 $x = \bar{X}_r$ 下，**新调度器对应的速度场**为
+\[
+\bar{u}_r(x) = \frac{\dot{s}_r}{s_r} x + s_r \dot{t}_r \, u_{t_r}\left(\frac{x}{s_r}\right).
+\]
+其中 $t_r = \rho^{-1}(\bar{\rho}(r))$，$s_r = \bar{\sigma}_r/\sigma_{t_r}$；$u_{t_r}$ 为原模型在**原时间** $t_r$、**原空间** $x/s_r$ 处输出的速度。实现时，只需将输入 $(x/s_r, t_r)$ 送入已训练的速度网络得到 $u_{t_r}(x/s_r)$，再按上式与 $\dot{s}_r$、$\dot{t}_r$ 组合即可得到 $\bar{u}_r(x)$，无需重新训练。
+
+**小结**：通过 ST 变换（尺度–时间映射 $s_r$、$t_r$），可将基于原调度器 $(\alpha_t, \sigma_t)$ 训练得到的速度场 $u_t(x)$ 转化为新调度器 $(\bar{\alpha}_r, \bar{\sigma}_r)$ 下的速度场 $\bar{u}_r(x)$，并保证 $r=1$ 时生成样本与 $t=1$ 时一致。代码库中的 `ScheduleTransformedModel` 即实现该逻辑：内部通过原调度器的 `snr_inverse` 由 $\bar{\alpha}_r/\bar{\sigma}_r$ 反解 $t_r$，再计算 $s_r$、$\dot{s}_r$、$\dot{t}_r$ 并组合上式得到 $\bar{u}_r(x)$。
+
+##### 4.8.3 高斯路径（Gaussian paths）
+
+在撰写本文时，最常用的一类仿射概率路径由**独立耦合** $\pi_{0,1}(x_0, x_1) = p(x_0)q(x_1)$ 与**高斯源分布** $p(x) = \mathcal{N}(x|0, \sigma^2 I)$ 给出。由于高斯在仿射变换下保持不变，所得条件概率路径形如
+\[
+p_{t|1}(x|x_1) = \mathcal{N}(x \mid \alpha_t x_1,\, \sigma_t^2 I). \tag{4.70}
+\]
+该情形涵盖了由标准扩散模型生成的概率路径（尽管在扩散中生成是随机的且由 SDE 描述，其边际概率相同）。两个例子是 **Variance Preserving (VP)** 与 **Variance Exploding (VE)** 路径（Song et al., 2021），由下列调度器定义：
+\[
+\alpha_t \equiv 1,\ \sigma_0 \gg 1,\ \sigma_1 = 0 \quad \text{(VP)};
+\qquad
+\alpha_t = e^{-\frac{1}{2}\beta_t},\ \sigma_t = \sqrt{1 - e^{-\beta_t}},\ \beta_0 \gg 1,\ \beta_1 = 0 \quad \text{(VE)}.
+\]
+上式中“$\gg 1$”表示取足够大的标量，使得 $p_0(x) = \int p_{0|1}(x|x_1)q(x_1)dx_1$ 在 $t=0$ 时接近已知高斯——即 VE 时为 $\mathcal{N}(\cdot|0, \sigma_0^2 I)$，VP 时为 $\mathcal{N}(\cdot|0, I)$。注意在两种情形下 $p_t(x)$ 在 $t=0$ 时都不精确等于 $p$，这与 (4.51) 中的 FM 路径不同。
+
+在高斯情形下，**分数**（定义为对数概率的梯度）有简单形式。具体地，(4.70) 中条件路径的分数为
+\[
+\nabla \log p_{t|1}(x|x_1) = -\frac{1}{\sigma_t^2}(x - \alpha_t x_1). \tag{4.71}
+\]
+
+**表 1** 不同模型参数化之间的转换：$(a_t, b_t)$ 对应 $f^B_t(x) = a_t x + b_t f^A_t(x)$。颜色表示该转换适用于：所有路径、仿射路径、高斯路径。下三角由上三角的逆变换得到：$f^A_t(x) = \frac{1}{b_t}\bigl(-a_t x + f^B_t(x)\bigr)$，对应序对 $\bigl(-\frac{a_t}{b_t}, \frac{1}{b_t}\bigr)$。注意部分转换存在奇点，见 4.8.1 节末的讨论。
+
+| B \ A | velocity | x1-prediction | x0-prediction | score |
+|------:|---------:|--------------:|--------------:|------:|
+| **velocity** | $0,\, 1$ | $\displaystyle\frac{\dot{\sigma}_t}{\sigma_t},\ \frac{\dot{\alpha}_t\sigma_t - \dot{\sigma}_t\alpha_t}{\sigma_t}$ | $\displaystyle\frac{\dot{\alpha}_t}{\alpha_t},\ \frac{\dot{\sigma}_t\alpha_t - \dot{\alpha}_t\sigma_t}{\alpha_t}$ | $\displaystyle\frac{\dot{\alpha}_t}{\alpha_t},\ -\frac{\dot{\sigma}_t\sigma_t\alpha_t - \dot{\alpha}_t\sigma_t^2}{\alpha_t}$ |
+| **x1-prediction** | | $0,\, 1$ | $\displaystyle\frac{1}{\alpha_t},\ -\frac{\sigma_t}{\alpha_t}$ | $\displaystyle\frac{1}{\alpha_t},\ \frac{\sigma_t^2}{\alpha_t}$ |
+| **x0-prediction** | | | $0,\, 1$ | $0,\ -\sigma_t$ |
+| **score** | | | | $0,\, 1$ |
+
+对应边际概率路径 (4.4) 的分数为
+\[
+\nabla \log p_t(x)
+= \int \frac{\nabla p_{t|1}(x|x_1)\,q(x_1)}{p_t(x)}\,dx_1 \tag{4.72}
+\]
+\[
+= \int \nabla \log p_{t|1}(x|x_1)\, \frac{p_{t|1}(x|x_1)q(x_1)}{p_t(x)}\,dx_1 \tag{4.73}
+\]
+\[
+= \mathbb{E}\bigl[\nabla \log p_{t|1}(X_t|X_1) \bigm| X_t = x\bigr] \tag{4.74}
+\]
+\[
+\stackrel{\text{(4.71)}}{=} \mathbb{E}\biggl[-\frac{1}{\sigma_t^2}(X_t - \alpha_t X_1) \biggm| X_t = x\biggr] \tag{4.75}
+\]
+\[
+\stackrel{\text{(4.54)}}{=} \mathbb{E}\biggl[-\frac{1}{\sigma_t}X_0 \biggm| X_t = x\biggr] \tag{4.76}
+\]
+\[
+\stackrel{\text{(4.59)}}{=} -\frac{1}{\sigma_t}\,x_{0|t}(x), \tag{4.77}
+\]
+其中 $x_{0|t}$ 沿用 (4.59) 的记号。扩散文献中常将 $x_0$-prediction（$x_{0|t}$）称为 noise-prediction 或 $\epsilon$-prediction。上式表明分数与 $x_0$-prediction 成比例，并给出高斯路径下从分数到其他参数化的转换规则，见表 1。
+
+**边际速度的动能最优性**。由上文的转换公式（表 1）可得，高斯路径的边际速度可写成
+\[
+u_t(x) = \frac{\dot{\alpha}_t}{\alpha_t}x - \frac{\dot{\sigma}_t\sigma_t\alpha_t - \dot{\alpha}_t\sigma_t^2}{\alpha_t}\,\nabla\log p_t(x) \tag{4.78}
+\]
+\[
+= \nabla\biggl(\frac{\dot{\alpha}_t}{2\alpha_t}\|x\|^2 - \frac{\dot{\sigma}_t\sigma_t\alpha_t - \dot{\alpha}_t\sigma_t^2}{\alpha_t}\,\log p_t(x)\biggr) \tag{4.79}
+\]
+因此 $u_t(x)$ 是梯度场，从而是由 $p_{t|1}(x|x_1) = \mathcal{N}(x|\alpha_t x_1, \sigma_t^2 I)$ 定义的固定边际高斯概率路径 $p_t(x)$ 的**动能最优**速度场（参见 Villani (2021) 第 8.1.2 节或 Neklyudov et al. (2023) 定理 2.1）。
 
 ### 4.9 数据耦合（Data couplings）
-数据耦合定义了源与目标样本的关联方式，直接影响FM的训练效果和适用场景，本节介绍两种实用耦合方式：
+
+在推导 Flow Matching 训练算法时，我们假定可以从源分布 $p$ 与目标分布 $q$ 的某个耦合 $\pi_{0,1}(x_0, x_1)$ 中抽取样本 $(X_0, X_1) \sim \pi_{0,1}(X_0, X_1)$。例如，独立耦合 $\pi_{0,1}(x_0, x_1) = p(x_0)q(x_1)$ 是保持边际分布 $p$ 与 $q$ 的最简单耦合；或者由数据集提供的配对样本 $(X_0, X_1) \sim \pi_{0,1}$。本节讨论两种可用于训练 Flow Matching 模型的具体耦合。
 
 #### 4.9.1 配对数据（Paired data）
-适用于有监督条件生成任务（如图像修复、超分辨率、去模糊）：
-- 耦合定义：$\pi_{0,1}(x_0,x_1) = \pi_{0|1}(x_0|x_1) q(x_1)$，其中 $\pi_{0|1}(x_0|x_1)$ 是从目标样本 $x_1$ 生成源样本 $x_0$ 的变换（如对图像添加掩码、降分辨率、添加模糊）；
-- 优势：无需源分布是高斯噪声，可直接利用任务相关的源-目标配对关系，生成效果更贴合任务需求；
-- 实现技巧：采样时对 $\pi_{0|1}(x_0|x_1)$ 添加少量噪声，保证源分布的光滑性和多样性。
+
+依赖型耦合在配对数据的学习任务中自然出现。例如考虑图像修复（image in-painting）任务：$q$ 是自然图像的分布，$p$ 是同一批图像在某一正方形区域被掩码后的分布。此时目标不是从噪声变换到数据，而是学习从被掩码图像 $x_0$ 到其填充结果 $x_1$ 的映射。由于该问题是不适定的（每个被掩码图像 $x_0$ 对应多种可行的填充结果 $x_1$），可将任务表述为从未知的、依赖数据的耦合 $\pi_{1|0}(x_1|x_0)$ 中采样。
+
+基于上述观察，Liu et al. (2023)；Albergo et al. (2024) 提出在**数据依赖的耦合**下学习桥模型或流模型，通过这一简单修改拓展出一类新应用。虽然关心的对象 $\pi_{1|0}(x_1|x_0)$ 无法直接采样，但往往可以采样其反向依赖 $\pi_{0|1}(x_0|x_1)$。回到图像修复的例子：从填充图像 $X_1 \sim q$（目标样本）出发，很容易通过掩码得到源样本 $X_0 \sim p$。为此，设定
+\[
+\pi_{0,1}(x_0, x_1) = \pi_{0|1}(x_0|x_1) q(x_1). \tag{4.80}
+\]
+因此，我们可以通过 (i) 抽取 $X_1 \sim q$，(ii) 对 $X_1$ 施加一个预先定义的随机变换得到 $X_0$，从而获得配对 $(X_0, X_1)$。为满足推论 1 的条件（保证源为密度）并促进多样性，在从 $\pi_{0|1}(x_0|x_1)$ 采样时加入噪声。Liu et al. (2023)；Albergo et al. (2024) 在图像超分辨率、修复与去模糊等任务上验证了该方法的有效性，并优于基于 guided diffusion（Saharia et al., 2022）的方法。
 
 #### 4.9.2 多样本耦合（Multisample couplings）
-适用于无监督生成任务，通过构建低动能的源-目标关联，提升生成样本质量：
-- 核心思想：每次采样 $k$ 个源样本和 $k$ 个目标样本，构建最优匹配矩阵 $\pi^k$（最小化运输成本 $c(X_0^{(i)}, X_1^{(j)})$），再从匹配对中采样训练数据；
-- 优势：降低源-目标配对的运输成本，使学习到的速度场诱导更直的样本轨迹，减少ODE采样误差；
-- 极限性质：当 $k \to \infty$ 时，多样本耦合逼近OT耦合，动能趋近于最优。
+
+**动机：为什么要更直的轨迹？**  
+如 4.7 节所述，更直的概率路径对应的 ODE 仿真误差更小（数值积分更准、采样更稳定）。因此自然要问：如何修改训练算法，使学到的速度场诱导更直的轨迹？
+
+**与最优传输的关系**  
+如上文提示，直轨迹与最优传输（Optimal Transport, OT）问题相关。直观上：OT 给出的正是让“从源到目标的移动”总成本最小的配对方式，对应的流是直线；若训练时用的配对越接近 OT 配对，学到的流就越直。具体地，设凸成本泛函 $c \colon \mathbb{R}^d \to \mathbb{R}_{\geq 0}$ 与条件 OT 流 $\psi_t(x_0|x_1) = t x_1 + (1-t) x_0$。则耦合的传输成本给出边际传输成本的一个上界（Liu et al., 2022；Pooladian et al., 2023）：
+\[
+\mathbb{E}[c(\psi_1(X_0) - X_0)] \leq \mathbb{E}[c(X_1 - X_0)], \tag{4.81}
+\]
+**公式 (4.81) 在说什么？**  
+- **左端** $\mathbb{E}[c(\psi_1(X_0) - X_0)]$：当 $(X_0, X_1)$ 按**最优传输（OT）耦合**抽样时，沿 OT 流 $\psi_t(x_0|x_1) = t x_1 + (1-t) x_0$ 从 $X_0$ 走到 $t=1$ 的终点就是 $X_1$，所以 $\psi_1(X_0) - X_0 = X_1 - X_0$，左端等于“在 OT 配对下、位移 $X_1 - X_0$ 的成本的期望”。  
+- **右端** $\mathbb{E}[c(X_1 - X_0)]$：当 $(X_0, X_1)$ 按**其他方式**（例如独立抽样）配对时，同一量 $c(X_1 - X_0)$ 的期望。  
+- **不等式含义**：OT 配对使“从源到目标的位移成本”在期望意义下最小；任意其它配对（如独立耦合）的期望成本只会更大或相等。因此，**训练时用的配对越接近 OT，学到的流在平均意义上位移成本越小，轨迹越直**。
+
+**$c(x)=\|x\|^2$ 时与 (4.49) 的关联**  
+当成本取二次 $c(x)=\|x\|^2$ 时，这一结论可以从 4.7 节的 (4.49)（与动能/直路径有关的界）推出。具体地，将 OT 解代入：OT 流对应的速度场为 $u_t(\psi_t(x)) = \phi(x) - x$（从 $x$ 到 OT 映射 $\phi(x)$ 的匀速直线），其中 $\phi$ 为最优传输映射；该速度场使路径为直线，在 (4.49) 的框架下给出 (4.81) 的左端不大于右端。
+
+**对训练算法的启示**  
+因此，若能**降低训练时使用的耦合的期望成本**（让配对更接近 OT），就能得到成本更低、更直的边际传输映射；多样本耦合正是通过“在每批 $k$ 个源/目标间做最优配对”来逼近这一点。
+
+**多样本耦合的做法**  
+为此，Pooladian et al. (2023) 提出**多样本耦合**（multisample couplings），思路是：每次不只取一个源样本和一个目标样本，而是取 $k$ 个源和 $k$ 个目标，先在这 $k$ 对之间做一次“成本最小的配对”，再从中随机取一对用于本次训练。这样得到的 $(X_0,X_1)$ 在统计上更接近 OT 配对，轨迹更直、成本更低。形式地，通过以下过程隐式构造在源与目标之间引入依赖的非平凡联合 $\pi_{0,1}(x_0, x_1)$：
+
+1. 独立地抽取 $X_0^{(i)} \sim p$ 与 $X_1^{(i)} \sim q$，$i \in [k]$（得到 $k$ 个源点和 $k$ 个目标点）。
+2. 在 $k \times k$ 的配对方案中，找使期望成本最小的那一个，记为 $\pi^k \in \mathcal{B}_k$，即  
+   $\pi^k := \arg\min_{\pi \in \mathcal{B}_k} \mathbb{E}_\pi\bigl[c\bigl(X_0^{(i)} - X_1^{(j)}\bigr)\bigr]$。  
+   $\mathcal{B}_k$ 为双随机矩阵的多面体，即“每个源恰配一个目标、每个目标恰配一个源”的配对方案全体；最小化即求解一个最优分配问题（如用匈牙利算法）。
+3. 在满足 $\pi^k(i,j)=1$ 的配对 $(X_0^{(i)}, X_1^{(j)})$ 中均匀随机抽取一对，作为本次训练用的 $(X_0, X_1)$。
+
+**性质小结**  
+上述过程通过采样方式隐式定义联合分布 $\pi_{0,1}^k(x_0, x_1)$。该隐式联合保持边际分布（源仍是 $p$、目标仍是 $q$），并满足步骤 2 的最优性约束（Pooladian et al., 2023）。当 $k=1$ 时，没有选择余地，方法退化为独立耦合。当 $k>1$ 时，Pooladian et al. (2023) 证明相比独立耦合传输成本降低，即
+\[
+\mathbb{E}_{(x_0,x_1) \sim \pi_{0,1}^k(x_0,x_1)}[c(x_1 - x_0)] \leq \mathbb{E}_{X_0 \sim p,\, X_1 \sim q}[c(X_1 - X_0)].
+\]
+此外，对二次成本函数，多样本耦合在 $k \to \infty$ 时趋于 Optimal Transport 成本并诱导直轨迹（Pooladian et al., 2023；Tong et al., 2023）。可以简单记为：$k$ 越大，配对越像 OT，流越直、采样质量越好。
 
 ### 4.10 条件生成与引导（Conditional generation and guidance）
-条件生成的目标是生成满足特定引导信号（如标签、文本描述）的样本，FM支持多种引导策略，适配不同任务需求。
+
+本节考虑在引导信号下训练生成模型，以进一步控制生成样本。该技术在众多实际应用中已被证明很有价值，例如图像到图像翻译（Saharia et al., 2022）与文本到图像生成（Nichol et al., 2022；Esser et al., 2024）。本小节假定可获取带标签的目标样本 $(x_1, y)$，其中 $y \in \mathcal{Y} \subseteq \mathbb{R}^k$ 为标签或引导变量。
 
 #### 4.10.1 条件模型（Conditional models）
-直接学习条件速度场 $u_t(x|y)$，生成条件分布 $q(x_1|y)$：
-- 概率路径：$p_{t|Y}(x|y) = \int p_{t|1}(x|x_1) q(x_1|y) dx_1$（基于标签 $y$ 的条件边际路径）；
-- 条件速度场：$u_t(x|y) = \mathbb{E}[u_t(x|x_1) | X_t=x, Y=y]$；
-- 训练损失：条件CFM损失 $\mathcal{L}_{CFM}(\theta) = \mathbb{E}[D(u_t(X_t|X_1), u_{t}^{\theta}(X_t|Y))]$；
-- 适用场景：标签空间小且重复（如分类标签），引导信号与目标样本强相关。
 
-#### 4.10.2 分类器引导与无分类器引导
-针对高斯路径设计的引导策略，通过分数函数与分类器结合，提升条件生成的灵活性和效果：
+在引导下训练生成模型的一种自然方式是学习从条件分布 $q(x_1|y)$ 中采样，扩散模型与 FM 模型均有采用（Zheng et al., 2023）。沿用图 2 中的 FM 蓝图：考虑来自条件目标分布 $q(x_1|y)$ 的样本，并指定一个简单的——通常但不一定是高斯的——源分布 $p$。接下来，将引导概率路径设计为条件概率路径的聚合：
+\[
+p_{t|Y}(x|y) = \int p_{t|1}(x|x_1) q(x_1|y) \, dx_1, \tag{4.82}
+\]
+其中假定 $p_{t,1|Y}(x, x_1|y) = p_{t|1}(x|x_1) q(x_1|y)$，即条件路径不依赖 $Y$。所得引导概率路径以引导变量 $Y \sim p_Y$ 为条件，并满足边际端点
+\[
+p_{0|Y}(\cdot|y) = p(\cdot), \qquad p_{1|Y}(\cdot|y) = q(\cdot|y). \tag{4.83}
+\]
+引导速度场的形式为
+\[
+u_t(x|y) = \int u_t(x|x_1) \, p_{1|t,Y}(x_1|x, y) \, dx_1, \tag{4.84}
+\]
+其中由贝叶斯法则有
+\[
+p_{1|t,Y}(x_1|x, y) = \frac{p_{t|1}(x|x_1) q(x_1|y)}{p_{t|Y}(x|y)}. \tag{4.85}
+\]
+要说明 $u_t(x|y)$ 生成 $p_{t|Y}(x|y)$，将 (4.82) 与 (4.84) 代入 (4.14)，并注意到 FM/CFM 损失在引导情形下形式不变，证明步骤与定理 4 相同。
 
-##### 分类器引导（Classifier guidance）
-1. 核心原理：利用条件分数函数与无条件分数函数的关系：
-   $
-   \nabla \log p_{t|Y}(x|y) = \nabla \log p_{Y|t}(y|x) + \nabla \log p_t(x)
-   $
-   其中 $\nabla \log p_{Y|t}(y|x)$ 是时间依赖分类器的分数函数（预测标签 $y$ 给定 $x$ 和 $t$）。
-2. 速度场调整：
-   $
-   \tilde{u}_t^{\theta,\phi}(x|y) = u_t^{\theta}(x) + b_t w \nabla \log p_{Y|t}^{\phi}(y|x)
-   $
-   其中 $u_t^{\theta}(x)$ 是无条件速度场，$w$ 是引导强度，$b_t$ 是调度系数。
-3. 优势：分类器与生成器独立训练，可灵活调整引导强度；
-4. 劣势：需单独训练分类器，存在训练不一致问题。
+实践中，我们训练单个神经网络 $u_t^\theta \colon \mathbb{R}^d \times \mathbb{R}^k \to \mathbb{R}^d$ 来对所有 $y$ 建模引导边际速度场。于是，CFM 损失 (4.32) 的引导版本为
+\[
+\mathcal{L}_{\mathrm{CFM}}(\theta) = \mathbb{E}_{t,\,(X_0,X_1,Y)\sim \pi_{0,1,Y}} \Bigl[ D\bigl( \dot{\psi}_t(X_0|X_1),\, u_t^\theta(X_t|Y) \bigr) \Bigr]. \tag{4.86}
+\]
+实践中，扩散模型文献表明，当大量目标样本 $X_1$ 共享同一引导信号 $Y$ 时（如类别引导，Nichol and Dhariwal, 2021），引导效果最好。然而，当引导变量 $Y$ 不重复且复杂（如图像描述）时，引导更具挑战性。
 
-##### 无分类器引导（Classifier-free guidance, CFG）
-1. 核心原理：将分类器分数函数表示为条件分数与无条件分数的差：
-   $
-   \nabla \log p_{Y|t}(y|x) = \nabla \log p_{t|Y}(x|y) - \nabla \log p_t(x)
-   $
-   无需单独训练分类器，直接学习统一的条件速度场 $u_t^{\theta}(x|y)$（支持 $y=\emptyset$ 即无条件生成）。
-2. 速度场调整：
-   $
-   \tilde{u}_t^{\theta}(x|y) = (1-w) u_t^{\theta}(x|\emptyset) + w u_t^{\theta}(x|y)
-   $
-   其中 $w$ 是引导强度，平衡无条件生成的多样性和条件生成的准确性。
-3. 训练损失：
-   $
-   \mathcal{L}_{CFM}(\theta) = \mathbb{E}[D(u_t(X_t|X_1), u_{t}^{\theta}(X_t|(1-\xi)Y + \xi \emptyset))]
-   $
-   其中 $\xi \sim \text{Bernoulli}(p_{\text{uncond}})$（随机丢弃引导信号，提升模型鲁棒性）。
-4. 优势：无需单独训练分类器，生成效果更稳定，是当前大规模条件生成（如文本到图像）的主流策略。
+#### 4.10.2 分类器引导与无分类器引导（Classifier guidance and classifier-free guidance）
+
+对于用高斯路径训练的流，可利用 table 1 中条件分布的速度场与分数函数之间的转换，应用分类器引导（Song et al., 2021；Dhariwal and Nichol, 2021）与无分类器引导（Ho and Salimans, 2021）（Zheng et al., 2023）：
+\[
+u_t(x|y) = a_t x + b_t \nabla \log p_{t|Y}(x|y). \tag{4.87}
+\]
+对引导概率路径使用贝叶斯法则得
+\[
+p_{t|Y}(x|y) = \frac{p_{Y|t}(y|x) p_t(x)}{p_Y(y)}. \tag{4.88}
+\]
+取对数并对 $x$ 求梯度（$\nabla = \nabla_x$），得到概率路径 $p_t(x)$ 的分数与其引导版本 $p_{t|Y}(x|y)$ 的分数之间的基本关系：
+\[
+\underbrace{\nabla \log p_{t|Y}(x|y)}_{\text{条件分数}} = \underbrace{\nabla \log p_{Y|t}(y|x)}_{\text{分类器}} + \underbrace{\nabla \log p_t(x)}_{\text{无条件分数}}, \tag{4.89}
+\]
+即两者通过一个试图在给定样本 $x$ 下预测引导变量 $y$ 的分类器模型 $p_{Y|t}(y|x)$ 的分数相联系。
+
+基于该关系，Song et al. (2021) 提出分类器引导：用时间依赖的分类器（在 $x \sim p_t(x)$ 下预测引导变量 $y$）来引导无条件模型（由 $\nabla \log p_t(x)$ 参数化），从而从条件模型 $q(x_1|y)$ 采样。对应的速度场可写为
+\[
+\tilde{u}_t^{\theta,\phi}(x|y) = a_t x + b_t \bigl( \nabla \log p_{Y|t}^\phi(y|x) + \nabla \log p_t^\theta(x) \bigr) = u_t^\theta(x) + b_t \nabla \log p_{Y|t}^\phi(y|x), \tag{4.90}
+\]
+其中 $u_t^\theta(x)$ 是在无条件目标 $q(x)$ 上训练的速度场，$\log p_{Y|t}^\phi(y|x)$ 是参数 $\phi \in \mathbb{R}^m$ 的时间依赖分类器。Dhariwal and Nichol (2021) 表明，在类别条件与文本条件（Nichol et al., 2022）下，该方法优于 4.10.1 节的条件模型。实践中，由于分类器与无条件分数是分开学习的，通常需要对分类器引导进行校准：
+\[
+\tilde{u}_t^{\theta,\phi}(x|y) = u_t^\theta(x) + b_t w \nabla \log p_{Y|t}^\phi(y|x), \tag{4.91}
+\]
+其中 $w \in \mathbb{R}$ 为分类器尺度，一般取 $w > 1$（Dhariwal and Nichol, 2021）。
+
+在后续工作中，Ho and Salimans (2021) 提出一种纯生成式方法，称为无分类器引导（classifier-free guidance）。将 (4.89) 简单移项得
+\[
+\underbrace{\nabla \log p_{Y|t}(y|x)}_{\text{分类器}} = \underbrace{\nabla \log p_{t|Y}(x|y)}_{\text{条件分数}} - \underbrace{\nabla \log p_t(x)}_{\text{无条件分数}}, \tag{4.92}
+\]
+表明分类器的分数可由原始概率路径与引导概率路径的分数之差隐式近似。作者进而建议用同一模型同时学习条件与无条件分数。在速度场形式下，Zheng et al. (2023) 表明可将 (4.92) 代入 (4.91)，并利用 table 1 中从分数到速度的转换得到：
+\[
+\tilde{u}_t^\theta(x|y) = (1 - w) u_t^\theta(x|\emptyset) + w u_t^\theta(x|y), \tag{4.93}
+\]
+其中 $w$ 仍为引导校准尺度。此时只需训练一个模型 $u_t^\theta(x|y)$，其中 $y \in \{\mathcal{Y}, \emptyset\}$，$\emptyset$ 表示空条件的占位符，$u_t^\theta(x|\emptyset)$ 是生成无条件概率路径 $p_t(x)$ 的速度场。对应的损失为
+\[
+\mathcal{L}_{\mathrm{CFM}}(\theta) = \mathbb{E}_{t,\,\xi,\,(X_0,X_1,Y)\sim \pi_{0,1,Y}} \Bigl[ D\bigl( \dot{\psi}_t(X_0|X_1),\, u_t^\theta(X_t|(1-\xi)\cdot Y + \xi\cdot \emptyset) \bigr) \Bigr], \tag{4.94}
+\]
+其中 $\xi \sim \mathrm{Bernoulli}(p_{\mathrm{uncond}})$，$p_{\mathrm{uncond}}$ 为训练时抽取空条件 $\emptyset$ 的概率。
+
+CFG 采样所对应的精确分布尚不明确，部分工作从直观或理论角度给出了不同解释（Dieleman, 2022；Guo et al., 2024；Chidambaram et al., 2024；Bradley and Nakkiran, 2024）。尽管如此，在撰写本文时，CFG 仍是训练条件模型最常用的方法。Esser et al. (2024)；Polyak et al. (2024) 展示了将无分类器引导用于训练大规模引导 FM 模型的应用。
 
 ### 核心总结
 Flow Matching框架的核心优势在于：
