@@ -1434,10 +1434,14 @@ exp \left[ hu_{t}(X_{t},X_{t})\right] & y=X_{t} \\
 **证明**：该证明的思路与连续情形类似。首先计算：
 \[
 \begin{aligned}
-\frac{d}{dt} p_t(y) & = \sum_z \frac{d}{dt} p_{t|Z}(y|z) p_Z(z) \\
-& \stackrel{(i)}{=} \sum_z \left[ \sum_x u_t(y, x|z) p_{t|Z}(x|z) \right] p_Z(z) \\
-& \stackrel{(ii)}{=} \sum_x \left[ \sum_z u_t(y, x|z) \frac{p_{t|Z}(x|z) p_Z(z)}{p_t(x)} \right] p_t(x) \\
-& \stackrel{(贝叶斯法则)}{=} \sum_x \overbrace{\sum_z u_t(y, x|z) p_{Z|t}(z|x)}^{u_t(y, x)} p_t(x),
+\frac{d}{dt} p_t(y) 
+&= \sum_z \frac{d}{dt} p_{t|Z}(y|z) \, p_Z(z) \\
+&\stackrel{(i)}{=} \sum_z \left[ \sum_x u_t(y, x|z) \, p_{t|Z}(x|z) \right] p_Z(z) \\
+&= \sum_z \sum_x u_t(y, x|z) \, p_{t|Z}(x|z) \, p_Z(z) \\
+&= \sum_x \sum_z u_t(y, x|z) \, p_{t|Z}(x|z) \, p_Z(z) \\
+&= \sum_x \sum_z u_t(y, x|z) \, \frac{p_{t|Z}(x|z) p_Z(z)}{p_t(x)} \, p_t(x) \\
+&\stackrel{\text{(贝叶斯法则)}}{=} \sum_x \Bigg( \sum_z u_t(y, x|z) \, p_{Z|t}(z|x) \Bigg) p_t(x) \\
+&= \sum_x u_t(y, x) \, p_t(x)
 \end{aligned}
 \]
 其中等式（i）由定理13以及\(u_t(y, x|z)\)生成\(p_{t|Z}(y|z)\)这一事实推导得出；等式（ii）通过乘以并除以假设为正的\(p_t(x)\)得到。因此，\(u_t(y, x)\)满足与\(p_t\)相关的科尔莫戈罗夫方程（Kolmogorov Equation）。此外，由于每个\(u_t(y, x|z)\)均满足速率条件（6.4），故\(u_t(y, x)\)也满足该条件。最后，因为\(u_t(y, x|z)\)和\(p_{Z|t}(z|x)\)均属于\(C([0,1))\)，所以\(u_t(y, x) \in C([0,1))\)（特别地，\(p_{Z|t}(z|x) \in C([0,1))\)可由\(t \in [0,1)\)时\(p_t(x) > 0\)的假设推导得出）。根据定理13，由于\(u_t(x, y)\)满足与\(p_t\)相关的科尔莫戈罗夫方程和速率条件，因此它以（6.5）式的意义生成\(p_t\)。
