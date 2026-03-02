@@ -1,5 +1,6 @@
 /public
 /resources
 .vscode
+.cursor
 .hugo_cache
 /*.pdf
