@@ -5,8 +5,8 @@ draft: false
 
 ---
 
-{{< showcase "Theme Documentation - Basics" "Discover what the Hugo - DoIt theme is all about and the core-concepts behind it." "/theme-documentation-basics/featured-image.webp" "/theme-documentation-basics/" >}}
+{{< showcase "Flow Matching Guide and Code" "Flow Matching 教程与代码：从原理到实现的完整指南" "/mywebsite/posts/images/flow-matching-guide-and-code.webp" "/flow-matching-guide-and-code/" >}}
 
-{{< showcase "Theme Documentation - Content" "Find out how to create and organize your content quickly and intuitively in DoIt theme." "/theme-documentation-content/featured-image.webp" "/theme-documentation-content/" >}}
+{{< showcase "The Principles of Diffusion Models" "扩散模型原理：从起源到进展" "/mywebsite/posts/images/the-principles-of-diffusion-models.webp" "/the-principles-of-diffusion-models/" >}}
 
-{{< showcase "Theme Documentation - Extended Shortcodes" "DoIt theme provides multiple shortcodes on top of built-in ones in Hugo." "/theme-documentation-extended-shortcodes/featured-image.webp" "/theme-documentation-extended-shortcodes/" >}}
+{{< showcase "An Introduction to Flow Matching and Diffusion Models" "Flow Matching 与 diffusion原理解析" "/mywebsite/posts/images/an-introduction-to-flow-matching-and-diffusion-models.webp" "/an-introduction-to-flow-matching-and-diffusion-models/" >}}
