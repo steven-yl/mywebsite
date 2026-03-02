@@ -7,7 +7,7 @@ draft: false
 authors: [Steven]
 description: ""
 
-tags: [diffusion/flow, tutorial]
+tags: [diffusion/flow, tutorial, doing]
 categories: [diffusion/flow]
 series: [diffusion/flow系列]
 weight: 1
