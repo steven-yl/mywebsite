@@ -2,7 +2,7 @@
 title: "{{ replace .TranslationBaseName "-" " " | title }}"
 subtitle: ""
 date: {{ .Date }}
-lastmod: {{ .Date }}
+# lastmod: 
 draft: true
 authors: [Steven]
 description: ""
@@ -19,6 +19,8 @@ hiddenFromSearch: false
 featuredImage: ""
 featuredImagePreview: ""
 featuredImageCaption: ""
+
+summary: ""
 ---
 
 <!--more-->

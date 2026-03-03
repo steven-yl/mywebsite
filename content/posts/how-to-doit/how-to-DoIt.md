@@ -1,11 +1,10 @@
 ---
 title: "如何在 DoIt 中编写文章"
-subtitle: "Front Matter 填写说明与 content 目录规范"
+subtitle: ""
 date: 2026-02-28T10:26:59+08:00
 # lastmod: 2026-02-28T10:26:59+08:00
 draft: false
 authors: [Steven]
-description: "指导在 content/posts 中新增与编写文档，说明 front matter 各字段含义、编写规范，以及与 content 下各目录的兼容关系。"
 
 tags: [how-to-doit]
 categories: [how-to-doit]
@@ -18,6 +17,8 @@ hiddenFromSearch: false
 
 featuredImage: ""
 featuredImagePreview: "/mywebsite/posts/images/how-to-doit.webp"
+
+summary: "指导在 content/posts 中新增与编写文档，说明 front matter 各字段含义、编写规范，以及与 content 下各目录的兼容关系。"
 
 ---
 

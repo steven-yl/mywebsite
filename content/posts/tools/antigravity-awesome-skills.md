@@ -17,7 +17,7 @@ hiddenFromSearch: false
 featuredImage: ""
 featuredImagePreview: ""
 
-sumarry: "本文汇总并分类仓库 https://github.com/sickn33/antigravity-awesome-skills.git 所有技能，涵盖架构、开发、自动化等，方便查找与筛选。"
+summary: "本文汇总并分类仓库 https://github.com/sickn33/antigravity-awesome-skills.git 所有技能，涵盖架构、开发、自动化等，方便查找与筛选。"
 ---
 
 

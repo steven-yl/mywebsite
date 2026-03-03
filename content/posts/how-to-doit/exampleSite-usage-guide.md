@@ -3,7 +3,7 @@ title: "exampleSite使用指南"
 date: 2026-02-28
 draft: false
 authors: [Steven]
-description: "themes/DoIt/exampleSite 下各文件/目录的作用及如何在自己的站点中使用。"
+
 tags: [how-to-doit]
 categories: [how-to-doit]
 series: [DoIt]
@@ -15,7 +15,9 @@ hiddenFromHomePage: false
 hiddenFromSearch: false
 
 featuredImage: ""
-featuredImagePreview: "/mywebsite/posts/images/exampleSite-usage-guide.webp"
+featuredImagePreview: "/mywebsite/posts/images/examplesite-usage-guide.webp"
+
+summary: "themes/DoIt/exampleSite 下各文件/目录的作用及如何在自己的站点中使用。"
 ---
 
 `themes/DoIt/exampleSite` 是 DoIt 主题的**示例站点**，用一套完整的 config、content、static、data 演示主题功能。**不要用它覆盖你的项目**，只按需参考或拷贝需要的部分。
