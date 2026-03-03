@@ -422,7 +422,7 @@ bundle = false
     [page.comment.utterances]
       enable = true
       # owner/repo
-      repo = "steven-yl/mywebsite/utterances-comments"
+      repo = "steven-yl/mywebsite"
       issueTerm = "pathname"
       label = ""
       lightTheme = "github-light"
@@ -516,7 +516,7 @@ bundle = false
     # Publisher info
     # 出版者信息
     [page.seo.publisher]
-      name = "xxxx"
+      name = "mywebsite"
       logoUrl = "/images/avatar.webp"
   # Related content config
   # 相关文章推荐配置
