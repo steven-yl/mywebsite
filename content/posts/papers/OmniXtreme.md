@@ -7,8 +7,8 @@ draft: true
 authors: [Steven]
 description: ""
 
-tags: [robots]
-categories: [robots]
+tags: [robots, papers]
+categories: [robots, papers]
 series: [robots系列]
 weight: 50
 series_weight: 50

@@ -6,7 +6,7 @@ draft: false
 authors: [Steven]
 description: "介绍 Cursor Marketplace 中的插件体系：插件组件（Rules、Skills、Agents、MCP、Hooks）、按分类的插件列表（精选、基础设施、数据与分析、效率、Agent 编排等）、安装与管理方式，便于按场景选型与使用。"
 
-tags: [cursor, tools, marketplace, plugins]
+tags: [cursor, tools]
 categories: [tools]
 series: [tools系列]
 weight: 102
