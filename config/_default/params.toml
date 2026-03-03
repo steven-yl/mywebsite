@@ -158,11 +158,11 @@ bundle = false
   linkToMarkdown = true
   # configure the link to view source the post
   # 配置文章原始文件的链接
-  linkToSource = "https://github.com/steven-yl/content/{path}"
+  linkToSource = "https://github.com/steven-yl/mywebsite/blog/master/content/{path}"
   # "https://github.com/user/repo/blob/main/{path}"
   # configure the link to edit the post
   # 配置编辑文章的链接
-  linkToEdit = "https://github.com/steven-yl/edit/content/{path}"
+  linkToEdit = "https://github.com/steven-yl/mywebsite/edit/master/content/{path}"
   # https://github.com/user/repo/edit/main/{path}
   # https://gitlab.com/user/repo/-/edit/main/{path}
   # https://bitbucket.org/user/repo/src/main/{path}?mode=edit

@@ -1,5 +1,5 @@
 ---
-title: "SDE&ODE&离散&连续的转换"
+title: "SDE-ODE-离散-连续的转换"
 subtitle: ""
 date: 2026-02-28T10:26:59+08:00
 # lastmod: 2026-02-28T10:26:59+08:00
