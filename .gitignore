@@ -4,3 +4,4 @@
 .cursor
 .hugo_cache
 /*.pdf
+/.venv
