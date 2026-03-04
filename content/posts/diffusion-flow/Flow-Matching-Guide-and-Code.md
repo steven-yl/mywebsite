@@ -1558,7 +1558,7 @@ exp \left[ hu_{t}(X_{t},X_{t})\right] & y=X_{t} \\
 对于CTMC，解保证在所有时间\(t \in[0,1)\)都存在，不需要额外条件（与定理1中的非线性情况不同）。科尔莫戈罗夫方程与连续性方程(3.25)有着密切的联系。利用速率条件重新排列式(6.8)的右侧：
 \[
 \begin{aligned}
-\sum_{x} u_{t}(y, x) p_{t}(x) & \stackrel{(6.4)}{=} \overbrace{\sum_{x \neq y} u_{t}(y, x) p_{t}(x)}^{入射通量} - \overbrace{\sum_{x \neq y} u_{t}(x, y) p_{t}(y)}^{出射通量} \\
+\sum_{x} u_{t}(y, x) p_{t}(x) & \stackrel{(6.4)}{=} \overbrace{\sum_{x \neq y} u_{t}(y, x) p_{t}(x)}^\text{入射通量} - \overbrace{\sum_{x \neq y} u_{t}(x, y) p_{t}(y)}^\text{出射通量} \\
 & =-\sum_{x \neq y}\left[j_{t}(x, y)-j_{t}(y, x)\right]
 \end{aligned}
 \]
