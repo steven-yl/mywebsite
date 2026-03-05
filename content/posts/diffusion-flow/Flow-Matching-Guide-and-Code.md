@@ -1423,7 +1423,7 @@ p_{1 | t}(x_{1} | x) = \frac{p_{t | 1}(x | x_{1}) q(x_{1})}{p_{t}(x)}, (5.11)
 ### 5.6 基于预度量的条件流
 在建立了使用RCFM损失学习流模型的方法后，我们还需要指定条件概率路径及其生成速度场。与时变流情况（4.6）类似，我们首先给出相应条件流\(\psi: [0,1) \times M \times M \to M\)的要求，使得\(p_{t | 1}(\cdot | x_{1})\)满足边界条件（5.8）。条件流模型为：
 \[
-X_{t | 1} = \psi_{t}(X_{0} | x_{1}), 其中 X_{0} \sim \pi_{0 | 1}(\cdot | x_{1}), (5.15)
+X_{t | 1} = \psi_{t}(X_{0} | x_{1}), \text{其中} X_{0} \sim \pi_{0 | 1}(\cdot | x_{1}), (5.15)
 \]
 其中条件流定义为：
 \[
@@ -1460,7 +1460,7 @@ u_{t}(x | x_{1}) = \frac{d log \overline{\kappa}(t)}{dt} d(x, x_{1}) \frac{\nabl
 另一个问题是，基于测地线插值和预度量定义的条件流都可能存在奇异性，例如在紧流形上。例如，在二维球面上，测地线函数\(d(x, x_{1})\)在对极点\(x = -x_{1}\)处不可微。此外，任何光滑函数（如\(x \mapsto d(x, x_{1})\)）至少会有两个临界点（最大值和最小值），在这些点上（5.19）中的速度无定义。然而，这类问题点的集合通常非常小（实际上通常体积为零）。因此，至少在我们已知的用例中，这个问题在实践中不会造成麻烦。
 
 无论如何，为了解决这个问题，我们可以在测地线条件流中引入增强调度器。即使用\(\bar{\kappa}(t, x, x_{1})\)（它也依赖于\(x\)和\(x_{1}\)）使（5.17）全局光滑。为了解决基于预度量的条件流的零梯度问题，我们可以将非退化性要求放宽如下：
-3. 非退化性（放宽）：对于所有\(y \in M\)，集合\(A_{y} = \{x \in M | \nabla d(x, y) = 0 且 x ≠ y\}\)的体积为0。
+3. 非退化性（放宽）：对于所有\(y \in M\)，集合 \(A_{y} = \{x \in M | \nabla d(x, y) = 0 \text{且} x ≠ y\}\)的体积为0。
 
 **代码8：使用CFM目标在球面上训练测地线流**
 ```python
@@ -1490,6 +1490,10 @@ for x_0, x_1 in dataloader:  ## 来自π0,1的样本，形状为[batch_size, *da
     loss.backward()
     optimizer.step()
 ```
+### 5.7 详细补充文档
+  [Flow Matching Guide and Code 第5章解读：指数映射-对数映射-测地线条件流](/mywebsite/flow-matching-guide-and-code-5-non-euclidean-flow-matching/)
+
+  [Flow Matching Guide and Code 第5章解读：Non-Euclidean Flow Matching](/mywebsite/Flow-Matching-Guide-and-Code-5-Non-Euclidean-Flow-Matching.md/)
 
 ## 6 Continuous Time Markov Chain Models
 本节将连续时间马尔可夫链（CTMC）作为流模型的替代生成模型，适用于生成离散数据（即位于离散（且有限）状态空间中的数据）。CTMC是马尔可夫过程，是后面第7节讨论的离散流匹配（DFM）（Campbell等人，2024；Gat等人，2024）生成模型范式的基础。因此，本节与第3节类似，在第3节中我们将流作为流匹配（FM）生成模型范式的基础进行介绍。
