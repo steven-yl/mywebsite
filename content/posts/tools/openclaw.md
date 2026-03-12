@@ -1,11 +1,11 @@
 ---
-
-## title: "OpenClaw 安装文件与目录结构总览"
+title: "OpenClaw 安装文件与目录结构总览"
 date: 2024-06-09T00:00:00+08:00
 draft: false
 categories: ["OpenClaw", "tools"]
 tags: ["OpenClaw", "tools"]
 description: "本文详细梳理 OpenClaw 的安装目录、配置与核心文件，便于检查安装状态与进行后续个性化配置。"
+---
 
 ## OpenClaw 安装文件汇总
 
