@@ -14,7 +14,15 @@
 
 ## 博客状态更新
 
-当收到"更新博客状态"输入时，根据【git commit的时间】比【guide版本号】时间判断新增内容，更新content/posts/blog_guide.md内容, 同时更新guide版本号(日期)、新增的标签 / 分类 / 系列。
+当收到“更新博客状态”或“博客状态更新”输入时，按如下格式与规范自动处理：
+
+1. 对比【git commit 时间（至秒，格式：YYYY-MM-DDTHH:MM:SS±HH:MM）】与【GUIDE_VERSION（同样至秒）】，判定是否有新增内容。
+2. 若存在新增内容，则自动更新 content/posts/blog_guide.md 文件，内容包括：
+   - 新增的标签（tags）、分类（categories）、系列（series）
+   - 其他增量更新相关内容
+3. 同时将 GUIDE_VERSION 自动更新为本次最新 commit 时间（精确到秒，格式：YYYY-MM-DDTHH:MM:SS±HH:MM）。
+
+版本号、时间等均需严格遵循上述格式，确保唯一性与可追溯性。
 
 
 ---
