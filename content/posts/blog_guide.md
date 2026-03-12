@@ -45,6 +45,8 @@ GUIDE_VERSION: 2026-03-12T08:06:00+08:00
 - tools
 - torch.utils.data
 - tutorial
+- 优化器
+- 训练
 
 **categories（去重）：**
 - diffusion/flow
@@ -125,6 +127,8 @@ GUIDE_VERSION: 2026-03-12T08:06:00+08:00
 | `pytorch/pytorch_dataset_guide.md` | PyTorch Dataset 体系技术文档 | PyTorch, Dataset, Deep Learning | PyTorch | PyTorch 实践指南 |
 | `pytorch/dataloader_guide.md` | PyTorch DataLoader 技术解读 | PyTorch, DataLoader, Deep Learning | PyTorch | PyTorch 实践指南 |
 | `pytorch/distributed_training_guide.md` | PyTorch 分布式训练与操作工具技术文档 | PyTorch, 分布式训练, Deep Learning | PyTorch | PyTorch 实践指南 |
+| `pytorch/training_solver_guide.md` | PyTorch 模型训练技术文档：求解器、参数配置与训练循环 | PyTorch, Deep Learning, 优化器, 训练 | PyTorch | PyTorch 实践指南 |
+| `pytorch/tensor_ops_guide.md` | PyTorch 张量工具函数技术文档：创建、计算、拼接与索引 | PyTorch, Deep Learning | PyTorch | PyTorch 实践指南 |
 | `others/edu-ai.md` | 幼儿园AI教育平台调研 | （空） | （空） | （空） |
 
 ---
