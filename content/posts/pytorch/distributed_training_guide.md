@@ -17,7 +17,7 @@ hiddenFromHomePage: false
 hiddenFromSearch: false
 
 featuredImage: ""
-featuredImagePreview: "/mywebsite/posts/images/distributed_training_guide.webp"
+featuredImagePreview: ""
 ---
 
 ## 文档索引
