@@ -19,7 +19,7 @@ hiddenFromSearch: false
 ## featuredImage: ""
 featuredImagePreview: ""
 
-本文用于汇总和记录日常使用的 Prompt，按场景分类，方便在 Cursor、Claude、ChatGPT 等工具中复用与迭代。文末提供**单条记录模板**，新增时复制模板填写即可。
+summary: 本文用于汇总和记录日常使用的 Prompt，按场景分类，方便在 Cursor、Claude、ChatGPT 等工具中复用与迭代。文末提供**单条记录模板**，新增时复制模板填写即可。
 
 
 

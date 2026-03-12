@@ -1,3 +1,25 @@
+---
+title: "PyTorch DataLoader 技术解读"
+subtitle: ""
+date: 2026-03-12T00:00:00+08:00
+draft: false
+authors: [Steven]
+description: "系统解读 PyTorch DataLoader：与 Dataset 的接口、Sampler 与索引流、collate_fn、多进程 Worker 与传输优化，以及在本项目中的用法。"
+summary: "从索引流、取样本、成 batch 三条线讲清 DataLoader 职责，涵盖 Sampler、collate_fn、num_workers、pin_memory 及与 Dataset 的衔接。"
+
+tags: ["PyTorch", "DataLoader", "Deep Learning"]
+categories: ["PyTorch"]
+series: ["PyTorch 实践指南"]
+weight: 3
+series_weight: 3
+
+hiddenFromHomePage: false
+hiddenFromSearch: false
+
+featuredImage: ""
+featuredImagePreview: ""
+---
+
 # PyTorch DataLoader 技术解读
 
 ## 文档索引

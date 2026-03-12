@@ -12,6 +12,13 @@
 
 ---
 
+## 博客状态更新
+
+当收到"更新博客状态"输入时，根据【git commit的时间】比【guide版本号】时间判断新增内容，更新content/posts/blog_guide.md内容, 同时更新guide版本号(日期)、新增的标签 / 分类 / 系列。
+
+
+---
+
 ## 博客编写规范
 
 结合当前 `content/posts` 下已发表文章，总结本博客的推荐编写规范，供新文章创建与旧文维护时参考。
@@ -24,12 +31,13 @@
   - `draft`：新建时可设为 `true`，发布前改为 `false`。
   - `authors`：统一使用 `[Steven]`。
   - `description`：1～2 句自然语言总结全文核心内容，便于列表与 SEO。
+  - `summary`：1～2 句自然语言总结全文核心内容，便于列表与 SEO。
 - **推荐字段**：
   - `tags`：细颗粒度关键词（技术名词、工具名、主题），从[第 1 节的去重列表](#1-全站标签--分类--系列汇总)中优先复用，避免同义词泛滥。
   - `categories`：较粗粒度的栏目，如 `diffusion/flow`、`papers`、`tools`、`PyTorch`、`how-to-doit` 等，可多选但不宜过多。
   - `series`：属于系列文章时必填，如 `diffusion/flow系列`、`tools系列`、`DoIt`、`robots系列`。
   - `weight` / `series_weight`：用于控制同一目录或系列内的排序（数值越小越靠前），长系列建议按章节顺序递增。
-  - `featuredImage` / `featuredImagePreview`：如有配图，路径建议为 `/mywebsite/posts/images/<slug>.webp`，文件名与 slug 对应。
+  - `featuredImage` / `featuredImagePreview`：如果有同名的配图，增加内容，路径建议为 `/mywebsite/posts/images/<slug>.webp`，文件名与 slug 对应。
 
 ### 目录与分类选择
 

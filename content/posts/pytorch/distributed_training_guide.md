@@ -1,5 +1,23 @@
-# PyTorch 分布式训练与操作工具技术文档
+---
+title: "PyTorch 分布式训练与操作工具技术文档"
+subtitle: ""
+date: 2026-03-12T00:00:00+08:00
+draft: false
+authors: [Steven]
+description: "系统梳理 PyTorch 原生分布式训练与常用工具的核心概念、API 以及端到端实践流程。"
+summary: "从进程组初始化、DDP 封装、数据分片、集体通信到 Lightning 封装，全面讲解如何在单机多卡与多机多卡场景下正确使用 PyTorch 分布式训练。"
 
+tags: ["PyTorch", "分布式训练", "Deep Learning"]
+categories: ["PyTorch"]
+series: ["PyTorch 实践指南"]
+weight: 1
+series_weight: 1
+
+hiddenFromHomePage: false
+hiddenFromSearch: false
+
+featuredImage: ""
+featuredImagePreview: "/mywebsite/posts/images/distributed_training_guide.webp"
 ---
 
 ## 文档索引

@@ -19,6 +19,8 @@ hiddenFromSearch: false
 
 ---
 
+guide版本号: 2cb909b2c3dddad8bfc9cd1fdb130cb63835fbd0
+
 ## 1 全站标签 / 分类 / 系列汇总
 
 **tags（去重）：**

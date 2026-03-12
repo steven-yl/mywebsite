@@ -1,3 +1,25 @@
+---
+title: "PyTorch Dataset 体系技术文档"
+subtitle: ""
+date: 2026-03-12T00:00:00+08:00
+draft: false
+authors: [Steven]
+description: "系统梳理 PyTorch 数据集体系：从 Dataset 基类、内置扩展、PyG/HuggingFace 到本项目 BaseDataset/GTDataset，以及与 DataLoader 的协作。"
+summary: "覆盖 map-style/IterableDataset、TensorDataset/ConcatDataset/Subset、图数据与 HF datasets，以及 padding、collate 与 DataLoader 的衔接。"
+
+tags: ["PyTorch", "Dataset", "Deep Learning"]
+categories: ["PyTorch"]
+series: ["PyTorch 实践指南"]
+weight: 2
+series_weight: 2
+
+hiddenFromHomePage: false
+hiddenFromSearch: false
+
+featuredImage: ""
+featuredImagePreview: ""
+---
+
 # PyTorch Dataset 体系技术文档
 
 ## 文档索引
