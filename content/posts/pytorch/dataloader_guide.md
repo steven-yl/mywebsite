@@ -32,8 +32,7 @@ featuredImagePreview: ""
 | [四、batch 与 collate_fn](#四batch-与-collate_fn) | 聚批与默认/自定义 collate | batch_size、drop_last、default_collate 行为、自定义 collate、padding |
 | [五、多进程 Worker 与传输优化](#五多进程-worker-与传输优化) | 加速取数与 CPU→GPU | num_workers、worker_init_fn、persistent_workers、prefetch_factor、pin_memory、multiprocessing_context |
 | [六、迭代行为与使用方式](#六迭代行为与使用方式) | 遍历与长度 | `for batch in loader`、`iter`/`next`、`len(loader)`、多 epoch 注意点 |
-| [七、本项目中的用法](#七本项目中的用法) | pl_train / GTDataset / gt_collate_fn | 配置、ConcatDataset、Hydra instantiate、与 [pytorch_dataset_guide.md](./pytorch_dataset_guide.md) 衔接 |
-| [八、小结与速查](#八小结与速查) | 汇总与速查表 | 模块对照表、参数速查、数据流一句话 |
+| [七、小结与速查](#八小结与速查) | 汇总与速查表 | 模块对照表、参数速查、数据流一句话 |
 
 ---
 

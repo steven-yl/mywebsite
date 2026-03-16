@@ -1,11 +1,11 @@
 ---
 
-title: "PyTorch 张量工具函数技术文档：创建、计算、拼接与索引"
+title: "PyTorch Tensor 工具函数技术文档：创建、计算、拼接与索引"
 subtitle: ""
 date: 2026-03-12T00:00:00+08:00
 draft: false
 authors: [Steven]
-description: "系统解读 PyTorch 张量工具函数：从总览到创建、形状与视图、拼接/堆叠/拆分、逐元与矩阵运算、归约、索引与高级索引、比较逻辑及 einsum 等，覆盖完整 API 与可运行示例。"
+description: "系统解读 PyTorch tensor工具函数：从总览到创建、形状与视图、拼接/堆叠/拆分、逐元与矩阵运算、归约、索引与高级索引、比较逻辑及 einsum 等，覆盖完整 API 与可运行示例。"
 summary: "总览 PyTorch 张量运算知识结构；创建/reshape/cat/stack/split；逐元与矩阵运算；归约；索引、gather/scatter；比较与逻辑；einsum 等工具；速查与延伸。"
 
 tags: ["PyTorch", "Deep Learning"]

@@ -33,7 +33,7 @@ featuredImagePreview: ""
 | [七、分布式启动](#七分布式启动) | torchrun 与 launch | 单机/多机命令、全部命令行参数、环境变量、与 init 的衔接、示例 |
 | [八、Checkpoint 与日志](#八checkpoint-与日志) | 仅 rank 0 写盘与 barrier | 保存/加载模式、barrier 放置、日志只打 rank 0、示例 |
 | [九、完整示例](#九完整示例) | 原生 DDP 端到端 | 与项目风格一致的可运行脚本与启动命令 |
-| [十、PyTorch Lightning](#十使用-pytorch-lightning-做-ddp) | DDPStrategy | 封装内容、单机/多机用法、与本项目 pl_train 一致示例 |
+| [十、PyTorch Lightning](#十使用-pytorch-lightning-做-ddp) | DDPStrategy | 封装内容、单机/多机用法 |
 | [十一、速查与小结](#十一速查与小结) | 组件对照表与延伸 | 组件/概念速查表、进阶方向 |
 
 **阅读建议**：先读概览与核心概念建立全局图景，再按需跳转到对应章节查阅 API 与示例；做实现时可按「启动 → init → DDP + Sampler → 训练循环 → barrier/rank0 保存」顺序对照各章。
@@ -123,7 +123,7 @@ featuredImagePreview: ""
 |------|------------------------------|----------------------------------|
 | **控制力** | 完全手控 init、sampler、barrier、保存 | 框架封装，init/sampler/保存由 Trainer 处理 |
 | **代码量** | 多：需写启动、rank 判断、sampler、barrier | 少：指定 strategy=DDPStrategy() 即可 |
-| **适用** | 自定义训练循环、非标准流程 | 标准 train/val 循环、快速实验、与本项目 pl_train 一致 |
+| **适用** | 自定义训练循环、非标准流程 | 标准 train/val 循环、快速实验 |
 
 ---
 
@@ -307,7 +307,7 @@ torch.nn.parallel.DistributedDataParallel(
 
 - **device_ids**：当前进程对应的 GPU 列表，单进程单卡时为 `[local_rank]`。  
 - **find_unused_parameters**：若模型存在在 forward 中未参与计算的参数（如部分分支未走），必须设为 True，否则 backward 会报错。  
-- **gradient_as_bucket_view**：梯度以 bucket 视图形式存在，可节省显存；本项目 pl_train 使用 True。  
+- **gradient_as_bucket_view**：梯度以 bucket 视图形式存在，可节省显存。  
 - **broadcast_buffers**：每个 step 前将 BN 等 buffer 从 rank 0 广播到其它 rank，保证一致性。
 
 ### 4.3 关键概念
@@ -441,7 +441,7 @@ torch.distributed.all_reduce(tensor, op=ReduceOp.SUM, group=None, async_op=False
 
 - **作用**：各进程提供形状相同的 tensor，按 op 聚合后写回各进程的 tensor（inplace）。  
 - **op**：`ReduceOp.SUM`、`ReduceOp.AVG`、`ReduceOp.PRODUCT`、`ReduceOp.MIN`、`ReduceOp.MAX`。  
-- **应用**：梯度或标量指标汇总；本项目 `code_train/utils/util.py` 中 `reduce_mean` 即 all_reduce(SUM) 再除以 nprocs。
+- **应用**：梯度或标量指标汇总；
 
 #### 6.2.3 broadcast
 
@@ -469,7 +469,7 @@ torch.distributed.all_gather(tensor_list, tensor, group=None, async_op=False)
 
 - **作用**：各进程提供一个 tensor，汇总后每个进程得到完整的 tensor_list（所有进程的 tensor）。  
 - **约束**：各进程的 tensor 形状一致；tensor_list 长度为 world_size。  
-- **应用**：收集各卡上的局部结果成完整列表；本项目 `code_train/utils/util.py` 中有对任意可 pickle 对象的 all_gather 封装（先序列化再 all_gather 张量）。
+- **应用**：收集各卡上的局部结果成完整列表；
 
 #### 6.2.6 gather
 
@@ -672,7 +672,7 @@ if __name__ == "__main__":
 - 多机：仍用 **torchrun** 在每台机器上启动，设置 NNODES、NODE_RANK、MASTER_ADDR、MASTER_PORT；Lightning 检测到已有分布式环境会加入，不再重复 spawn。  
 - `DDPStrategy(find_unused_parameters=True)` 与原生 DDP 含义相同。
 
-### 10.3 示例（与本项目 pl_train.py 一致）
+### 10.3 示例
 
 ```python
 import pytorch_lightning as pl
@@ -724,4 +724,4 @@ trainer.fit(model, train_loader, val_loader)
 
 ---
 
-*文档版本：基于 PyTorch 2.x 与 PyTorch Lightning 2.x；与项目 pl_train、torch2j6m、scripts 中的分布式用法保持一致。*
+*文档版本：基于 PyTorch 2.x 与 PyTorch Lightning 2.x*
