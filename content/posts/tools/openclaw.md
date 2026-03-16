@@ -666,3 +666,10 @@ cd my-skill
 | **weather**   | 低    | 无敏感数据            |
 
 
+
+---
+
+### 相关阅读
+
+- [虎嗅网：AI助手OpenClaw的实践与应用](https://m.huxiu.com/article/4842324.html?f=rss) - 关于OpenClaw在实际场景中的应用案例和深度分析
+
