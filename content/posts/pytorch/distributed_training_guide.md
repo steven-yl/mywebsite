@@ -722,6 +722,163 @@ trainer.fit(model, train_loader, val_loader)
 - **自定义进程组**：多任务时可为不同任务建不同进程组，使用 `process_group` 参数。  
 - **弹性训练**：torchrun 支持 `--max_restarts` 等，节点失败时可重启；更复杂弹性可用 PyTorch Elastic。
 
+
 ---
 
-*文档版本：基于 PyTorch 2.x 与 PyTorch Lightning 2.x*
+
+## 📋 PyTorch 分布式常用接口完整列表
+
+以下是 PyTorch 分布式训练中最常用的接口，按功能分类整理：
+
+---
+
+### 一、**初始化与管理**
+
+| 接口 | 描述 | 常用参数 | 示例 |
+|------|------|----------|------|
+| `dist.init_process_group` | 初始化分布式进程组 | `backend`, `init_method`, `rank`, `world_size` | `dist.init_process_group('nccl', rank=rank, world_size=4)` |
+| `dist.get_rank()` | 获取当前进程的 rank | 无 | `rank = dist.get_rank()` |
+| `dist.get_world_size()` | 获取总进程数 | 无 | `world_size = dist.get_world_size()` |
+| `dist.is_initialized()` | 检查是否已初始化 | 无 | `if dist.is_initialized():` |
+| `dist.destroy_process_group()` | 销毁进程组 | 可选 `group` | `dist.destroy_process_group()` |
+| `dist.new_group()` | 创建新的进程子组 | `ranks` | `group = dist.new_group([0,1,2])` |
+
+---
+
+### 二、**点对点通信**
+
+| 接口 | 描述 | 常用参数 | 示例 |
+|------|------|----------|------|
+| `dist.send()` | 发送张量 | `tensor`, `dst` | `dist.send(tensor, dst=1)` |
+| `dist.recv()` | 接收张量 | `tensor`, `src` | `dist.recv(tensor, src=0)` |
+| `dist.isend()` | 异步发送 | `tensor`, `dst` | `work = dist.isend(tensor, dst=1)` |
+| `dist.irecv()` | 异步接收 | `tensor`, `src` | `work = dist.irecv(tensor, src=0)` |
+
+---
+
+### 三、**集体通信（Collective Communication）**
+
+#### 3.1 基本集体操作
+
+| 接口 | 描述 | 常用参数 | 示例 |
+|------|------|----------|------|
+| **`dist.all_reduce()`** | 所有进程规约并广播结果 | `tensor`, `op`, `group`, `async_op` | `dist.all_reduce(tensor, op=dist.ReduceOp.SUM)` |
+| `dist.reduce()` | 规约到根进程 | `tensor`, `dst`, `op`, `group` | `dist.reduce(tensor, dst=0, op=dist.ReduceOp.SUM)` |
+| `dist.broadcast()` | 从根进程广播 | `tensor`, `src`, `group` | `dist.broadcast(tensor, src=0)` |
+| `dist.all_gather()` | 收集所有进程数据到每个进程 | `tensor_list`, `tensor`, `group` | `dist.all_gather([t1,t2,t3], tensor)` |
+| `dist.gather()` | 收集数据到根进程 | `tensor`, `gather_list`, `dst` | `dist.gather(tensor, gather_list, dst=0)` |
+| `dist.scatter()` | 从根进程分发数据 | `tensor`, `scatter_list`, `src` | `dist.scatter(tensor, scatter_list, src=0)` |
+| `dist.reduce_scatter()` | 规约后分发 | `output`, `input_list`, `op` | `dist.reduce_scatter(output, input_list, op=dist.ReduceOp.SUM)` |
+| `dist.all_to_all()` | 全交换 | `output_tensor_list`, `input_tensor_list` | `dist.all_to_all([out1,out2], [in1,in2])` |
+
+#### 3.2 多张量集体操作（更高效）
+
+| 接口 | 描述 | 示例 |
+|------|------|----------|
+| `dist.all_reduce_coalesced()` | 合并多个张量一起 AllReduce | `dist.all_reduce_coalesced([t1,t2,t3])` |
+| `dist.all_gather_coalesced()` | 合并多个张量一起 AllGather | `dist.all_gather_coalesced(output_lists, input_list)` |
+| `dist.reduce_scatter_coalesced()` | 合并多个张量一起 ReduceScatter | `dist.reduce_scatter_coalesced(outputs, input_lists)` |
+
+#### 3.3 多 GPU 特有（NCCL）
+
+| 接口 | 描述 | 示例 |
+|------|------|----------|
+| `dist.all_reduce_multigpu()` | 多 GPU 单进程 AllReduce | `dist.all_reduce_multigpu([t0,t1])` |
+| `dist.all_gather_multigpu()` | 多 GPU 单进程 AllGather | `dist.all_gather_multigpu([out0,out1], [in0,in1])` |
+| `dist.reduce_multigpu()` | 多 GPU 单进程 Reduce | `dist.reduce_multigpu([t0,t1], dst=0)` |
+
+---
+
+### 四、**同步与屏障**
+
+| 接口 | 描述 | 参数 | 示例 |
+|------|------|------|------|
+| `dist.barrier()` | 同步屏障，等待所有进程到达 | `group`, `async_op` | `dist.barrier()` |
+| `Work.wait()` | 等待异步操作完成 | 无 | `work.wait()` |
+| `Work.is_completed()` | 检查异步操作是否完成 | 无 | `if work.is_completed():` |
+
+---
+
+### 五、**分布式数据加载**
+
+| 接口 | 描述 | 常用参数 | 示例 |
+|------|------|----------|------|
+| `DistributedSampler` | 分布式采样器 | `dataset`, `num_replicas`, `rank`, `shuffle` | `sampler = DistributedSampler(dataset)` |
+| `DataLoader` | 配合 sampler 使用 | `dataset`, `batch_size`, `sampler` | `loader = DataLoader(ds, sampler=sampler)` |
+
+---
+
+### 六、**分布式模型封装**
+
+| 接口 | 描述 | 常用参数 | 示例 |
+|------|------|----------|------|
+| `DistributedDataParallel` | 分布式数据并行封装 | `module`, `device_ids`, `output_device` | `model = DDP(model, device_ids=[rank])` |
+| `DataParallel` | 单机多卡数据并行（不推荐） | `module`, `device_ids` | `model = DataParallel(model)` |
+
+---
+
+### 七、**进程启动与管理**
+
+| 接口/工具 | 描述 | 常用参数 | 示例 |
+|------|------|----------|------|
+| `torch.multiprocessing.spawn` | 启动多进程 | `fn`, `args`, `nprocs` | `mp.spawn(train, args=(4,), nprocs=4)` |
+| `torchrun` | 命令行启动工具 | `--nproc_per_node`, `--nnodes` | `torchrun --nproc_per_node=4 train.py` |
+| `dist.launch` | 旧版启动脚本 | `--nproc_per_node` | `python -m torch.distributed.launch` |
+
+---
+
+### 八、**常用枚举与常量**
+
+| 枚举/常量 | 描述 | 值示例 |
+|------|------|------|
+| **`ReduceOp`** | 规约操作类型 | `SUM`, `AVG`, `MAX`, `MIN`, `PRODUCT` |
+| **`group.WORLD`** | 默认全局进程组 | `dist.group.WORLD` |
+| **Backend** | 后端类型 | `'nccl'`, `'gloo'`, `'mpi'` |
+
+**ReduceOp 详解**：
+```python
+dist.ReduceOp.SUM      # 求和
+dist.ReduceOp.AVG      # 求平均
+dist.ReduceOp.MAX      # 最大值
+dist.ReduceOp.MIN      # 最小值
+dist.ReduceOp.PRODUCT  # 求积
+dist.ReduceOp.BAND     # 按位与
+dist.ReduceOp.BOR      # 按位或
+dist.ReduceOp.BXOR     # 按位异或
+```
+
+---
+
+### 九、**实用工具函数**
+
+| 接口 | 描述 | 示例 |
+|------|------|----------|
+| `dist.get_backend()` | 获取当前后端 | `backend = dist.get_backend()` |
+| `dist.get_rank(group)` | 获取指定组内 rank | `rank = dist.get_rank(group)` |
+| `dist.get_world_size(group)` | 获取指定组大小 | `size = dist.get_world_size(group)` |
+| `dist.batch_isend_irecv()` | 批量异步通信 | `ops = dist.batch_isend_irecv([...])` |
+| `dist.reduce_op` | 旧版规约操作 | `dist.reduce_op.SUM`（已弃用） |
+
+---
+
+### 十、**梯度相关（自动管理）**
+
+| 接口 | 描述 | 说明 |
+|------|------|----------|
+| `model.require_backward_grad_sync` | 控制是否同步梯度 | `False` 可禁用梯度同步（梯度累积） |
+| `model.no_sync()` | 上下文管理器，临时禁用梯度同步 | `with model.no_sync(): loss.backward()` |
+| `register_comm_hook()` | 注册自定义通信钩子 | `model.register_comm_hook(state, hook)` |
+
+---
+
+### 📝 总结
+
+| 类别 | 最常用接口 | 用途 |
+|------|----------|------|
+| **初始化** | `init_process_group`, `get_rank` | 启动分布式环境 |
+| **同步** | `all_reduce` | 梯度聚合 |
+| **模型封装** | `DistributedDataParallel` | 自动梯度同步 |
+| **数据加载** | `DistributedSampler` | 分片数据 |
+| **启动** | `torchrun` | 多进程启动 |
+| **屏障** | `barrier` | 进程同步 |
+

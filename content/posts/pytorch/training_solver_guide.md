@@ -536,7 +536,7 @@ optimizer.step()
 
 ### 7.4 与 DDP 的衔接
 
-在 [分布式训练](./distributed_training_guide.md) 中，每 rank 独立维护自己的 optimizer；DDP 在 backward 时已做梯度 AllReduce，因此各 rank 上梯度一致，各自 `optimizer.step()` 后参数保持同步。无需对 optimizer 做额外集体通信。
+在 分布式训练 中，每 rank 独立维护自己的 optimizer；DDP 在 backward 时已做梯度 AllReduce，因此各 rank 上梯度一致，各自 `optimizer.step()` 后参数保持同步。无需对 optimizer 做额外集体通信。
 
 ---
 
@@ -600,7 +600,7 @@ scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, warmup_lambda)
 ### 9.4 常见坑
 
 - 忘记 `zero_grad()`：梯度会累积，等价于放大 lr。
-- `scheduler.step()` 在 `optimizer.step()` 之前：本 step 仍用旧 lr，逻辑上易混乱，建议先 optimizer 再 scheduler。
+- `scheduler.step()` 在 `optimizer.step()` 之前其实并不会出错，但大多数调度器（如 StepLR、CosineAnnealingLR）推荐在 `optimizer.step()` 之后调用，这样每 step 用的是当前 step 的 lr，和论文/官方实现一致。部分调度器（如 ReduceLROnPlateau）需根据文档操作。
 - 恢复 checkpoint 时先恢复 scheduler 再恢复 optimizer，否则 scheduler 会覆盖加载进来的 lr。
 - ReduceLROnPlateau 的 `step(metric)` 要传验证指标，且注意 mode（'min'/'max'）。
 
