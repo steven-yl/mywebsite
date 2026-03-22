@@ -18,7 +18,7 @@ hiddenFromSearch: false
 <!--more-->
 
 ---
-GUIDE_VERSION: 2026-03-12T08:06:00+08:00
+GUIDE_VERSION: 2026-03-22T17:59:50+08:00
 
 ## 1 全站标签 / 分类 / 系列汇总
 
@@ -98,7 +98,15 @@ GUIDE_VERSION: 2026-03-12T08:06:00+08:00
 
 ---
 
-## 4 tools（工具）
+## 4 robots（机器人）
+
+| 路径 | title | tags | categories | series |
+|------|--------|------|------------|--------|
+| `robots/arm_control.md` | 机械臂柔顺控制综合笔记：模式对照、阻抗/导纳、力感知、动力学估计与拖动示教 | robots, tutorial | robots | robots系列 |
+
+---
+
+## 5 tools（工具）
 
 | 路径 | title | tags | categories | series |
 |------|--------|------|------------|--------|
@@ -111,7 +119,7 @@ GUIDE_VERSION: 2026-03-12T08:06:00+08:00
 
 ---
 
-## 5 how-to-doit（DoIt 主题使用）
+## 6 how-to-doit（DoIt 主题使用）
 
 | 路径 | title | tags | categories | series |
 |------|--------|------|------------|--------|
@@ -120,7 +128,7 @@ GUIDE_VERSION: 2026-03-12T08:06:00+08:00
 
 ---
 
-## 6 pytorch / others
+## 7 pytorch / others
 
 | 路径 | title | tags | categories | series |
 |------|--------|------|------------|--------|
@@ -133,7 +141,7 @@ GUIDE_VERSION: 2026-03-12T08:06:00+08:00
 
 ---
 
-## 7 小结与说明
+## 8 小结与说明
 
 - 本索引**未包含** `draft.md`；表中 `others/edu-ai.md`、`papers/OmniXtreme.md` 为 draft，仍列出便于统一维护。
 - 新增文章后请同步更新本文档（含 §1 去重列表与对应分类表），并优先复用已有 tags/categories/series。
