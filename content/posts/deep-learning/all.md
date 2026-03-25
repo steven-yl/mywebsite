@@ -1,3 +1,27 @@
+---
+title: "技术要点"
+subtitle: ""
+date: 2026-03-23T00:00:00+08:00
+draft: true
+authors: [Steven]
+description: "技术要点"
+summary: "技术要点"
+
+tags: []
+categories: ["deep-learning"]
+series: ["deep-learning系列"]
+weight: 1
+series_weight: 1
+
+hiddenFromHomePage: false
+hiddenFromSearch: false
+
+featuredImage: ""
+featuredImagePreview: ""
+---
+
+
+
 
 ### 一、 核心基础理论
 1.  **数学与统计学基石**

@@ -14,7 +14,7 @@ series_weight: 1
 hiddenFromHomePage: false
 hiddenFromSearch: false
 featuredImage: ""
-featuredImagePreview: "/mywebsite/posts/images/activation_functions.webp"
+featuredImagePreview: ""
 ---
 
 

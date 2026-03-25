@@ -53,91 +53,91 @@ series: ["PyTorch 实践指南"]
 在随机梯度下降（SGD）中，我们关心损失函数在每次迭代后的期望下降量。下面给出推导过程。
 
 
-    {{< admonition tip "SGD 的期望损失下降公式推导" false >}}
+{{< admonition tip "SGD 的期望损失下降公式推导" false >}}
 
-    ## 1. 基本设定
-    设损失函数 \(L(\theta)\) 关于参数 \(\theta\) 光滑。在第 \(t\) 步，参数为 \(\theta_t\)，真实梯度为 \(g_t = \nabla L(\theta_t)\)。我们从数据集中随机抽取一个 mini-batch，计算梯度估计：
-    \[
-    \tilde{g}_t = \frac{1}{B} \sum_{i=1}^{B} \nabla L_i(\theta_t),
-    \]
-    其中 \(L_i\) 是单个样本的损失，且假设各样本梯度独立同分布，满足：
-    \[
-    \mathbb{E}[\nabla L_i] = g_t, \quad \text{Cov}(\nabla L_i) = \Sigma.
-    \]
-    于是，梯度估计的均值和协方差为：
-    \[
-    \mathbb{E}[\tilde{g}_t] = g_t, \quad \text{Cov}(\tilde{g}_t) = \frac{1}{B} \Sigma.
-    \]
+## 1. 基本设定
+设损失函数 \(L(\theta)\) 关于参数 \(\theta\) 光滑。在第 \(t\) 步，参数为 \(\theta_t\)，真实梯度为 \(g_t = \nabla L(\theta_t)\)。我们从数据集中随机抽取一个 mini-batch，计算梯度估计：
+\[
+\tilde{g}_t = \frac{1}{B} \sum_{i=1}^{B} \nabla L_i(\theta_t),
+\]
+其中 \(L_i\) 是单个样本的损失，且假设各样本梯度独立同分布，满足：
+\[
+\mathbb{E}[\nabla L_i] = g_t, \quad \text{Cov}(\nabla L_i) = \Sigma.
+\]
+于是，梯度估计的均值和协方差为：
+\[
+\mathbb{E}[\tilde{g}_t] = g_t, \quad \text{Cov}(\tilde{g}_t) = \frac{1}{B} \Sigma.
+\]
 
-    SGD 更新规则为：
-    \[
-    \theta_{t+1} = \theta_t - \eta \tilde{g}_t,
-    \]
-    其中 \(\eta\) 是学习率。
+SGD 更新规则为：
+\[
+\theta_{t+1} = \theta_t - \eta \tilde{g}_t,
+\]
+其中 \(\eta\) 是学习率。
 
-    ---
+---
 
-    ## 2. 泰勒展开
-    对损失函数 \(L\) 在 \(\theta_t\) 处进行二阶泰勒展开：
-    \[
-    L(\theta_{t+1}) = L(\theta_t) + \nabla L(\theta_t)^\top (\theta_{t+1} - \theta_t) + \frac{1}{2} (\theta_{t+1} - \theta_t)^\top \nabla^2 L(\theta_t) (\theta_{t+1} - \theta_t) + O(\eta^3).
-    \]
-    代入 \(\theta_{t+1} - \theta_t = -\eta \tilde{g}_t\)，并记 \(H_t = \nabla^2 L(\theta_t)\)，得：
-    \[
-    L(\theta_{t+1}) - L(\theta_t) = -\eta g_t^\top \tilde{g}_t + \frac{1}{2} \eta^2 \tilde{g}_t^\top H_t \tilde{g}_t + O(\eta^3).
-    \]
+## 2. 泰勒展开
+对损失函数 \(L\) 在 \(\theta_t\) 处进行二阶泰勒展开：
+\[
+L(\theta_{t+1}) = L(\theta_t) + \nabla L(\theta_t)^\top (\theta_{t+1} - \theta_t) + \frac{1}{2} (\theta_{t+1} - \theta_t)^\top \nabla^2 L(\theta_t) (\theta_{t+1} - \theta_t) + O(\eta^3).
+\]
+代入 \(\theta_{t+1} - \theta_t = -\eta \tilde{g}_t\)，并记 \(H_t = \nabla^2 L(\theta_t)\)，得：
+\[
+L(\theta_{t+1}) - L(\theta_t) = -\eta g_t^\top \tilde{g}_t + \frac{1}{2} \eta^2 \tilde{g}_t^\top H_t \tilde{g}_t + O(\eta^3).
+\]
 
-    ---
+---
 
-    ## 3. 取期望
-    对上述等式两边取期望（关于 mini-batch 的随机性）：
-    \[
-    \mathbb{E}[L(\theta_{t+1}) - L(\theta_t)] = -\eta g_t^\top \mathbb{E}[\tilde{g}_t] + \frac{1}{2} \eta^2 \mathbb{E}[\tilde{g}_t^\top H_t \tilde{g}_t] + O(\eta^3).
-    \]
+## 3. 取期望
+对上述等式两边取期望（关于 mini-batch 的随机性）：
+\[
+\mathbb{E}[L(\theta_{t+1}) - L(\theta_t)] = -\eta g_t^\top \mathbb{E}[\tilde{g}_t] + \frac{1}{2} \eta^2 \mathbb{E}[\tilde{g}_t^\top H_t \tilde{g}_t] + O(\eta^3).
+\]
 
-    ### 3.1 一阶项
-    由 \(\mathbb{E}[\tilde{g}_t] = g_t\)，得：
-    \[
-    -\eta g_t^\top g_t = -\eta \|g_t\|^2.
-    \]
+### 3.1 一阶项
+由 \(\mathbb{E}[\tilde{g}_t] = g_t\)，得：
+\[
+-\eta g_t^\top g_t = -\eta \|g_t\|^2.
+\]
 
-    ### 3.2 二阶项
-    计算 \(\mathbb{E}[\tilde{g}_t^\top H_t \tilde{g}_t]\)。由于 \(H_t\) 是确定性的（在给定 \(\theta_t\) 下），有：
-    \[
-    \mathbb{E}[\tilde{g}_t^\top H_t \tilde{g}_t] = \mathbb{E}[\operatorname{Tr}(H_t \tilde{g}_t \tilde{g}_t^\top)] = \operatorname{Tr}\left(H_t \mathbb{E}[\tilde{g}_t \tilde{g}_t^\top]\right).
-    \]
-    而
-    \[
-    \mathbb{E}[\tilde{g}_t \tilde{g}_t^\top] = \operatorname{Cov}(\tilde{g}_t) + \mathbb{E}[\tilde{g}_t] \mathbb{E}[\tilde{g}_t]^\top = \frac{1}{B} \Sigma + g_t g_t^\top.
-    \]
-    因此，
-    \[
-    \mathbb{E}[\tilde{g}_t^\top H_t \tilde{g}_t] = \frac{1}{B} \operatorname{Tr}(H_t \Sigma) + g_t^\top H_t g_t.
-    \]
+### 3.2 二阶项
+计算 \(\mathbb{E}[\tilde{g}_t^\top H_t \tilde{g}_t]\)。由于 \(H_t\) 是确定性的（在给定 \(\theta_t\) 下），有：
+\[
+\mathbb{E}[\tilde{g}_t^\top H_t \tilde{g}_t] = \mathbb{E}[\operatorname{Tr}(H_t \tilde{g}_t \tilde{g}_t^\top)] = \operatorname{Tr}\left(H_t \mathbb{E}[\tilde{g}_t \tilde{g}_t^\top]\right).
+\]
+而
+\[
+\mathbb{E}[\tilde{g}_t \tilde{g}_t^\top] = \operatorname{Cov}(\tilde{g}_t) + \mathbb{E}[\tilde{g}_t] \mathbb{E}[\tilde{g}_t]^\top = \frac{1}{B} \Sigma + g_t g_t^\top.
+\]
+因此，
+\[
+\mathbb{E}[\tilde{g}_t^\top H_t \tilde{g}_t] = \frac{1}{B} \operatorname{Tr}(H_t \Sigma) + g_t^\top H_t g_t.
+\]
 
-    于是二阶项贡献为：
-    \[
-    \frac{1}{2} \eta^2 \left( g_t^\top H_t g_t + \frac{1}{B} \operatorname{Tr}(H_t \Sigma) \right).
-    \]
+于是二阶项贡献为：
+\[
+\frac{1}{2} \eta^2 \left( g_t^\top H_t g_t + \frac{1}{B} \operatorname{Tr}(H_t \Sigma) \right).
+\]
 
-    ---
+---
 
-    ## 4. 合并并简化
-    将一阶和二阶结果合并：
-    \[
-    \mathbb{E}[L(\theta_{t+1}) - L(\theta_t)] = -\eta \|g_t\|^2 + \frac{1}{2} \eta^2 g_t^\top H_t g_t + \frac{\eta^2}{2B} \operatorname{Tr}(H_t \Sigma) + O(\eta^3).
-    \]
+## 4. 合并并简化
+将一阶和二阶结果合并：
+\[
+\mathbb{E}[L(\theta_{t+1}) - L(\theta_t)] = -\eta \|g_t\|^2 + \frac{1}{2} \eta^2 g_t^\top H_t g_t + \frac{\eta^2}{2B} \operatorname{Tr}(H_t \Sigma) + O(\eta^3).
+\]
 
-    在随机梯度下降的经典分析中，常忽略确定性二阶项 \(\frac{1}{2} \eta^2 g_t^\top H_t g_t\)，因为它相对于一阶项是更高阶的小量（尤其当学习率较小时），且在很多情况下该项并不主导收敛行为。因此得到常用近似：
-    \[
-    \boxed{\mathbb{E}[L(\theta_{t+1}) - L(\theta_t)] \approx -\eta \|\nabla L\|^2 + \frac{\eta^2}{2B} \operatorname{Tr}(\nabla^2 L \cdot \Sigma)}.
-    \]
+在随机梯度下降的经典分析中，常忽略确定性二阶项 \(\frac{1}{2} \eta^2 g_t^\top H_t g_t\)，因为它相对于一阶项是更高阶的小量（尤其当学习率较小时），且在很多情况下该项并不主导收敛行为。因此得到常用近似：
+\[
+\boxed{\mathbb{E}[L(\theta_{t+1}) - L(\theta_t)] \approx -\eta \|\nabla L\|^2 + \frac{\eta^2}{2B} \operatorname{Tr}(\nabla^2 L \cdot \Sigma)}.
+\]
 
-    这个公式揭示了：
-    - 第一项是确定性梯度下降带来的损失下降，与学习率成正比。
-    - 第二项是 mini-batch 随机性导致的“噪声项”，它可能减缓下降甚至使损失上升（当 \(\eta\) 过大时），且与 batch size \(B\) 成反比，说明增大 batch 可减小噪声影响。
+这个公式揭示了：
+- 第一项是确定性梯度下降带来的损失下降，与学习率成正比。
+- 第二项是 mini-batch 随机性导致的“噪声项”，它可能减缓下降甚至使损失上升（当 \(\eta\) 过大时），且与 batch size \(B\) 成反比，说明增大 batch 可减小噪声影响。
 
-    {{< /admonition >}}
+{{< /admonition >}}
 
 ---
 

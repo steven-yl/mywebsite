@@ -7,9 +7,9 @@ authors: [Steven]
 description: "系统梳理深度学习中的主流位置编码方法，包括绝对位置编码、相对位置编码、RoPE、ALiBi 及其在大语言模型与视觉任务中的适用场景。"
 summary: "本文对位置编码的核心思想、公式与优缺点进行对比，并给出在 LLM、固定长度模型与视觉模型中的选型建议。"
 
-tags: ["位置编码", "Transformer", "RoPE", "ALiBi", "深度学习"]
-categories: ["deep-learning"]
-series: []
+tags: [位置编码, Transformer, RoPE, ALiBi, 深度学习, todo]
+categories: [deep-learning]
+series: [deep-learning系列]
 weight: 1
 series_weight: 1
 
