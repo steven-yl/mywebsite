@@ -8,8 +8,8 @@ description: "系统梳理深度学习中的主流位置编码方法，包括绝
 summary: "本文对位置编码的核心思想、公式与优缺点进行对比，并给出在 LLM、固定长度模型与视觉模型中的选型建议。"
 
 tags: [位置编码, Transformer, RoPE, ALiBi, 深度学习, todo]
-categories: [deep-learning]
-series: [deep-learning系列]
+categories: [Deep Learning]
+series: [Deep Learning系列]
 weight: 1
 series_weight: 1
 

@@ -8,8 +8,8 @@ description: "技术要点"
 summary: "技术要点"
 
 tags: []
-categories: ["deep-learning"]
-series: ["deep-learning系列"]
+categories: [Deep Learning]
+series: [Deep Learning系列]
 weight: 1
 series_weight: 1
 

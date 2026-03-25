@@ -45,7 +45,7 @@
   - `categories`：较粗粒度的栏目，如 `diffusion/flow`、`papers`、`tools`、`PyTorch`、`how-to-doit` 等，可多选但不宜过多。
   - `series`：属于系列文章时必填，如 `diffusion/flow系列`、`tools系列`、`DoIt`、`robots系列`。
   - `weight` / `series_weight`：用于控制同一目录或系列内的排序（数值越小越靠前），长系列建议按章节顺序递增。
-  - `featuredImage` / `featuredImagePreview`：如果有同名的配图，增加内容，路径建议为 `/mywebsite/posts/images/<slug>.webp`，文件名与 slug 对应。
+  - `featuredImage` / `featuredImagePreview`：如果有同名的配图，增加内容，路径建议为 `/mywebsite/posts/images/<slug>.webp`，文件名与 slug 对应,如果没有指明则设置为""。
 
 ### 目录与分类选择
 

@@ -454,6 +454,98 @@ u_t^i(B,x) = 2 \sum_{x_1^i} \bigl[ \delta(B, x_1^i) - \delta(B,A) \bigr] \, p_{1
    这等价于最大化似然。
 2. **广义 KL 损失**：使用一种特殊的 Bregman 散度，得到的损失与连续流匹配中的“噪声预测”损失类似，并且可以推导出证据下界（ELBO），用于模型评估。
 
+{{< admonition tip "广义 KL 损失的推导" false>}}
+离散流匹配（DFM）中**广义 KL 损失**的推导，源于将**条件流匹配损失**与混合路径的具体形式相结合，并通过选择特定的 Bregman 散度，将速度场的拟合问题转化为对后验分布的优化。下面从基础出发，逐步推导该损失。
+
+---
+
+## 1. 条件流匹配损失（CDFM）
+
+在离散流匹配中，我们有一族条件概率路径 \(p_{t|Z}(x|z)\)，每个 \(z\) 对应一个条件速度 \(u_t(\cdot,\cdot|z)\)，它生成该条件路径。我们希望参数化边际速度 \(u_t^\theta\)，使其逼近真实边际速度 \(u_t\)。
+
+**条件离散流匹配损失**定义为：
+\[
+\mathcal{L}_{\text{CDFM}}(\theta) = \mathbb{E}_{t, Z, X_t \sim p_{t|Z}} D_{X_t}\!\left( u_t(\cdot, X_t|Z),\; u_t^\theta(\cdot, X_t) \right),
+\]
+其中 \(D_x\) 是定义在速率向量空间 \(\Omega_x\) 上的 Bregman 散度。Bregman 散度的一般形式为：
+\[
+D_x(u, v) = f_x(u) - f_x(v) - \langle \nabla f_x(v), u - v \rangle,
+\]
+其中 \(f_x\) 是一个凸函数。选择不同的 \(f_x\) 会得到不同的损失函数。
+
+---
+
+## 2. 为混合路径选择合适的 Bregman 散度
+
+对于混合路径，条件速度具有特殊形式：
+\[
+u_t^i(y^i, x^i | x_0, x_1) = \lambda_t \bigl[ \delta(y^i, x_1^i) - \delta(y^i, x^i) \bigr], \quad \lambda_t = \frac{\dot\kappa_t}{1-\kappa_t}.
+\]
+为了将速度的学习转化为后验分布的学习，我们选择 **广义 KL 散度**（也称为“生成散度”）作为 Bregman 散度。具体地，对于速率向量 \(u, v \in \Omega_x\)，定义：
+\[
+D_x(u, v) = \sum_{y} \left[ u(y) \log \frac{u(y)}{v(y)} - u(y) + v(y) \right],
+\]
+当 \(u\) 和 \(v\) 都是概率分布时，这退化为 KL 散度；但这里 \(u\) 和 \(v\) 是速率（可为负），实际上需要将其分解为正负部分。对于混合路径，由于速率只涉及两个状态，该散度可以简化为可解析计算的形式。
+
+在实际推导中，研究者通常利用 Bregman 散度的性质，直接计算条件速度与参数化速度之间的散度，并证明它可以写成关于后验分布的损失。以下给出一个简化的推导思路。
+
+---
+
+## 3. 代入条件速度与参数化速度
+
+参数化的边际速度 \(u_t^\theta\) 由后验分布 \(p_{1|t}^\theta\) 构造：
+\[
+u_t^{\theta,i}(y^i, x) = \lambda_t \bigl( p_{1|t}^{\theta,i}(y^i|x) - \mathbf{1}_{x^i=y^i} \bigr).
+\]
+而条件速度 \(u_t(\cdot|x|Z)\) 依赖于 \(x_1^i\)：
+\[
+u_t^i(y^i, x^i | x_0, x_1) = \lambda_t \bigl( \delta(y^i, x_1^i) - \mathbf{1}_{x^i=y^i} \bigr).
+\]
+现在将这两个表达式代入散度中。由于 Bregman 散度是凸的且满足一定的可加性，我们可以计算每个坐标的散度，并利用边际化技巧将条件期望转化为后验的期望。
+
+最终，经过代数运算（涉及指数和对数的性质），可以得到：
+\[
+D_{x^i}\!\left( u_t^i(\cdot|x|Z),\; u_t^{\theta,i}(\cdot|x) \right) = \lambda_t \left[ \mathbf{1}_{x^i=x_1^i} - p_{1|t}^{\theta,i}(x^i|x) + (1-\mathbf{1}_{x^i=x_1^i}) \left( -\log p_{1|t}^{\theta,i}(x_1^i|x) \right) \right] + \text{常数（与 } \theta \text{ 无关）}.
+\]
+
+---
+
+## 4. 得到广义 KL 损失
+
+忽略与 \(\theta\) 无关的常数，并对所有坐标求和、对 \(t, Z, X_t\) 取期望，我们得到：
+\[
+\mathcal{L}_{\text{GKL}}(\theta) = \mathbb{E}_{t, Z, X_t} \sum_i \lambda_t \left[ (1 - \mathbf{1}_{X_t^i = X_1^i}) \bigl( -\log p_{1|t}^{\theta,i}(X_1^i|X_t) \bigr) + \bigl( \mathbf{1}_{X_t^i = X_1^i} - p_{1|t}^{\theta,i}(X_t^i|X_t) \bigr) \right].
+\]
+这就是代码中实现的损失表达式。注意，通常我们将 \(\lambda_t\) 提到期望外，并在实现时采样一个批次来近似该期望。
+
+---
+
+## 5. 损失的意义
+
+- **当 \(X_t \neq X_1\)** 时（即当前 token 还不是目标），损失为 \(\lambda_t \bigl( -\log p_{1|t}(X_1|X_t) \bigr)\)，即交叉熵项，鼓励模型正确预测目标 token。
+- **当 \(X_t = X_1\)** 时（当前 token 已是目标），损失为 \(\lambda_t \bigl( 1 - p_{1|t}(X_t|X_t) \bigr)\)，即惩罚模型对当前 token 的自信度过高，防止过早停止（因为理想情况下，一旦到达目标，应该不再改变，但后验概率 \(p_{1|t}(X_t|X_t)\) 应接近 1，所以该项很小）。
+
+因此，广义 KL 损失既包含了对目标 token 的预测监督，也包含了对当前状态的“置信度”调节，使得 CTMC 的采样更平稳。
+
+---
+
+## 6. 与 ELBO 的关系
+
+将广义 KL 损失展开，可以证明它等于一个 ELBO 的负值：
+\[
+\mathcal{L}_{\text{GKL}} = -\mathbb{E} \left[ \log \frac{p_{1|t}^\theta(X_1|X_t)}{p_{\text{true}}(X_t|X_0,X_1)} \right] + \text{常数},
+\]
+因此最小化该损失等价于最大化对数似然的下界。这为模型评估提供了理论依据。
+
+---
+
+## 7. 总结
+
+广义 KL 损失是从条件流匹配损失出发，针对混合路径选择特定 Bregman 散度（广义 KL 散度）后，经过边际化技巧和代数简化得到的结果。它直接作用于后验分布，避免了显式计算速度场，同时与 ELBO 相联系，是离散流匹配中常用的一种高效、稳定的训练目标。
+
+{{< /admonition>}}
+
+
 #### 采样算法
 给定训练好的后验 \(p_{1|t}^{\theta,i}\)，采样过程如下（对每个坐标独立进行）：
 - 从 \(p_{1|t}^{\theta,i}(\cdot|x)\) 采样 \(x_1^i\)（即预测目标值）。
@@ -469,14 +561,6 @@ u_t^i(B,x) = 2 \sum_{x_1^i} \bigl[ \delta(B, x_1^i) - \delta(B,A) \bigr] \, p_{1
 v_t^i(y^i,x^i|x_1) = \frac{\dot\kappa_t}{\kappa_t}\bigl[\delta(y^i, x^i) - p(x^i)\bigr],
 \]
 将其乘以系数 \(c_t\) 加到原速度上，不会影响 \(p_t\)，但可以调整采样路径。
-
----
-
-### 代码示例
-
-- **代码9**：展示了如何用 `flow_matching` 库定义混合概率路径并采样条件路径。
-- **代码10**：给出了完整的训练和采样流程，使用广义 KL 损失和欧拉求解器。
-- **代码11**：是一个独立的 PyTorch 实现，演示了在二维数据（如月亮形数据）上训练离散流匹配，并可视化演化过程。它使用最简单的“预测后验”形式（即交叉熵损失）。
 
 ---
 
