@@ -6,7 +6,7 @@ draft: false
 authors: [Steven]
 
 tags: [diffusion/flow, drifting-model, papers]
-categories: [diffusion/flow, papers]
+categories: [diffusion/flow, papers, todo]
 series: [diffusion/flow系列]
 weight: 4
 series_weight: 4
