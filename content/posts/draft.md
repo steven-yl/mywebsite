@@ -40,13 +40,13 @@ L676:        return prev_sample.type(sample.dtype), log_prob, prev_sample_mean.t
   - `sigma = std_dev_t_mul = max(std_dev_t, 0.1)`
 
 则
-\[
+$$
   \log p(x\mid \mu,\sigma)=-\frac{(x-\mu)^2}{2\sigma^2}-\log\sigma-\log\sqrt{2\pi}
-\]
+$$
 最后再把维度 `(-2, -1)` 上的 log_prob 做求和：
-\[
+$$
   \log p(\cdot)=\sum_{d\in(-2,-1)} \log p(x_d\mid \mu_d,\sigma)
-\]
+$$
 
 ### 2) `prev_sample_mean` 和 `std_dev_t_mul` 从哪来
 - `prev_sample_mean` 是你前面算的 DDIM 去噪“均值”：
@@ -71,98 +71,98 @@ L676:        return prev_sample.type(sample.dtype), log_prob, prev_sample_mean.t
 ## 1) `log_prob` 的计算公式（逐元素高斯对数似然）
 
 令（逐元素/逐维）：
-- \(x = \texttt{prev\_sample}\)
-- \(\mu = \texttt{prev\_sample\_mean}\)
-- \(\sigma = \texttt{std\_dev\_t\_mul}\)
+- $x = \texttt{prev\_sample}$
+- $\mu = \texttt{prev\_sample\_mean}$
+- $\sigma = \texttt{std\_dev\_t\_mul}$
 
 你的代码对应的是（先忽略求和）：
-\[
+$$
 \log p(x \mid \mu,\sigma)
 = -\frac{(x-\mu)^2}{2\sigma^2} - \log\sigma - \log\sqrt{2\pi}.
-\]
+$$
 
 其中
-\[
+$$
 \log\sqrt{2\pi}=\frac{1}{2}\log(2\pi).
-\]
+$$
 
 然后你把它在空间维上求和：
-\[
+$$
 \texttt{log\_prob} = \sum_{d\in\{\,-2,-1\,\}} \log p(x_d \mid \mu_d,\sigma),
-\]
-等价于如果最后两维是 \(H,W\)：
-\[
+$$
+等价于如果最后两维是 $H,W$：
+$$
 \log p(x\mid \mu,\sigma)=\sum_{h=1}^{H}\sum_{w=1}^{W}\left(
 -\frac{(x_{h,w}-\mu_{h,w})^2}{2\sigma^2}
 -\log\sigma
 -\log\sqrt{2\pi}
 \right).
-\]
+$$
 
-> 你代码里还用了 `prev_sample.detach()`，数学上等价于：在反传时把 \(x\) 当常数处理（不改变该表达式的数值）。
+> 你代码里还用了 `prev_sample.detach()`，数学上等价于：在反传时把 $x$ 当常数处理（不改变该表达式的数值）。
 
 ---
 
 ## 2) `compute_likelihood` 的对数似然公式（变换 + 散度积分）
 
-反向 ODE（从 \(t=1 \to 0\)）的连续性方程核心是：
-\[
+反向 ODE（从 $t=1 \to 0$）的连续性方程核心是：
+$$
 \frac{d}{dt}\log p(x_t)= -\mathrm{div}\,u_t(x_t),
-\]
+$$
 因此沿轨迹积分得到：
-\[
+$$
 \log p_1(x_1)=\log p_0(x_0) + \int_{t=1}^{0}\Big(-\mathrm{div}\,u_t(x_t)\Big)\,dt.
-\]
+$$
 
-在实现上，你用“扩展状态” \((x_t,\log\det J_t)\) 积分，其中：
-\[
+在实现上，你用“扩展状态” $(x_t,\log\det J_t)$ 积分，其中：
+$$
 \frac{d x_t}{dt} = u_t(x_t),
 \qquad
 \frac{d}{dt}\log\det J_t = -\mathrm{div}\,u_t(x_t),
-\]
+$$
 所以最终对应的返回就是：
-\[
+$$
 \log p_1(x_1)=\log p_0(x_{\text{source}})+\log\det J_{\text{end}}.
-\]
+$$
 
 你的代码里 `log_det` 从 0 开始，因此：
-\[
+$$
 \log p_1(x_1)=\log p_0(x_{\text{source}})+\log\det J(T).
-\]
+$$
 
 ---
 
-## 3) 散度 \(\mathrm{div}\,u_t\) 的两种计算
+## 3) 散度 $\mathrm{div}\,u_t$ 的两种计算
 
 ### 3.1 精确散度（`exact_divergence=True`）
-对向量场 \(u(x)=(u^1(x),\dots,u^D(x))\)，散度定义：
-\[
+对向量场 $u(x)=(u^1(x),\dots,u^D(x))$，散度定义：
+$$
 \mathrm{div}\,u(x)=\sum_{i=1}^{D}\frac{\partial u^i(x)}{\partial x^i}.
-\]
+$$
 代码的逻辑相当于对每个分量取偏导并求和。
 
 ### 3.2 Hutchinson 估计（`exact_divergence=False`）
-用随机向量 \(z\) 满足（Rademacher）：
-\[
+用随机向量 $z$ 满足（Rademacher）：
+$$
 z_i\in\{-1,+1\}, \quad \mathbb{E}[z]=0,\quad \mathbb{E}[zz^\top]=I.
-\]
+$$
 则
-\[
+$$
 \mathrm{div}\,u(x)=\mathrm{tr}\left(\nabla_x u(x)\right)
 \approx z^\top \left(\nabla_x u(x)\right) z.
-\]
+$$
 
 而你代码的具体实现等价于：
-\[
+$$
 u_\text{dot} = \left(u(x)\odot z\right)\ \text{在特征维求和得到标量 }(z^\top u),
-\]
-\[
+$$
+$$
 \nabla_x (z^\top u) \in \mathbb{R}^D,
-\]
-最后再与 \(z\) 点乘得到
-\[
+$$
+最后再与 $z$ 点乘得到
+$$
 z^\top \nabla_x(z^\top u) = z^\top (\nabla_x u)\, z,
-\]
+$$
 这就是 Hutchinson trace estimator。
 
 ---
@@ -190,14 +190,14 @@ z^\top \nabla_x(z^\top u) = z^\top (\nabla_x u)\, z,
   - 标准差：`sigma = std_dev_t_mul`（注意你这里又做了 `torch.clip(std_dev_t, min=0.1)`，还和前面 `eta>0` 的分支存在实现差异）
 
 对应的逐元素公式是：
-\[
+$$
 \log p(x\mid \mu,\sigma)
 = -\frac{(x-\mu)^2}{2\sigma^2}-\log\sigma-\log\sqrt{2\pi}
-\]
+$$
 你代码最后做了：
-\[
+$$
 \texttt{log_prob}=\sum_{(h,w)} \log p\big(prev\_sample_{h,w}\mid prev\_sample\_mean_{h,w},\sigma\big)
-\]
+$$
 并且用 `prev_sample.detach()` 表示：`log_prob` 对 `prev_sample` 的反传被切断（这通常意味着它作为训练/评估中的“打分项”而非严格的可导 likelihood 部分）。
 
 **总结一句话：** `log_prob` 是“在一个离散扩散/去扩散步（t -> t-1）中，把一步生成结果近似成高斯，然后计算对数密度（再按空间维求和）”。
@@ -210,33 +210,33 @@ z^\top \nabla_x(z^\top u) = z^\top (\nabla_x u)\, z,
 
 它做的事情是：
 
-- 给定目标样本 \(x_1\)（来自 \(p_1\)）
-- 反向求解 ODE，从 \(t=1 \to 0\)，轨迹是 \(x_t\)
+- 给定目标样本 $x_1$（来自 $p_1$）
+- 反向求解 ODE，从 $t=1 \to 0$，轨迹是 $x_t$
 - 同时在积分过程中累计 `log_det`（连续换变量的雅可比行列式对数）
 
 连续换变量的核心公式（你的代码对应这个结构）是：
-\[
+$$
 \log p_1(x_1)=\log p_0(x_0)+\log\left|\det\frac{\partial x_0}{\partial x_1}\right|
-\]
+$$
 把它写成沿轨迹积分的形式：
-\[
+$$
 \log p_1(x_1)=\log p_0(x_{\text{source}})
 +\int_{1}^{0} \Big(-\mathrm{div}\,u_t(x_t)\Big)\,dt
-\]
-其中速度场 \(u_t(x)\) 就是：
-\[
+$$
+其中速度场 $u_t(x)$ 就是：
+$$
 u_t(x)=\text{velocity\_model}(x,t)
-\]
+$$
 
 你代码里 `div` 就是散度项：
 - 精确散度（`exact_divergence=True`）：
-\[
+$$
 \mathrm{div}\,u(x)=\sum_i \frac{\partial u^i(x)}{\partial x^i}
-\]
+$$
 - Hutchinson 估计（`exact_divergence=False`）：
-\[
+$$
 \mathrm{div}\,u(x)\approx z^\top\left(\nabla_x u(x)\right)z,\quad z_i\in\{-1,+1\}
-\]
+$$
 最终 `log_det[-1]` 就是整条反向 ODE 轨迹贡献的累计量。
 
 另外，你有 `enable_grad` 控制是否保留梯度计算；当 `enable_grad=False` 时你会 `detach` 掉 `ut` 和 `div`，因此它更偏向“评估/推断”。

@@ -385,7 +385,7 @@ batch1 = next(it)
 | batch_size | int | 1 | 每批样本数（batch_sampler 存在时无效） |
 | shuffle | bool | False | 是否打乱（与 sampler 互斥） |
 | sampler | Sampler | None | 索引采样器（与 shuffle 互斥） |
-| batch_sampler | Sampler\[list] | None | 若指定，忽略 batch_size/shuffle/sampler/drop_last |
+| batch_sampler | Sampler$$list] | None | 若指定，忽略 batch_size/shuffle/sampler/drop_last |
 | num_workers | int | 0 | 加载数据的子进程数 |
 | collate_fn | callable | default_collate | (list of 样本) -> batch |
 | pin_memory | bool | False | 是否使用锁页内存 |
