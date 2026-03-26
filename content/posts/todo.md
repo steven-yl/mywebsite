@@ -20,3 +20,7 @@ featuredImagePreview: ""
 - https://zhuanlan.zhihu.com/p/686507361
 - https://zhuanlan.zhihu.com/p/1912650149282447445
 - https://mp.weixin.qq.com/s/7CbHuCTeDRhyY_CoDJtQzA
+- https://mp.weixin.qq.com/s/RwYTdWl_3uC3EfT7tUEHjQ
+- https://yuantianyuan01.github.io/FastWAM/
+- https://analytic-diffusion.github.io/
+- https://github.com/duoan/TorchCode
