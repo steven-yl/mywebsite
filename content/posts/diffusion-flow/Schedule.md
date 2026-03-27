@@ -50,7 +50,16 @@ markmap:
 - **性质**：$x_t$ 的方差随 $t$ 单调增长至无穷（若不归一化）
 - **典型调度**：NCSN 几何序列、EDM 连续调度
 
-- **转换关系**：$\sigma_t = \sqrt{1/\bar\alpha_t - 1}$，两者完全等价，只是符号习惯不同。
+- **转换关系**：$\sigma_t = \sqrt{1/\bar\alpha_t - 1}$，两者完全等价。
+  VE（方差爆炸）模型喜欢用**后验噪声标准差** \(\sigma_t\) 来描述扩散强度，定义为：
+  $$
+  \sigma_t = \frac{\text{噪声幅度}}{\text{信号幅度}}
+  $$
+
+  也就是：
+  $$
+  \sigma_t = \frac{\sqrt{1-\bar\alpha_t}}{\sqrt{\bar\alpha_t}}
+  $$
 - 代码示例：
   ```python
   import numpy as np
