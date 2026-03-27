@@ -1,5 +1,5 @@
 ---
-title: "diffusion-flow-formula"
+title: "Diffusion-Flow-Formula"
 subtitle: ""
 date: 2026-02-28T10:26:59+08:00
 # lastmod: 2026-02-28T10:26:59+08:00
