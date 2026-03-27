@@ -7,7 +7,7 @@ description: "smalldiffusion 技术文档索引"
 tags: [diffusion/flow, smalldiffusion]
 categories: [diffusion/flow, smalldiffusion]
 series: [smalldiffusion系列]
-weight: 0
+weight: 1
 hiddenFromHomePage: false
 hiddenFromSearch: false
 ---
