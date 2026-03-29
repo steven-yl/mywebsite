@@ -60,6 +60,11 @@ markmap:
   $$
   \sigma_t = \frac{\sqrt{1-\bar\alpha_t}}{\sqrt{\bar\alpha_t}}
   $$
+
+  - **\(\sigma_t = \sqrt{1/\bar\alpha_t - 1}\)** 是从VP参数到VE参数的**等价变换**，它使得信号部分系数为1，噪声部分系数为 \(\sigma_t\)。
+  - VE模型采用这种形式是因为它更符合“噪声爆炸”的直观：信号强度固定，噪声强度单调增长到无穷，\(\sigma_t\) 直接描述了这一过程。
+  - VP模型则保持总方差恒定，因此不会用 \(\sigma_t\) 作为主要参数，而更常用 \(\beta_t\) 或 \(\bar\alpha_t\) 来描述扩散进程。
+
 - 代码示例：
   ```python
   import numpy as np
@@ -74,6 +79,77 @@ markmap:
       """VE 参数 σ 转换为 VP 参数 ᾱ"""
       return 1 / (1 + sigma**2)
   ``` 
+
+{{< admonition tip "VP-VE差异详解" false >}}
+
+### 1. 两种模型的本质区别
+
+在扩散模型中，我们通常定义前向过程为：
+$$
+\mathbf{x}_t = \sqrt{\bar\alpha_t}\,\mathbf{x}_0 + \sqrt{1-\bar\alpha_t}\,\boldsymbol{\epsilon},\quad \boldsymbol{\epsilon}\sim\mathcal{N}(\mathbf{0},\mathbf{I})
+$$
+其中 $\bar\alpha_t$ 是累积信噪比相关的量，满足 $\bar\alpha_t \in [0,1]$，且随 $t$ 增加而减小。
+
+- **VP（方差保持）模型**（如DDPM）：强制所有时刻的边际方差恒为1，即 $\mathbb{E}[\|\mathbf{x}_t\|^2] = 1$（假设 $\mathbf{x}_0$ 方差为1）。这意味着：
+  $$
+  \bar\alpha_t + (1-\bar\alpha_t) = 1
+  $$
+  所以信号方差 $\bar\alpha_t$ 和噪声方差 $1-\bar\alpha_t$ 之和恒为1。
+
+- **VE（方差爆炸）模型**（如宋飏等人的Score-Based SDE）：不限制总方差，而是让信号方差随 $t$ 衰减到0，噪声方差单调增长到无穷。此时通常定义：
+  $$
+  \mathbf{x}_t = \mathbf{x}_0 + \sigma_t \boldsymbol{\epsilon}
+  $$
+  即信号部分保持不变（系数为1），噪声部分由 $\sigma_t$ 控制。此时边际方差为 $1 + \sigma_t^2$，随 $t$ 增长而爆炸。
+
+---
+
+### 2. 从VP到VE的转换
+
+若将VE形式的 $\mathbf{x}_t = \mathbf{x}_0 + \sigma_t \boldsymbol{\epsilon}$ 与VP形式 $\mathbf{x}_t = \sqrt{\bar\alpha_t}\,\mathbf{x}_0 + \sqrt{1-\bar\alpha_t}\,\boldsymbol{\epsilon}$ 做对比，它们实际上是同一种分布的两种参数化。要使两者等价，需要将VP中的系数缩放为VE的形式。
+
+设我们想将VP的 $\mathbf{x}_t$ 除以某个因子 $s_t$，使其信号部分系数变为1。令：
+$$
+\frac{\sqrt{\bar\alpha_t}\,\mathbf{x}_0 + \sqrt{1-\bar\alpha_t}\,\boldsymbol{\epsilon}}{s_t} = \mathbf{x}_0 + \sigma_t \boldsymbol{\epsilon}
+$$
+这要求：
+$$
+\frac{\sqrt{\bar\alpha_t}}{s_t} = 1 \quad \Rightarrow \quad s_t = \sqrt{\bar\alpha_t}
+$$
+那么噪声部分的系数变为：
+$$
+\frac{\sqrt{1-\bar\alpha_t}}{s_t} = \frac{\sqrt{1-\bar\alpha_t}}{\sqrt{\bar\alpha_t}} = \sqrt{\frac{1}{\bar\alpha_t} - 1}
+$$
+因此，定义：
+$$
+\sigma_t = \sqrt{\frac{1}{\bar\alpha_t} - 1}
+$$
+就得到了VE中的噪声标准差。注意这里的 $\sigma_t$ 是**后验噪声标准差**（即噪声与信号幅度的比值），而不是边际噪声方差。
+
+---
+
+### 3. 为什么VE模型“喜欢”用 $\sigma_t$
+
+VE模型的核心设计是让**信噪比**随着时间逐渐降低，并且最终趋向于0（即信号完全被噪声淹没）。在VE的参数化中，$\sigma_t$ 直接扮演了这个角色：
+
+- 当 $t=0$ 时，$\bar\alpha_0=1$，则 $\sigma_0=0$，对应无噪声。
+- 当 $t \to T$ 时，$\bar\alpha_T \to 0$，则 $\sigma_T \to \infty$，对应信号相对于噪声可忽略。
+
+而VP模型中，虽然信噪比 $\sqrt{\bar\alpha_t}/\sqrt{1-\bar\alpha_t}$ 也在下降，但边际方差被限制为1，因此不能直接用 $\sigma_t$ 这种“噪声/信号”比值来作为唯一的扩散强度参数，因为信号强度本身也在变化。
+
+---
+
+### 4. 为什么不是“保持型”（VP）
+
+如果试图将 $\sigma_t = \sqrt{1/\bar\alpha_t - 1}$ 放到VP框架中，会导致矛盾。因为在VP中，我们通常用 $\beta_t$ 或 $\bar\alpha_t$ 直接控制噪声添加量，并且 $\mathbf{x}_t$ 的方差始终归一化。而 $\sigma_t$ 在这里扮演的是**缩放后的噪声幅度**，它隐含了信号部分的缩放因子 $\sqrt{\bar\alpha_t}$。如果强行在VP中使用 $\sigma_t$，就会丢失信号缩放信息，无法唯一确定前向过程。
+
+反过来，VE模型天然以 $\sigma_t$ 为核心参数，因为它的前向SDE写作：
+$$
+d\mathbf{x} = \sqrt{\frac{d\sigma_t^2}{dt}} \, d\mathbf{w}
+$$
+即扩散系数直接由 $\sigma_t$ 的导数决定，信号部分没有漂移项（或只有可忽略的漂移）。因此 $\sigma_t$ 是VE模型中最直观的“噪声水平”指标。
+
+{{< /admonition >}}
 
 ---
 
