@@ -946,6 +946,26 @@ def rectified_flow_schedule(t, sigma_max=1.0):
 
 > **选型建议**：若不确定，可先从**余弦调度**（VP 类）或**EDM 调度**（VE 类）开始，这两者在多数任务中表现稳健。
 
+### 14.1 各类型“在哪个量上采样”速查表
+
+为避免“调度函数”和“训练时采样变量”混淆，这里单独给出一份对照：
+
+| 类型 | 常见训练采样变量 | 典型做法 |
+|------|------------------|---------|
+| 线性调度（DDPM） | 离散时间步 \(t\)（或离散索引） | 先均匀采样 \(t\in\{1,\dots,T\}\)，再由 \(\beta_t\rightarrow\bar\alpha_t\rightarrow\sigma_t\) 计算噪声强度 |
+| 余弦调度（Improved DDPM） | 离散时间步 \(t\)（或连续 \(u=t/T\)） | 常见是均匀采样 \(t\)；调度本身定义在 \(\bar\alpha_t\) 上 |
+| 平方根/多项式/Sigmoid（VP 变种） | 时间 \(t\)（离散或连续） | 先采样 \(t\)，再由 \(\bar\alpha(t)\) 或 \(\beta(t)\) 得到噪声 |
+| NCSN 指数调度（VE） | \(\log\sigma\)（等价于几何采样 \(\sigma\)） | 在 \([\log\sigma_{\min},\log\sigma_{\max}]\) 上均匀采样 |
+| EDM 调度（VE） | \(\log\sigma\) | 训练通常对数均匀采样 \(\sigma\)，采样阶段再按求解器离散化 \(\sigma\) 路径 |
+| SNR-based 调度 | \(\log\mathrm{SNR}\)（或 \(t\)） | 常将 \(\log\mathrm{SNR}\) 设为线性函数并均匀覆盖，再映射到 \(\bar\alpha\) / \(\sigma\) |
+| Log-Linear 调度 | \(\log\sigma\)（与 NCSN 指数等价） | 在 \(\log\sigma\) 轴均匀采样 |
+| 分段调度（自定义） | 取决于设计（常见为 \(t\)） | 先采样 \(t\)，再按分段函数映射到 \(\sigma(t)\) 或 \(\bar\alpha(t)\) |
+| 学习调度 / 自适应调度 | 基础变量 \(t\) 或 \(\log\sigma\)，外加可学习权重 | 一边采样一边动态调整某些区间的采样概率（重要性采样） |
+
+> 经验法则：  
+> - **VP 家族**（\(\beta_t,\bar\alpha_t\)）通常“先采样时间 \(t\)”；  
+> - **VE/EDM 家族**（\(\sigma\)）通常“先采样 \(\log\sigma\)”。
+
 ---
 
 ## 十五、总结与趋势
