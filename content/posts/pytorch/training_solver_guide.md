@@ -9,7 +9,7 @@ summary: "从总览到各章节：Optimizer/SGD/Adam/AdamW 全解读、LRSchedul
 
 tags: ["PyTorch", "Deep Learning", "优化器", "训练"]
 categories: ["PyTorch"]
-series: ["PyTorch 实践指南"]
+series: ["PyTorch实践指南"]
 weight: 4
 series_weight: 4
 

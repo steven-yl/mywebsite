@@ -9,7 +9,7 @@ summary: "从进程组初始化、DDP 封装、数据分片、集体通信到 Li
 
 tags: ["PyTorch", "分布式训练", "Deep Learning"]
 categories: ["PyTorch"]
-series: ["PyTorch 实践指南"]
+series: ["PyTorch实践指南"]
 weight: 1
 series_weight: 1
 

@@ -7,7 +7,7 @@ description: "从梯度更新期望与凸优化理论推导线性缩放与平方
 summary: "详解分布式训练中 batch size 扩大时学习率的线性缩放、平方根缩放及线性+长 warmup 的推导依据与使用建议。"
 tags: ["PyTorch", "优化器", "训练"]
 categories: ["PyTorch"]
-series: ["PyTorch 实践指南"]
+series: ["PyTorch实践指南"]
 ---
 
 在分布式深度学习训练中，当改变 batch size 时，需要相应调整学习率以维持训练动态的稳定性与收敛效率。最常见的两种调整规则是 **线性缩放**（$\eta' = k\eta$）和 **平方根缩放**（$\eta' = \sqrt{k}\,\eta$），以及对于极大 batch 采用的 **线性缩放 + 长 warmup**。下面详细解释这些规则是如何从理论分析和实践经验中得出的。

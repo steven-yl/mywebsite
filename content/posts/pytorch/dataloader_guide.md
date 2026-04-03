@@ -9,7 +9,7 @@ summary: "从索引流、取样本、成 batch 三条线讲清 DataLoader 职责
 
 tags: ["PyTorch", "DataLoader", "Deep Learning"]
 categories: ["PyTorch"]
-series: ["PyTorch 实践指南"]
+series: ["PyTorch实践指南"]
 weight: 3
 series_weight: 3
 

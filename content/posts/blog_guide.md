@@ -18,7 +18,7 @@ hiddenFromSearch: false
 <!--more-->
 
 ---
-GUIDE_VERSION: 2026-03-22T17:59:50+08:00
+GUIDE_VERSION: 2026-04-03T19:47:14+08:00
 
 ## 1 全站标签 / 分类 / 系列汇总
 
@@ -29,6 +29,8 @@ GUIDE_VERSION: 2026-03-22T17:59:50+08:00
 - DataLoader
 - Dataset
 - Deep Learning
+- Kaiming
+- Xavier
 - diffusion/flow
 - doing
 - DoIt
@@ -43,6 +45,7 @@ GUIDE_VERSION: 2026-03-22T17:59:50+08:00
 - robots
 - Sampler
 - tools
+- TorchCode
 - torch.utils.data
 - tutorial
 - 优化器
@@ -63,7 +66,8 @@ GUIDE_VERSION: 2026-03-22T17:59:50+08:00
 - DoIt
 - robots系列
 - tools系列
- - PyTorch 实践指南
+- TorchCode 系列
+ - PyTorch实践指南
 
 ---
 
@@ -132,11 +136,21 @@ GUIDE_VERSION: 2026-03-22T17:59:50+08:00
 
 | 路径 | title | tags | categories | series |
 |------|--------|------|------------|--------|
-| `pytorch/pytorch_dataset_guide.md` | PyTorch Dataset 体系技术文档 | PyTorch, Dataset, Deep Learning | PyTorch | PyTorch 实践指南 |
-| `pytorch/dataloader_guide.md` | PyTorch DataLoader 技术解读 | PyTorch, DataLoader, Deep Learning | PyTorch | PyTorch 实践指南 |
-| `pytorch/distributed_training_guide.md` | PyTorch 分布式训练与操作工具技术文档 | PyTorch, 分布式训练, Deep Learning | PyTorch | PyTorch 实践指南 |
-| `pytorch/training_solver_guide.md` | PyTorch 模型训练技术文档：求解器、参数配置与训练循环 | PyTorch, Deep Learning, 优化器, 训练 | PyTorch | PyTorch 实践指南 |
-| `pytorch/tensor_ops_guide.md` | PyTorch 张量工具函数技术文档：创建、计算、拼接与索引 | PyTorch, Deep Learning | PyTorch | PyTorch 实践指南 |
+| `pytorch/pytorch_dataset_guide.md` | PyTorch Dataset 体系技术文档 | PyTorch, Dataset, Deep Learning | PyTorch | PyTorch实践指南 |
+| `pytorch/dataloader_guide.md` | PyTorch DataLoader 技术解读 | PyTorch, DataLoader, Deep Learning | PyTorch | PyTorch实践指南 |
+| `pytorch/distributed_training_guide.md` | PyTorch 分布式训练与操作工具技术文档 | PyTorch, 分布式训练, Deep Learning | PyTorch | PyTorch实践指南 |
+| `pytorch/training_solver_guide.md` | PyTorch 模型训练技术文档：求解器、参数配置与训练循环 | PyTorch, Deep Learning, 优化器, 训练 | PyTorch | PyTorch实践指南 |
+| `pytorch/tensor_ops_guide.md` | PyTorch 张量工具函数技术文档：创建、计算、拼接与索引 | PyTorch, Deep Learning | PyTorch | PyTorch实践指南 |
+| `pytorch/kaiming.md` | Kaiming（He）初始化：方差推导与 ReLU 网络 | PyTorch, Deep Learning, Kaiming, Xavier | PyTorch | PyTorch实践指南 |
+| `torchcode-docs/README.md` | TorchCode 技术文档索引 | PyTorch, TorchCode | PyTorch | TorchCode 系列 |
+| `torchcode-docs/00_overview.md` | 总览：TorchCode 知识架构与学习路径 | PyTorch, TorchCode | PyTorch | TorchCode 系列 |
+| `torchcode-docs/01_activations_and_fundamentals.md` | 第一章：激活函数与基础组件（TorchCode） | PyTorch, TorchCode | PyTorch | TorchCode 系列 |
+| `torchcode-docs/02_normalization.md` | 第二章：归一化技术（TorchCode） | PyTorch, TorchCode | PyTorch | TorchCode 系列 |
+| `torchcode-docs/03_attention_mechanisms.md` | 第三章：注意力机制（TorchCode） | PyTorch, TorchCode | PyTorch | TorchCode 系列 |
+| `torchcode-docs/04_architectures.md` | 第四章：架构与模型组件（TorchCode） | PyTorch, TorchCode | PyTorch | TorchCode 系列 |
+| `torchcode-docs/05_training_optimization.md` | 第五章：训练与优化（TorchCode） | PyTorch, TorchCode | PyTorch | TorchCode 系列 |
+| `torchcode-docs/06_inference_decoding.md` | 第六章：推理与解码策略（TorchCode） | PyTorch, TorchCode | PyTorch | TorchCode 系列 |
+| `torchcode-docs/07_advanced_topics.md` | 第七章：高级主题（TorchCode） | PyTorch, TorchCode | PyTorch | TorchCode 系列 |
 | `others/edu-ai.md` | 幼儿园AI教育平台调研 | （空） | （空） | （空） |
 
 ---

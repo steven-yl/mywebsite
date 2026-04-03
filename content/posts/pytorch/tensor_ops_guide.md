@@ -10,7 +10,7 @@ summary: "总览 PyTorch 张量运算知识结构；创建/reshape/cat/stack/spl
 
 tags: ["PyTorch", "Deep Learning"]
 categories: ["PyTorch"]
-series: ["PyTorch 实践指南"]
+series: ["PyTorch实践指南"]
 weight: 5
 series_weight: 5
 

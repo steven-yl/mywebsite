@@ -8,7 +8,7 @@ description: "lr曲线图"
 summary: "lr曲线图"
 tags: ["PyTorch", "Deep Learning", "LR"]
 categories: ["PyTorch"]
-series: ["PyTorch 实践指南"]
+series: ["PyTorch实践指南"]
 weight: 1
 series_weight: 1
 hiddenFromHomePage: false

@@ -7,7 +7,7 @@ description: "系统梳理深度学习中所有主流权重初始化方法，从
 summary: "全面对比深度学习权重初始化方法的原理、公式推导、优缺点与适用场景，附 PyTorch 代码示例和 Transformer 架构初始化最佳实践。"
 tags: ["PyTorch", "Deep Learning", "initialization", "Xavier", "Kaiming"]
 categories: ["PyTorch"]
-series: ["PyTorch 实践指南"]
+series: ["PyTorch实践指南"]
 weight: 2
 series_weight: 2
 ---
