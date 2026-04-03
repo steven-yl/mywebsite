@@ -1,3 +1,23 @@
+---
+title: "第二章：归一化技术（TorchCode）"
+date: 2026-04-01T10:00:00+08:00
+draft: false
+authors: [Steven]
+description: "LayerNorm、BatchNorm、RMSNorm 的数学定义、训练/推理差异与实现要点。"
+summary: "TorchCode 文档第二章：归一化技术全解。"
+
+tags: [PyTorch, TorchCode]
+categories: [PyTorch]
+series: [TorchCode 系列]
+weight: 3
+series_weight: 3
+hiddenFromHomePage: false
+hiddenFromSearch: false
+
+featuredImage: ""
+featuredImagePreview: ""
+---
+
 # 第二章：归一化技术
 
 归一化是深度学习训练稳定性的关键。本章详解三种主流归一化方法：LayerNorm、BatchNorm、RMSNorm。

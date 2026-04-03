@@ -1,3 +1,23 @@
+---
+title: "第四章：架构与模型组件（TorchCode）"
+date: 2026-04-01T10:00:00+08:00
+draft: false
+authors: [Steven]
+description: "GPT-2 Block、SwiGLU、Conv2d、ViT Patch、LoRA、MoE 等模块级组装与实现要点。"
+summary: "TorchCode 文档第四章：从组件到完整模型块。"
+
+tags: [PyTorch, TorchCode]
+categories: [PyTorch]
+series: [TorchCode 系列]
+weight: 5
+series_weight: 5
+hiddenFromHomePage: false
+hiddenFromSearch: false
+
+featuredImage: ""
+featuredImagePreview: ""
+---
+
 # 第四章：架构与模型组件
 
 本章介绍如何将基础组件组装为完整的模型模块：GPT-2 Block、SwiGLU MLP、Conv2d、ViT Patch Embedding、LoRA、Mixture of Experts。

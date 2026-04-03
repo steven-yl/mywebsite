@@ -1,3 +1,23 @@
+---
+title: "第三章：注意力机制（TorchCode）"
+date: 2026-04-01T10:00:00+08:00
+draft: false
+authors: [Steven]
+description: "SDPA、MHA、因果/交叉注意力、GQA、滑动窗口、线性注意力、KV Cache、RoPE、Flash Attention 等。"
+summary: "TorchCode 文档第三章：注意力机制从基础到高效实现。"
+
+tags: [PyTorch, TorchCode]
+categories: [PyTorch]
+series: [TorchCode 系列]
+weight: 4
+series_weight: 4
+hiddenFromHomePage: false
+hiddenFromSearch: false
+
+featuredImage: ""
+featuredImagePreview: ""
+---
+
 # 第三章：注意力机制
 
 注意力机制是 Transformer 的核心。本章从基础的 Scaled Dot-Product Attention 出发，逐步展开到所有主流变体。

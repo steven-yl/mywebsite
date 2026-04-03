@@ -1,3 +1,23 @@
+---
+title: "第五章：训练与优化（TorchCode）"
+date: 2026-04-01T10:00:00+08:00
+draft: false
+authors: [Steven]
+description: "Kaiming 初始化、Adam、余弦学习率与 Warmup、梯度裁剪与累积、线性回归等训练工程。"
+summary: "TorchCode 文档第五章：训练与优化实践。"
+
+tags: [PyTorch, TorchCode]
+categories: [PyTorch]
+series: [TorchCode 系列]
+weight: 6
+series_weight: 6
+hiddenFromHomePage: false
+hiddenFromSearch: false
+
+featuredImage: ""
+featuredImagePreview: ""
+---
+
 # 第五章：训练与优化
 
 本章涵盖模型训练全流程中的关键技术：权重初始化、优化器、学习率调度、梯度管理和线性回归。

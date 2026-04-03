@@ -1,3 +1,23 @@
+---
+title: "第一章：激活函数与基础组件（TorchCode）"
+date: 2026-04-01T10:00:00+08:00
+draft: false
+authors: [Steven]
+description: "ReLU、GELU、Softmax、Linear、Embedding、Dropout、交叉熵等基础组件的原理与手写实现要点。"
+summary: "TorchCode 文档第一章：从最底层算子到损失函数。"
+
+tags: [PyTorch, TorchCode]
+categories: [PyTorch]
+series: [TorchCode 系列]
+weight: 2
+series_weight: 2
+hiddenFromHomePage: false
+hiddenFromSearch: false
+
+featuredImage: ""
+featuredImagePreview: ""
+---
+
 # 第一章：激活函数与基础组件
 
 本章涵盖神经网络最底层的构建模块：激活函数、线性变换、嵌入、正则化和损失函数。

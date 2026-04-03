@@ -1,3 +1,23 @@
+---
+title: "总览：TorchCode 知识架构与学习路径"
+date: 2026-04-01T10:00:00+08:00
+draft: false
+authors: [Steven]
+description: "TorchCode 项目定位、知识图谱、模块依赖、学习路径与对比表。"
+summary: "算子级练习项目的整体架构与推荐阅读顺序。"
+
+tags: [PyTorch, TorchCode]
+categories: [PyTorch]
+series: [TorchCode 系列]
+weight: 1
+series_weight: 1
+hiddenFromHomePage: false
+hiddenFromSearch: false
+
+featuredImage: ""
+featuredImagePreview: ""
+---
+
 # 总览：TorchCode 知识架构与学习路径
 
 ## 1. 项目定位

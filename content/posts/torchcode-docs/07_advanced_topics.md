@@ -1,3 +1,23 @@
+---
+title: "第七章：高级主题（TorchCode）"
+date: 2026-04-01T10:00:00+08:00
+draft: false
+authors: [Steven]
+description: "BPE、INT8 量化、DPO/GRPO/PPO 等对齐与工程向主题的实现解读。"
+summary: "TorchCode 文档第七章：分词、量化与 RLHF 损失。"
+
+tags: [PyTorch, TorchCode]
+categories: [PyTorch]
+series: [TorchCode 系列]
+weight: 8
+series_weight: 8
+hiddenFromHomePage: false
+hiddenFromSearch: false
+
+featuredImage: ""
+featuredImagePreview: ""
+---
+
 # 第七章：高级主题
 
 本章涵盖前沿技术：BPE 分词、INT8 量化、以及三种 RLHF 对齐损失函数（DPO、GRPO、PPO）。

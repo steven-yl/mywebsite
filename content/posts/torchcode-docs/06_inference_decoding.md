@@ -1,3 +1,23 @@
+---
+title: "第六章：推理与解码策略（TorchCode）"
+date: 2026-04-01T10:00:00+08:00
+draft: false
+authors: [Steven]
+description: "Top-k/Top-p 采样、Beam Search、Speculative Decoding 的原理与实现要点。"
+summary: "TorchCode 文档第六章：推理与解码。"
+
+tags: [PyTorch, TorchCode]
+categories: [PyTorch]
+series: [TorchCode 系列]
+weight: 7
+series_weight: 7
+hiddenFromHomePage: false
+hiddenFromSearch: false
+
+featuredImage: ""
+featuredImagePreview: ""
+---
+
 # 第六章：推理与解码策略
 
 本章介绍语言模型生成文本时的三种核心解码算法：采样策略、束搜索和投机解码。
