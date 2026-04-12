@@ -7,7 +7,7 @@ draft: false
 authors: [Steven]
 description: "Consistency Model 技术文档：自洽性、一致性蒸馏与一致性训练、一步采样与多步采样、与扩散模型及 MeanFlow 的对比。"
 
-tags: [diffusion/flow, Consistency Model]
+tags: [diffusion/flow, Consistency Model, todo]
 categories: [diffusion/flow]
 series: [diffusion/flow系列]
 weight: 5

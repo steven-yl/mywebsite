@@ -73,8 +73,7 @@ $$
 由条件概率 $p_\phi(z|x) = p_\phi(x,z)\,/\,p_\phi(x)$ 得 $p_\phi(x) = p_\phi(x,z)\,/\,p_\phi(z|x)$，代入上式：
 
 $$
-\log p_\phi(x)
-= \mathbb{E}_{z \sim q(z|x)} \left[ \log \frac{p_\phi(x,z)}{p_\phi(z|x)} \right].
+\log p_\phi(x) = \mathbb{E}_{z \sim q(z|x)} \left[ \log \frac{p_\phi(x,z)}{p_\phi(z|x)} \right].
 $$
 
 这里 $\log$ 里出现了联合 $p_\phi(x,z)$ 与后验 $p_\phi(z|x)$；后者仍然难算，下一步通过引入 $q$ 把 $p_\phi(z|x)$ 从 $\log$ 里“换掉”。
@@ -84,15 +83,13 @@ $$
 在 $\log$ 内分子分母同乘 $q(z|x)$，不改变取值：
 
 $$
-\frac{p_\phi(x,z)}{p_\phi(z|x)}
-= \frac{p_\phi(x,z)}{q(z|x)} \cdot \frac{q(z|x)}{p_\phi(z|x)}.
+\frac{p_\phi(x,z)}{p_\phi(z|x)} = \frac{p_\phi(x,z)}{q(z|x)} \cdot \frac{q(z|x)}{p_\phi(z|x)}.
 $$
 
 于是：
 
 $$
-\log p_\phi(x)
-= \mathbb{E}_{z \sim q(z|x)} \left[ \log \left( \frac{p_\phi(x,z)}{q(z|x)} \cdot \frac{q(z|x)}{p_\phi(z|x)} \right) \right].
+\log p_\phi(x) = \mathbb{E}_{z \sim q(z|x)} \left[ \log \left( \frac{p_\phi(x,z)}{q(z|x)} \cdot \frac{q(z|x)}{p_\phi(z|x)} \right) \right].
 $$
 
 ### 3.4 第四步：拆成两项（log 乘积 = 和）
@@ -100,9 +97,7 @@ $$
 $\log(ab) = \log a + \log b$，且期望线性，故：
 
 $$
-\log p_\phi(x)
-= \mathbb{E}_{z \sim q(z|x)} \left[ \log \frac{p_\phi(x,z)}{q(z|x)} \right]
-+ \mathbb{E}_{z \sim q(z|x)} \left[ \log \frac{q(z|x)}{p_\phi(z|x)} \right].
+\log p_\phi(x) = \mathbb{E}_{z \sim q(z|x)} \left[ \log \frac{p_\phi(x,z)}{q(z|x)} \right] + \mathbb{E}_{z \sim q(z|x)} \left[ \log \frac{q(z|x)}{p_\phi(z|x)} \right].
 $$
 
 ### 3.5 第五步：认出 KL 散度
@@ -110,8 +105,7 @@ $$
 第二项正是 $q(z|x)$ 对 $p_\phi(z|x)$ 的 **KL 散度**：
 
 $$
-D_{\mathrm{KL}}\bigl( q(z|x) \,\|\, p_\phi(z|x) \bigr)
-= \mathbb{E}_{z \sim q(z|x)} \left[ \log \frac{q(z|x)}{p_\phi(z|x)} \right].
+D_{\mathrm{KL}}\bigl( q(z|x) \,\|\, p_\phi(z|x) \bigr) = \mathbb{E}_{z \sim q(z|x)} \left[ \log \frac{q(z|x)}{p_\phi(z|x)} \right].
 $$
 
 由 Jensen 不等式或 Gibbs 不等式可知 KL 散度非负，且当且仅当 $q = p_\phi(z|x)$ 时为零，故：
@@ -126,9 +120,7 @@ $$
 
 $$
 \boxed{
-\log p_\phi(x)
-= \underbrace{\mathbb{E}_{z \sim q(z|x)} \left[ \log \frac{p_\phi(x,z)}{q(z|x)} \right]}_{\mathrm{ELBO}}
-+ D_{\mathrm{KL}}\bigl( q(z|x) \,\|\, p_\phi(z|x) \bigr)
+\log p_\phi(x) = \underbrace{\mathbb{E}_{z \sim q(z|x)} \left[ \log \frac{p_\phi(x,z)}{q(z|x)}  \right]}_{\mathrm{ELBO}} + D_{\mathrm{KL}}\bigl( q(z|x) \,\|\, p_\phi(z|x) \bigr)
 }
 $$
 
@@ -151,16 +143,13 @@ ELBO 的原始形式为 $\mathbb{E}_{z \sim q(z|x)} \left[ \log \frac{p_\phi(x,z
 由联合概率分解 $p_\phi(x,z) = p_\phi(x|z)\, p(z)$（先验 × 似然），有：
 
 $$
-\log \frac{p_\phi(x,z)}{q(z|x)}
-= \log p_\phi(x|z) + \log p(z) - \log q(z|x).
+\log \frac{p_\phi(x,z)}{q(z|x)} = \log p_\phi(x|z) + \log p(z) - \log q(z|x).
 $$
 
 对 $q(z|x)$ 取期望（期望的线性性），得：
 
 $$
-\mathrm{ELBO}
-= \mathbb{E}_{z \sim q(z|x)} \left[ \log p_\phi(x|z) \right]
-+ \mathbb{E}_{z \sim q(z|x)} \left[ \log p(z) - \log q(z|x) \right].
+\mathrm{ELBO} = \mathbb{E}_{z \sim q(z|x)} \left[ \log p_\phi(x|z) \right] + \mathbb{E}_{z \sim q(z|x)} \left[ \log p(z) - \log q(z|x) \right].
 $$
 
 ### 4.2 形式一：重构项 + KL 正则项（VAE 常用）
@@ -169,9 +158,7 @@ $$
 
 $$
 \boxed{
-\mathrm{ELBO}
-= \mathbb{E}_{z \sim q(z|x)} \left[ \log p_\phi(x|z) \right]
-- D_{\mathrm{KL}}\bigl( q(z|x) \,\|\, p(z) \bigr)
+\mathrm{ELBO} = \mathbb{E}_{z \sim q(z|x)} \left[ \log p_\phi(x|z) \right] - D_{\mathrm{KL}}\bigl( q(z|x) \,\|\, p(z) \bigr)
 }
 $$
 
