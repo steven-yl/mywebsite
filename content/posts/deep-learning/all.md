@@ -61,7 +61,7 @@ featuredImagePreview: ""
     -   **剪枝**：非结构化剪枝（SparseGPT）、结构化剪枝（移除注意力头或层级）、蒸馏（Logits蒸馏与特征蒸馏）。
 2.  **推理加速**
     -   **KV Cache 优化**：PageAttention（vLLM）、PagedAttention 对内存碎片的管理。
-    -   **投机性解码**：Speculative Decoding（使用小模型辅助大模型生成）。
+    -   **推测性解码**：Speculative Decoding（使用小模型辅助大模型生成）。
     -   **服务框架**：TensorRT-LLM、TGI、SGLang 的调度机制。
 
 ### 五、 多模态与跨领域算法
