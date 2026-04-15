@@ -34,28 +34,20 @@ hiddenFromSearch: false
 - nn.Embedding
 - nn.EmbeddingBag
 
-### 1. SinusoidalTimeEmbedding
+### 1. SinusoidalPosEmb
 
-```python 1. SinusoidalTimeEmbedding
-class SinusoidalTimeEmbedding(nn.Module):
-    """
-    Standard sinusoidal time embedding module from the DDPM paper, followed by
-    an MLP to make it more expressive.
-    """
-    def __init__(self, embed_dim: int):
+```python 1. SinusoidalPosEmb
+class SinusoidalPosEmb(nn.Module):
+    def __init__(self, dim):
         super().__init__()
-        self.embed_dim = embed_dim
+        self.dim = dim
 
-    def forward(self, t: torch.Tensor) -> torch.Tensor:
-        # t is shape [B]
-        device = t.device
-        half_dim = self.embed_dim // 2
-        
-        # Standard sinusoidal formula
-        embeddings = math.log(10000) / (half_dim - 1)
-        embeddings = torch.exp(torch.arange(half_dim, device=device) * -embeddings)
-        embeddings = t[:, None] * embeddings[None, :]
-        embeddings = torch.cat([embeddings.sin(), embeddings.cos()], dim=-1)
-        
-        return embeddings
+    def forward(self, x):
+        device = x.device
+        half_dim = self.dim // 2
+        emb = math.log(10000) / (half_dim - 1)
+        emb = torch.exp(torch.arange(half_dim, device=device) * -emb)
+        emb = x[:, None] * emb[None, :]
+        emb = torch.cat((emb.sin(), emb.cos()), dim=-1)
+        return emb
 ```
