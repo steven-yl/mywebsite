@@ -184,11 +184,32 @@ markmap:
   \color{#4a9eff} q(x^{(t)} \mid x^{(0)}) = \mathcal{N}\big(x^{(t)};\ \sqrt{\bar\alpha_t}\, x^{(0)},\ (1-\bar\alpha_t)\mathbf{I}\big), \qquad \bar\alpha_t = \prod_{s=1}^{t}\alpha_s.
   $$
 
+  | 量 | 形式 |
+  |----|------|
+  | 单步转移 | $\color{#4a9eff} q(x^{(t)} \mid x^{(t-1)}) = \mathcal{N}(\sqrt{\alpha_t}\, x^{(t-1)},\ \beta_t \mathbf{I})$ |
+  | 多步边际 | $\color{#4a9eff} q(x^{(t)} \mid x^{(0)}) = \mathcal{N}(\sqrt{\bar\alpha_t}\, x^{(0)},\ (1-\bar\alpha_t)\mathbf{I})$ |
+  | 重参数化 | $\color{#4a9eff} x^{(t)} = \sqrt{\bar\alpha_t}\, x^{(0)} + \sqrt{1-\bar\alpha_t}\, \epsilon,\ \epsilon\sim\mathcal{N}(0,\mathbf{I})$ |
+
+  - $\alpha_t = 1 - \beta_t$
+  - $\bar\alpha_t$ 随 $t$ 增大而减小，故 $\sqrt{\bar\alpha_t}$ 变小、$\sqrt{1-\bar\alpha_t}$ 变大，$x^{(t)}$ 中噪声占比增加；当 $t=T$ 且 $\bar\alpha_T \approx 0$ 时，$x^{(T)}$ 近似 $\mathcal{N}(0,\mathbf{I})$。
+  - 前向过程**不包含可学习参数**；反向过程才用神经网络拟合 $q(x^{(t-1)} \mid x^{(t)}, x^{(0)})$ 的近似 $p_\theta(x^{(t-1)} \mid x^{(t)})$。
+
 - **反向**（噪声 → 数据）：无闭式，用网络拟合
   $$
   \color{#4a9eff} p_\theta(x^{(t-1)} \mid x^{(t)}) = \mathcal{N}\big(x^{(t-1)};\ \mu_\theta(x^{(t)}, t),\ \tilde\beta_t \mathbf{I}\big),
   $$
   其中 $\mu_\theta$ 由 score / 噪声预测 $\epsilon_\theta$ 表出，$\tilde\beta_t = \beta_t(1-\bar\alpha_{t-1})/(1-\bar\alpha_t)$。
+
+  | 量 | 公式 |
+  |----|------|
+  | 后验方差 | $\color{#4a9eff} \tilde\beta_t = \dfrac{\beta_t(1-\bar\alpha_{t-1})}{1-\bar\alpha_t}$ |
+  | 后验均值（含 $x^{(0)}$） | $\color{#4a9eff} \tilde\mu_t = \dfrac{\sqrt{\bar\alpha_{t-1}}\,\beta_t}{1-\bar\alpha_t}\, x^{(0)} + \dfrac{\sqrt{\alpha_t}(1-\bar\alpha_{t-1})}{1-\bar\alpha_t}\, x^{(t)}$ |
+  | 后验均值（含 $\epsilon$） | $\color{#4a9eff} \tilde\mu_t = \dfrac{1}{\sqrt{\alpha_t}}\left( x^{(t)} - \dfrac{\beta_t}{\sqrt{1-\bar\alpha_t}}\,\epsilon \right)$ |
+  | 模型均值 | $\color{#4a9eff} \mu_\theta(x^{(t)}, t) = \dfrac{1}{\sqrt{\alpha_t}}\left( x^{(t)} - \dfrac{\beta_t}{\sqrt{1-\bar\alpha_t}}\,\epsilon_\theta(x^{(t)}, t) \right)$ |
+  | 反向采样 | $\color{#4a9eff} x^{(t-1)} = \mu_\theta(x^{(t)}, t) + \sqrt{\tilde\beta_t}\,\zeta,\ \zeta\sim\mathcal{N}(0,\mathbf{I})$ |
+
+  推导链条：**贝叶斯后验** → **高斯闭式 $\tilde\mu_t,\, \tilde\beta_t$** → **用 $x^{(t)},\epsilon$ 表出 $\tilde\mu_t$** → **用 $\epsilon_\theta$ 替代 $\epsilon$** → **得到 $p_\theta(x^{(t-1)}\mid x^{(t)})$ 与采样式**。
+
 
 ### 6.3 离散 Flow（确定性步）
 - **与连续 ODE 的对应**：$T \to \infty$、$\Delta t \to 0$ 时，离散欧拉步收敛到 ODE $\mathrm{d}X_t = u_t(X_t)\,\mathrm{d}t$。

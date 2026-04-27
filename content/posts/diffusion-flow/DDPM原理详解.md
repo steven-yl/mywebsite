@@ -142,6 +142,7 @@ $$
 | 多步边际 | $q(x^{(t)} \mid x^{(0)}) = \mathcal{N}(\sqrt{\bar\alpha_t}\, x^{(0)},\ (1-\bar\alpha_t)\mathbf{I})$ |
 | 重参数化 | $x^{(t)} = \sqrt{\bar\alpha_t}\, x^{(0)} + \sqrt{1-\bar\alpha_t}\, \epsilon,\ \epsilon\sim\mathcal{N}(0,\mathbf{I})$ |
 
+- $\alpha_t = 1 - \beta_t$
 - $\bar\alpha_t$ 随 $t$ 增大而减小，故 $\sqrt{\bar\alpha_t}$ 变小、$\sqrt{1-\bar\alpha_t}$ 变大，$x^{(t)}$ 中噪声占比增加；当 $t=T$ 且 $\bar\alpha_T \approx 0$ 时，$x^{(T)}$ 近似 $\mathcal{N}(0,\mathbf{I})$。
 - 前向过程**不包含可学习参数**；反向过程才用神经网络拟合 $q(x^{(t-1)} \mid x^{(t)}, x^{(0)})$ 的近似 $p_\theta(x^{(t-1)} \mid x^{(t)})$。
 
