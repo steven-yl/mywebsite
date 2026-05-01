@@ -857,3 +857,18 @@ featuredImagePreview: ""
 - https://zhuanlan.zhihu.com/p/1912650149282447445
 - https://mp.weixin.qq.com/s/7CbHuCTeDRhyY_CoDJtQzA
 - https://mp.weixin.qq.com/s/RwYTdWl_3uC3EfT7tUEHjQ
+
+
+
+
+https://udlbook.github.io/udlbook/
+https://mp.weixin.qq.com/s/mrSUcVLUAUqghdP1Mn1IDw
+https://github.com/YU-deep/Awesome-Latent-Space
+https://introtodeeplearning.com/
+https://www.tensortonic.com/
+https://datawhalechina.github.io/easy-vibe/zh-cn/stage-0/0.1-learning-map/
+https://analytic-diffusion.github.io/
+https://github.com/ZJU-LLMs/Foundations-of-LLMs
+https://github.com/ninehills/blog/issues/97
+https://zhuanlan.zhihu.com/p/1961123873593483350
+https://arxiv.org/abs/2512.01809
