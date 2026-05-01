@@ -45,8 +45,8 @@ featuredImagePreview: ""
   现在的神经网络把所有规则藏在权重里，L1 和 L2 阶段够用，但到了需要修改模型结构本身的 L3，这种隐式表示就成了障碍。  
 
   世界模型的终局，是越来越大的神经网络，还是终究要回到可编辑的符号规则？  
-- **arXiv**：https://arxiv.org/abs/2604.22748  
-- **HF**：https://huggingface.co/papers/2604.22748  
+- **arXiv**：<https://arxiv.org/abs/2604.22748>  
+- **HF**：<https://huggingface.co/papers/2604.22748>  
 
 ### 2. 潜在空间统一调查
 - **来源**：机器之心 JIQIZHIXIN @jiqizhixin  
@@ -57,16 +57,16 @@ featuredImagePreview: ""
   这种隐藏空间更适合规划、记忆和推理，克服了逐步语言的瓶颈。该研究描绘了该方法在推理、规划和多模态任务中优于传统方法的表现。  
 
   潜伏空间：基础、演变、机制、能力与展望  
-- **论文**：https://arxiv.org/pdf/2604.02029  
-- **代码**：https://github.com/YU-deep/Awesome-Latent-Space  
-- **中文报道**：https://mp.weixin.qq.com/s/6Fini_pAUyB7B5R6GIdfAQ  
+- **论文**：<https://arxiv.org/pdf/2604.02029>  
+- **代码**：<https://github.com/YU-deep/Awesome-Latent-Space>  
+- **中文报道**：<https://mp.weixin.qq.com/s/6Fini_pAUyB7B5R6GIdfAQ>  
 
 ### 3. 嵌入到底学到了什么？
 - **作者**：Antonio Lupetti @antoniolupetti  
 - **内容**：  
   嵌入驱动了所有现代大型语言模型。但他们到底学到了什么？  
   这篇伯克利（BAIR）论文是关于人工智能系统如何学习以及嵌入为何真正有效的最清晰的读物之一。  
-- **链接**：https://bair.berkeley.edu/blog/2025/09/01/qwem-word2vec-theory/  
+- **链接**：<https://bair.berkeley.edu/blog/2025/09/01/qwem-word2vec-theory/>  
 
 ### 4. JEPA 系列模型实用拆解
 - **作者**：JulianSaks @JulianSaks  
@@ -94,7 +94,7 @@ featuredImagePreview: ""
   《薛定谔桥在生成建模中的基础》  
   本文表明，扩散模型、基于分数的模型和流匹配实际上只是对同一核心思想的不同视角：一座薛定谔桥，将噪声沿最高效的随机路径向数据传递。  
   这为生成建模提供了更统一的基础，有望带来更清晰的理论、更好的算法和更广泛的科学应用。  
-- **链接**：https://alphaxiv.org/abs/2603.18992  
+- **链接**：<https://alphaxiv.org/abs/2603.18992>  
 
 ### 2. DIM 理论框架：扩散模型为何能生成清晰图像
 - **作者**：Alejandro Saucedo @alejandrosucedo  
@@ -102,7 +102,7 @@ featuredImagePreview: ""
   扩散模型太棒了！但人们很少讨论它们到底在做什么。  
   介绍 DIM，一种能够提供这种洞察力的理论框架。  
   DIM 解释了扩散模型如何在理论层面生成样本，并且揭示了为什么某些扩散模型能够生成更清晰、更真实的图像。  
-- **论文**：https://arxiv.org/abs/2603.05581  
+- **论文**：<https://arxiv.org/abs/2603.05581>  
 
 ### 3. 科学应用中的扩散模型：从“看起来正确”到“真正正确”
 - **作者**：Mahdi Soltanolkotabi @mahdisoltanol  
@@ -112,7 +112,7 @@ featuredImagePreview: ""
   我将在“科学基础模型”研讨会上做一场题为“重新思考科学扩散模型：从世代到忠实重建”的演讲。  
   101B 下午 1 点  
   我将讨论失败、修复方法，以及为什么下一阶段需要新的算法和数据集。希望能激励更多我的扩散朋友们去解决这些问题。  
-- **研讨会链接**：https://fm-science.github.io  
+- **研讨会链接**：<https://fm-science.github.io>  
 
 ### 4. 一步扩散规划器 RACTD（ICLR 2026）
 - **作者**：Yutong (Kelly) He @electronickale  
@@ -120,7 +120,7 @@ featuredImagePreview: ""
   扩散规划器非常适合离线强化学习。但它们需要很多步骤才能有效工作！对于实时决策来说速度太慢了！  
   RACTD 在 #ICLR2026 中亮相：一种奖励感知型蒸馏方法，只需一步即可完成规划。  
   🇧🇷 今天（4 月 23 日）P4-#4618 下午 3:15-5:45  
-- **论文**：https://arxiv.org/abs/2506.07822  
+- **论文**：<https://arxiv.org/abs/2506.07822>  
 
 ### 5. PairFlow：更高质量的少步生成（ICLR 2026）
 - **作者**：Minhyuk Sung @MinhyukSung  
@@ -128,7 +128,7 @@ featuredImagePreview: ""
   #ICLR2026 [1/2]  
   周五上午，请查看 𝗣𝗮𝗶𝗿𝗙𝗹𝗼𝘄，它能够在基于扩散/流的模型中实现更高质量的少步生成，而训练成本仅为原始训练成本的 0.2%–1.7%。  
   📅 𝗙𝗿𝗶 𝗔𝗽𝗿 𝟮𝟰 𝗠𝗼𝗿𝗻𝗶𝗻𝗴, 𝗣𝟯-#𝟭𝟴𝟬𝟰  
-  🌐 网站：https://pair-flow.github.io  
+  🌐 网站：<https://pair-flow.github.io>  
 
 ### 6. 聚焦扩散（Foveated Diffusion）
 - **作者**：Gordon Wetzstein @GordonWetzstein  
@@ -136,14 +136,14 @@ featuredImagePreview: ""
   高分辨率图像和视频生成遇到瓶颈，因为 DiT 中的注意力与代币数量成平方增长。但每个像素都需要全分辨率吗？  
   介绍聚焦扩散：一种高效的基于扩散生成的新方法，将计算分配到最重要的位置。  
   由 @BrianCChao 和 @YarivLior 领导的工作，与 @howard_xhc 一起  
-  📄 论文：https://arxiv.org/abs/2603.23491  
-  🌐 项目页面：https://bchao1.github.io/foveated-diffusion/  
+  📄 论文：<https://arxiv.org/abs/2603.23491>  
+  🌐 项目页面：<https://bchao1.github.io/foveated-diffusion/>  
 
 ### 7. 连续对抗流模型 CAFM
 - **作者**：Peter Lin @peter9863  
 - **内容**：  
   连续对抗流模型（CAFMs）  
-  论文：https://arxiv.org/abs/2604.11521  
+  论文：<https://arxiv.org/abs/2604.11521>  
 
   流匹配在没有指导的情况下会产生较差的样品，因为 MSE 损失会导致错误的泛化。我们不需要一个各向同性欧几里得距离，而是需要一个流形感知的判据——但我们如何获得它呢？  
 
@@ -164,7 +164,7 @@ featuredImagePreview: ""
   🤔 漂移模型到底与什么相关？  
   📢 我们的新论文《漂移与基于分数模型的统一视角》表明，通往基于分数模型的桥梁是清晰且精确的（带团队和 @mittu1204，@StefanoErmon，@MoleiTaoMath）！  
   ✍️ 主要结论是：漂移与基于分数（扩散）的建模联系比表面看起来更紧密！  
-  🔗 https://arxiv.org/abs/2603.07514  
+  🔗 <https://arxiv.org/abs/2603.07514>  
 
   原因如下：  
   漂移的均值偏移使样本趋近于附近样本的核加权平均。  
@@ -177,11 +177,11 @@ featuredImagePreview: ""
 
   🤔 那么漂移模型中使用的默认拉普拉斯核会发生什么？让我们往下看  
   漂移与基于分数模型的统一视角  
-  漂移模型通过优化数据与模型分布之间由核引起的均值移差来训练一步发生器，实际中默认使用拉普拉斯核。在... https://arxiv.org/abs/2603.07514  
+  漂移模型通过优化数据与模型分布之间由核引起的均值移差来训练一步发生器，实际中默认使用拉普拉斯核。在... <https://arxiv.org/abs/2603.07514>  
 
 - **代码实现（漂移模型）** 来自 @Goodeat258：  
   “我们已经发布了漂移模型的代码:) 包括完整训练、推理和预训练的重量训练。很好奇大家会在这个基础上做些什么。”  
-  https://github.com/lambertae/drifting  
+  <https://github.com/lambertae/drifting>  
 
 ### 9. 扩散模型的反演与幂等网络（无需近似）
 - **作者**：BURKOV @burkov  
@@ -194,22 +194,22 @@ featuredImagePreview: ""
 
   例如，找到产生给定真实图像的噪声，就是用扩散模型编辑该图像的关键。如果你想拍一张脸并改变发型，或者把一幅画重新设计，首先你需要找到该图像在模型输入空间中“存在”的位置。没有这些，扩散模型只能从零生成——他们无法对已有的进行修改。目前进行这种反演的方法是近似的，有时无法忠实重建原图，并且在已经很慢的生成基础上增加了计算成本。干净、精确的反转会让这些模型的图像编辑按人们直觉预期的方式工作。  
 
-  与 AI 导师一起阅读：https://chapterpal.com/s/31a78c93/who-said-neural-networks-arent-linear  
-  PDF：https://arxiv.org/pdf/2510.08570  
-  另请参阅这篇相关论文：https://x.com/burkov/status/2041221092820627670  
+  与 AI 导师一起阅读：<https://chapterpal.com/s/31a78c93/who-said-neural-networks-arent-linear>  
+  PDF：<https://arxiv.org/pdf/2510.08570>  
+  另请参阅这篇相关论文：<https://x.com/burkov/status/2041221092820627670>  
 
 ### 10. 网格无关的未稳态流场预测（图 U-Net）
 - **作者**：Ricardo Vinuesa @ricardovinuesa  
 - **内容**：  
   Excited to share our new paper in Expert Systems With Applications:  
   Mesh-agnostic prediction of unsteady flow dynamics using graph U-Nets  
-  https://sciencedirect.com/science/article/pii/S0957417426007566  
+  <https://sciencedirect.com/science/article/pii/S0957417426007566>  
   We adapt Graph U-Nets for spatio-temporal prediction of unsteady CFD fields directly on unstructured meshes!!  
 
 ### 11. MIT 2026 流匹配与扩散模型课程
 - **作者**：Peter Holderrieth @peholderrieth  
 - **内容**：  
-  🚀 麻省理工学院流量匹配与扩散讲座 2026 发布 https://diffusion.csail.mit.edu！  
+  🚀 麻省理工学院流量匹配与扩散讲座 2026 发布 <https://diffusion.csail.mit.edu>！  
   我们刚刚发布了 MIT2026 关于流动匹配与扩散模型的新课程！我们教授现代 AI 图像、视频、蛋白质生成器的全栈——理论与实践。我们包括：  
   📺 视频：逐步推导。  
   📝 注释：数学自成一体的讲义笔记  
@@ -217,7 +217,7 @@ featuredImagePreview: ""
 
   我们对去年的迭代进行了全面改进，并增加了新主题：潜在空间、扩散变换器、用离散扩散模型构建语言模型。  
 
-  所有内容都在这里可以找到：https://diffusion.csail.mit.edu  
+  所有内容都在这里可以找到：<https://diffusion.csail.mit.edu>  
 
   衷心感谢 Tommi Jaakkola 的支持，使这门课成为可能，以及 Ashay Athalye（MIT 灵魂学院）带来的精彩制作！和他一起做这件事很有趣 @RShprints！  
 
@@ -232,7 +232,7 @@ featuredImagePreview: ""
 
   整个系列按照大模型的工作流程展开，先讲基础的分词和字节对编码，再深入注意力机制背后的数学原理，最后到实际的推理加速技术。  
 
-  GitHub：http://github.com/amitshekhariitbhu/llm-internals  
+  GitHub：<http://github.com/amitshekhariitbhu/llm-internals>  
 
   还有几篇关于注意力的相关教程，手把手带你算一遍 Q、K、V 矩阵运算，还讲了 KV 缓存、分页注意力、Flash Attention 这些优化手段怎么让模型跑得更快。  
 
@@ -264,19 +264,19 @@ featuredImagePreview: ""
   ▪️ LoRA-Squeeze  
   ▪️ 适配器混合物（MoA）  
 
-  保存此列表，并查看以下资源以了解更多信息：https://turingpost.com/p/loraevolution  
+  保存此列表，并查看以下资源以了解更多信息：<https://turingpost.com/p/loraevolution>  
 
 ### 3. 注意力残差实现
 - **作者**：Arjun @arjunkocher  
 - **内容**：  
-  http:// 实施注意力残留。  
-- **链接**：https://k-a.in/AttnRes.html  
+  实现注意力残差。  
+- **链接**：<https://k-a.in/AttnRes.html>  
 
 ### 4. Transformer 完整架构解析 + 可视化
 - **作者**：ℏεsam @Hesamation  
 - **内容**：  
   对变压器的完整架构解析，并附带直观的可视化。  
-- **链接**：https://vizuaranewsletter.com/p/the-transformers  
+- **链接**：<https://vizuaranewsletter.com/p/the-transformers>  
 
 ### 5. LLM 架构画廊（Sebastian Raschka）
 - **来源**：Berryxia.AI @berryxia  
@@ -291,7 +291,7 @@ featuredImagePreview: ""
   - 注意力机制详解  
   - 多模态架构设计  
 
-  🔗 地址：https://sebastianraschka.com/llm-architecture-gallery  
+  🔗 地址：<https://sebastianraschka.com/llm-architecture-gallery>  
 
   对于想要深入理解 LLM 架构的同学来说，这绝对是宝藏  
 
@@ -312,7 +312,7 @@ featuredImagePreview: ""
   第七章：遵循指示的微调  
 
   评论区有仓库链接！  
-- **GitHub**：https://github.com/rasbt/LLMs-from-scratch  
+- **GitHub**：<https://github.com/rasbt/LLMs-from-scratch>  
 
 ### 7. AI 工程师必读面试论文清单
 - **作者**：Vivo @vivoplt  
@@ -431,10 +431,10 @@ featuredImagePreview: ""
   这种新颖的方法利用机器人自身的历史动作直接预测下一步动作，跳过了传统扩散模型中缓慢随机的噪声采样。A2A 实现了闪电般的单步动作生成（0.56 毫秒！），在速度、训练效率、抗视觉噪声以及对未见配置的泛化性方面远超现有方法。它甚至展现了视频生成的多样性！  
 
   动作间流程匹配  
-  网站：https://lorenzo-0-0.github.io/A2A_Flow_Matching  
-  arXiv：https://arxiv.org/pdf/2602.07322  
-  代码：https://github.com/JIAjindou/A2A_Flow_Matching  
-  我们的报道：https://mp.weixin.qq.com/s/mrSUcVLUAUqghdP1Mn1IDw  
+  网站：<https://lorenzo-0-0.github.io/A2A_Flow_Matching>  
+  arXiv：<https://arxiv.org/pdf/2602.07322>  
+  代码：<https://github.com/JIAjindou/A2A_Flow_Matching>  
+  我们的报道：<https://mp.weixin.qq.com/s/mrSUcVLUAUqghdP1Mn1IDw>  
 
 ### 3. 流策略 + 伴随匹配（QAM）
 - **作者**：Qiyang (Colin) Liu @qiyang_li  
@@ -444,8 +444,8 @@ featuredImagePreview: ""
 
   就这些！这个项目是一段有趣的旅程，旨在寻找一种能够融合以往方法优点的 flow+RL 方法。没有我出色的导师 @svlevine，这一切都不可能实现！！  
 
-  代码+经验数据：http://github.com/colinqiyangli/qam  
-  论文：https://arxiv.org/abs/2601.14234  
+  代码+经验数据：<http://github.com/colinqiyangli/qam>  
+  论文：<https://arxiv.org/abs/2601.14234>  
   12/N=12  
 
 ### 4. 协同训练（模拟与真实）的表征机制
@@ -463,8 +463,8 @@ featuredImagePreview: ""
   ⚖️ 两者都是必要的——最好有更对齐的表示，但模型必须能够区分这些领域。我们称之为结构化代表性对齐。  
 
   ⬇️ 让我们深入探讨一下：  
-  论文：https://arxiv.org/pdf/2604.13645  
-  网站：https://science-of-co-training.github.io  
+  论文：<https://arxiv.org/pdf/2604.13645>  
+  网站：<https://science-of-co-training.github.io>  
 
 ### 5. 对称引导记忆增强强化学习
 - **作者**：Chenhao Li @breadli428  
@@ -472,7 +472,7 @@ featuredImagePreview: ""
   🪞对称性有助于塑造强化学习的政策。  
   🧠它还能提升记忆力和任务理解吗？  
   ✅我们引入了对称引导记忆增强，结合结构化经验增强与基于记忆的上下文推断，以提升学习效率。  
-- **链接**：https://sites.google.com/view/eth-sgma/home  
+- **链接**：<https://sites.google.com/view/eth-sgma/home>  
 
 ### 6. NVIDIA 人类 / 人形机器人运动生态（开源 Apache 2.0）
 - **作者**：Umar Iqbal @UmarIqb  
@@ -484,29 +484,29 @@ featuredImagePreview: ""
   整个套件均采用 Apache 2.0 许可协议。  
 
   1️⃣ SOMA：一个通用接口，将所有参数化人体模型（SOMA-shape、SMPL、MHR 等）统一为标准骨架表示，无需定制适配器或模型特定的重定向。  
-  🔗 https://lnkd.in/gsxhiJnn  
+  🔗 <https://lnkd.in/gsxhiJnn>  
 
   2️⃣ Kimodo：高保真、可控的文本到动作生成，适用于人类和类人机器人。  
-  🔗 https://lnkd.in/gCc84XnX  
+  🔗 <https://lnkd.in/gCc84XnX>  
 
   3️⃣ GEM：一种基于野外视频的全局人类姿态估计方法，原生兼容 SOMA。  
-  🔗 https://lnkd.in/g_QAvRjn  
+  🔗 <https://lnkd.in/g_QAvRjn>  
 
   4️⃣ Bones-SEED：一个包含 15 万+个 SOMA 格式动作的庞大数据集，包括已为 Unitree G1 重新定向的数据，与我们的 Bones Studio 合作伙伴共同创建。  
-  🔗 https://lnkd.in/gfx-QD-w  
-  🔗 https://lnkd.in/gyNdTwQx  
+  🔗 <https://lnkd.in/gfx-QD-w>  
+  🔗 <https://lnkd.in/gyNdTwQx>  
 
   5️⃣ SOMA 重定向器：专门用于从 SOMA 骨架无缝重定向到 Unitree G1 的运动重定向工具。  
-  🔗 https://lnkd.in/gqz9Na-H  
+  🔗 <https://lnkd.in/gqz9Na-H>  
 
   6️⃣ ProtoMotions：我们用于通过强化学习训练数字人类（oid）的高性能仿真框架，现已原生支持 SOMA。  
-  🔗 https://lnkd.in/gmvMikMU  
+  🔗 <https://lnkd.in/gmvMikMU>  
 
   这才刚刚开始，我们还有更多计划在筹备中。很期待社区接下来会打造什么！  
 
   #NVIDIA #GTC #GTC2026 #Robotics #EmbodiedAI #PhysicalAI @NVIDIAAI  
 
-- **补充**：Davis Rempe @davrempe 也发布了 Kimodo 的介绍：“需要为类人机器人或数字人类提供高质量的运动体验吗？认识一下 Kimodo：我们基于 700 小时光学动作捕捉数据训练的新扩散模型，实现了简便、可控且高保真度的动作生成。@NVIDIAAI”  https://research.nvidia.com/labs/sil/projects/kimodo/  
+- **补充**：Davis Rempe @davrempe 也发布了 Kimodo 的介绍：“需要为类人机器人或数字人类提供高质量的运动体验吗？认识一下 Kimodo：我们基于 700 小时光学动作捕捉数据训练的新扩散模型，实现了简便、可控且高保真度的动作生成。@NVIDIAAI”  <https://research.nvidia.com/labs/sil/projects/kimodo/>  
 
 ### 7. RoboManipBaselines：机器人模仿学习的统一框架
 - **来源**：Robots Digest 🤖 @robotsdigest  
@@ -520,9 +520,9 @@ featuredImagePreview: ""
 
   这正是生态系统所需要的缺失粘合剂。  
 
-  论文：https://arxiv.org/pdf/2509.17057  
-  网站：https://isri-aist.github.io/RoboManipBaselines-ProjectPage/  
-  代码库：https://github.com/isri-aist/RoboManipBaselines  
+  论文：<https://arxiv.org/pdf/2509.17057>  
+  网站：<https://isri-aist.github.io/RoboManipBaselines-ProjectPage/>  
+  代码库：<https://github.com/isri-aist/RoboManipBaselines>  
 
 ### 8. MAGNet：多智能体运动生成（自回归扩散强迫）
 - **作者**：Vongani Maluleke @vonekels  
@@ -537,9 +537,9 @@ featuredImagePreview: ""
   感谢我出色的合作伙伴：@kiehoriuchi、@LeaMue27、Evonne Ng、@JitendraMalikCV 以及 @akanazawa  
 
   详情请查看我们的论文、项目页面和代码：  
-  📎 论文：http://arxiv.org/abs/2512.17900  
-  🌐 页面：http://von31.github.io/MAGNet  
-  🖥️ 代码：https://github.com/Von31/MAGNet-code  
+  📎 论文：<http://arxiv.org/abs/2512.17900>  
+  🌐 页面：<http://von31.github.io/MAGNet>  
+  🖥️ 代码：<https://github.com/Von31/MAGNet-code>  
 
 ### 9. 程序化预训练：从抽象数据学习视觉
 - **作者**：Zachary Shinnick @ZacharyShinnick  
@@ -549,7 +549,7 @@ featuredImagePreview: ""
   刚 🚀 发布⬇️ 的 CVPR 2026 代码已接受  
 
   更广泛的理念：程序化预训练学习：从抽象数据进行有用的计算，而不是真实数据。  
-  代码与文件：https://zlshinnick.github.io/procedural-pretraining-page/  
+  代码与文件：<https://zlshinnick.github.io/procedural-pretraining-page/>  
   这补充了我们之前的研究，即 LM 也能从抽象数据中学习有用的计算，而非文本。这表明程序式预训练可以与模态无关。  
 
   感谢我的合作者们 🙏  
@@ -557,14 +557,14 @@ featuredImagePreview: ""
   程序性预训练  
   一个轻量级的预热，在大规模预训练前搭建算法支架——涵盖语言、代码、数学和视觉。  
 
-  https://zlshinnick.github.io/procedural-pretraining-page/  
+  <https://zlshinnick.github.io/procedural-pretraining-page/>  
 
 ### 10. 强化学习可归结为目标条件 MDP
 - **作者**：Chongyi Zheng @chongyiz1  
 - **内容**：  
   1/ 强化学习通常被描述为最大化奖励。但我们能否将其归结为实现正确目标？  
   关于连接强化学习、目标条件强化学习和随机最短路径的新博客：  
-  https://iclr-blogposts.github.io/2026/blog/2026/mdp-to-gcmdp/  
+  <https://iclr-blogposts.github.io/2026/blog/2026/mdp-to-gcmdp/>  
   另发 #ICLR2026 帖者：周四上午 10：30–下午 1：00，第 4 页 #4611。  
 
 ### 11. 强化学习环境构建指南（Unsloth + NVIDIA）
@@ -578,7 +578,7 @@ featuredImagePreview: ""
   • GRPO 和 RL 最佳实践  
   • 可验证奖励和 RLVR 的工作原理  
 
-  博客：https://unsloth.ai/blog/rl-environment-building  
+  博客：<https://unsloth.ai/blog/rl-environment-building>  
 
 ## 五、学习资源 / 课程 / 工具
 
@@ -596,12 +596,12 @@ featuredImagePreview: ""
 
   无论你是想从零开始构建知识体系，还是希望跟上 AI 领域的快速迭代，这个站点提供的资料都属于行业“教科书级”的参考标准。  
 
-  🔗 资源链接：http://introtodeeplearning.com  
+  🔗 资源链接：<http://introtodeeplearning.com>  
 
 ### 2. fast.ai 深度学习课程（自顶向下）
 - **来源**：沉浸式翻译 @immersivetran  
 - **内容**：  
-  http://fast.ai 的深度学习课程，至今依然是程序员转型 AI 领域一个务实又高效的起点。  
+  <http://fast.ai> 的深度学习课程，至今依然是程序员转型 AI 领域一个务实又高效的起点。  
 
   它的核心逻辑非常特殊：拒绝从枯燥的微积分和线性代数开始，而是采用“自顶向下”的教学法。第一节课不讲复杂的数学公式，而是直接教你用几行代码运行起一个图像识别模型。  
 
@@ -611,11 +611,11 @@ featuredImagePreview: ""
   2️⃣ 完全开源免费：不仅视频课程免费，还配有完整的在线教材《Deep Learning for Coders with fastai and PyTorch》和交互式代码，没有任何隐藏付费。  
   3️⃣ 基于 PyTorch 生态：它构建在 PyTorch 之上，既有高度封装的库让你快速上手，也支持你深入底层去修改模型细节。  
 
-  很多所谓的“零基础 AI 课程”往往止步于理论，而 http://fast.ai 是为了让你真正具备编写生产级 AI 代码的能力。  
+  很多所谓的“零基础 AI 课程”往往止步于理论，而 <http://fast.ai> 是为了让你真正具备编写生产级 AI 代码的能力。  
 
   如果你想在 2026 年重新构建对深度学习的理解，这依然是那套经久不衰的黄金标准。  
 
-  🔗链接：https://course.fast.ai  
+  🔗链接：<https://course.fast.ai>  
 
 ### 3. 卢曼卡片盒原始方法详解
 - **来源**：沉浸式翻译 @immersivetran  
@@ -646,7 +646,7 @@ featuredImagePreview: ""
 
   或许你需要的不是再多一个软件，而是先搞清楚：什么放进文献卡片盒，什么必须用自己的话写进思考卡片盒，让这套系统真正开始回话。  
 
-  https://ernestchiang.com/en/posts/2025/niklas-luhmann-original-zettelkasten-method/  
+  <https://ernestchiang.com/en/posts/2025/niklas-luhmann-original-zettelkasten-method/>  
 
 ### 4. NotebookLM 六个高效提示词
 - **作者**：暖暖爱分享 @nuannuan_share  
@@ -689,7 +689,7 @@ featuredImagePreview: ""
 - **内容**：  
   📚一个很离谱的学习网站：Learn Anything  
   这是一个能帮你找到任何学习资源的网站，只要输入你想学的内容关键词，比如绘画、摄影、AI、编程、英语等等，它就能立刻帮你整理出一整套超清晰的学习路径、最优资源以及知识结构图  
-  https://learn-anything.xyz  
+  <https://learn-anything.xyz>  
 
   每个主题下的资源都经过精心整理，真正做到了想学什么就学什么，还可以把喜欢的资源一键收藏，甚至标注自己的学习进度方便随时接着学，赶紧收藏起来吧  
 
@@ -700,7 +700,7 @@ featuredImagePreview: ""
 
   共收录了 200 多个循序渐进的 CUDA 内核实现，涵盖从基础的元素级操作到复杂的 HGEMM 库。  
 
-  GitHub：http://github.com/xlite-dev/LeetCUDA  
+  GitHub：<http://github.com/xlite-dev/LeetCUDA>  
 
   提供完整的底层代码，还配套整理了 100 多篇高质量的高性能计算技术博客，帮我们打通理论与实践的闭环。  
 
@@ -716,7 +716,7 @@ featuredImagePreview: ""
   几何 -> PSD  
   比对度 -> SVD  
 
-  我的笔记：https://ickma2311.github.io/Math/MIT18.065/mit18065-lecture34-distance-matrices-procrustes.html  
+  我的笔记：<https://ickma2311.github.io/Math/MIT18.065/mit18065-lecture34-distance-matrices-procrustes.html>  
 
 ### 8. 混沌动力学教程（含代码）
 - **作者**：Luiz Pessoa @PessoaBrain  
@@ -724,7 +724,7 @@ featuredImagePreview: ""
   混沌动力学  
   “从数据预测混沌动力学：导论”  
   看起来这是一个很棒的教程（带代码！），可以学习动力系统分析基础，包括 RNN、回声状态机、LSTM 等。  
-- **论文**：https://arxiv.org/abs/2604.11624v1  
+- **论文**：<https://arxiv.org/abs/2604.11624v1>  
 
 ### 9. PyTorch 速查表（从基础到注意力）
 - **来源**：TensorTonic @TensorTonic  
@@ -732,7 +732,7 @@ featuredImagePreview: ""
   PyTorch 可能是训练大型语言模型最重要的框架。  
   你被期望会懂自升、优化器和 nn。模块对任何机器学习岗位都有用。  
   我们发布了一份 PyTorch 表格，从基础带你到注意力机制的应用。  
-- **链接**：http://tensortonic.com  
+- **链接**：<http://tensortonic.com>  
 
 ### 10. Andrew Ng 机器学习专项的注释与算法实现
 - **来源**：Ksenia_TuringPost @TheTuringPost  
@@ -741,12 +741,12 @@ featuredImagePreview: ""
   但如果我们告诉你有一个极好的资源可以帮助你复习知识呢？或者甚至从零开始通过课程？  
 
   注释与算法  
-  https://github.com/pmulard/machine-learning-specialization-andrew-ng 实现  
+  <https://github.com/pmulard/machine-learning-specialization-andrew-ng> 实现  
 
 ### 11. 混合精度训练教程（PyTorch）
 - **作者**：Vuk Rosić 武克 @VukRosic99  
 - **内容**：  
-  https://youtu.be/C7NrYjhpiCY  
+  <https://youtu.be/C7NrYjhpiCY>  
 
   从零开始混合精准训练 - 教程  
 
@@ -757,7 +757,7 @@ featuredImagePreview: ""
 - **内容**：  
   图释 Gilbert Strang 的 “给每个人的线性代数”  
   Graphic notes on Gilbert Strang's "Linear Algebra for Everyone"  
-  https://github.com/kenjihiranabe/The-Art-of-Linear-Algebra  
+  <https://github.com/kenjihiranabe/The-Art-of-Linear-Algebra>  
 
   欢迎来到矩阵世界，线性代数宇宙  
   Welcome to Matrix World, A Universe of Linear Algebra  
@@ -773,15 +773,15 @@ featuredImagePreview: ""
   每当我想要用代码来核对论文的细节时，我最终往往会去看他的实现代码。  
   一方面，从教育角度来看，他的工作令人印象深刻。另一方面，我很少见到有人做了这么多工作，却在社交媒体上如此沉默。  
 
-  Lucidrains：https://github.com/lucidrains  
+  Lucidrains：<https://github.com/lucidrains>  
 
 ### 2. 流匹配对 TD 学习的意义 - 代码与 W&B
 - **作者**：Bhavya Agrawalla @AgrawallaBhavya  
 - **内容**：  
   我们现在已经发布了“流程匹配对 TD 学习有什么意义？”的代码和资料库！  
 
-  代码 —— https://github.com/CMU-AIRe/floq/tree/main/what_does_flow_matching  
-  Wandbs —— https://docs.google.com/spreadsheets/d/1VCuDtHWt5bEOXAWBRCYSqQ5Arwr23A-yZEInYQsGgBo/edit?usp=sharing  
+  代码 —— <https://github.com/CMU-AIRe/floq/tree/main/what_does_flow_matching>  
+  Wandbs —— <https://docs.google.com/spreadsheets/d/1VCuDtHWt5bEOXAWBRCYSqQ5Arwr23A-yZEInYQsGgBo/edit?usp=sharing>  
 
   如果你有任何问题或问题，欢迎随时联系我！  
 
@@ -792,20 +792,20 @@ featuredImagePreview: ""
   你只需要 8GB 显存来本地 RL Qwen3.5-2B！  
   Qwen3.5 将通过视觉 GRPO 自主学习数学问题。  
 
-  强化学习指南：https://unsloth.ai/docs/get-started/reinforcement-learning-rl-guide  
-  GitHub：https://github.com/unslothai/unsloth  
-  Qwen3-4B：https://colab.research.google.com/github/unslothai/notebooks/blob/main/nb/Qwen3_5_(4B)_Vision_GRPO.ipynb  
+  强化学习指南：<https://unsloth.ai/docs/get-started/reinforcement-learning-rl-guide>  
+  GitHub：<https://github.com/unslothai/unsloth>  
+  Qwen3-4B：[Colab Notebook](https://colab.research.google.com/github/unslothai/notebooks/blob/main/nb/Qwen3_5_(4B)_Vision_GRPO.ipynb)  
 
 ### 4. 零镜头几何多视角扩散（GLD）
 - **作者**：Tom Dörr @tom_doerr  
 - **内容**：  
   零镜头几何多视角扩散  
-  https://github.com/cvlab-kaist/GLD  
+  <https://github.com/cvlab-kaist/GLD>  
 
 ### 5. 世界模型调查与资源汇总
 - **作者**：Tom Dörr @tom_doerr  
 - **内容**：  
-  https://github.com/tsinghua-fib-lab/World-Model  
+  <https://github.com/tsinghua-fib-lab/World-Model>  
   世界模型的调查与资源  
 
 ### 6. 机器学习文献调查的 Claude 技能
@@ -818,13 +818,13 @@ featuredImagePreview: ""
   [希望这些信息对你有帮助！](https://t.co/jbKOBosUeq)  
 
 ### 7. TorchCode（待确认）
-- **链接**：https://github.com/duoan/TorchCode （用户提供）
+- **链接**：<https://github.com/duoan/TorchCode> （用户提供）
 
 ### 8. FastWAM（待确认）
-- **链接**：https://yuantianyuan01.github.io/FastWAM/
+- **链接**：<https://yuantianyuan01.github.io/FastWAM/>
 
 ### 9. Analytic-Diffusion（待确认）
-- **链接**：https://analytic-diffusion.github.io/
+- **链接**：<https://analytic-diffusion.github.io/>
 
 ## 七、其他值得关注的推文 / 观察 / 未分类链接
 
@@ -840,7 +840,7 @@ featuredImagePreview: ""
 - **内容**：  
   如果你在 #ICLR2026 中，并且有兴趣讨论扩散模型的有趣特性，那就来看看我们的海报吧！  
   P3-1710（下午 3:15 起）。  
-  基于 https://cvlab-kaist.github.io/NoiseRefine/  
+  基于 <https://cvlab-kaist.github.io/NoiseRefine/>  
 
 ### 3. ICLR 2026 海报：学会指导你的扩散模型
 - **作者**：Arthur Gretton @ArthurGretton  
@@ -853,22 +853,22 @@ featuredImagePreview: ""
 
 ### 5. 知乎/微信预备文章（待读）
 用户提供的原始链接（未分类）：
-- https://zhuanlan.zhihu.com/p/686507361
-- https://zhuanlan.zhihu.com/p/1912650149282447445
-- https://mp.weixin.qq.com/s/7CbHuCTeDRhyY_CoDJtQzA
-- https://mp.weixin.qq.com/s/RwYTdWl_3uC3EfT7tUEHjQ
+- <https://zhuanlan.zhihu.com/p/686507361>
+- <https://zhuanlan.zhihu.com/p/1912650149282447445>
+- <https://mp.weixin.qq.com/s/7CbHuCTeDRhyY_CoDJtQzA>
+- <https://mp.weixin.qq.com/s/RwYTdWl_3uC3EfT7tUEHjQ>
 
 
 
 
-https://udlbook.github.io/udlbook/
-https://mp.weixin.qq.com/s/mrSUcVLUAUqghdP1Mn1IDw
-https://github.com/YU-deep/Awesome-Latent-Space
-https://introtodeeplearning.com/
-https://www.tensortonic.com/
-https://datawhalechina.github.io/easy-vibe/zh-cn/stage-0/0.1-learning-map/
-https://analytic-diffusion.github.io/
-https://github.com/ZJU-LLMs/Foundations-of-LLMs
-https://github.com/ninehills/blog/issues/97
-https://zhuanlan.zhihu.com/p/1961123873593483350
-https://arxiv.org/abs/2512.01809
+<https://udlbook.github.io/udlbook/>
+<https://mp.weixin.qq.com/s/mrSUcVLUAUqghdP1Mn1IDw>
+<https://github.com/YU-deep/Awesome-Latent-Space>
+<https://introtodeeplearning.com/>
+<https://www.tensortonic.com/>
+<https://datawhalechina.github.io/easy-vibe/zh-cn/stage-0/0.1-learning-map/>
+<https://analytic-diffusion.github.io/>
+<https://github.com/ZJU-LLMs/Foundations-of-LLMs>
+<https://github.com/ninehills/blog/issues/97>
+<https://zhuanlan.zhihu.com/p/1961123873593483350>
+<https://arxiv.org/abs/2512.01809>
