@@ -15,4 +15,8 @@ draft: false
 ---
 ## 引用
 
-<iframe src="https://zhaoyang97.github.io/Paper-Notes/" width="50%" height="200px" frameborder="0" style="border:0; min-height:600px;" allowfullscreen></iframe>
+- <iframe src="https://zhaoyang97.github.io/Paper-Notes/" width="100%" height="300px" frameborder="0" style="border:0; min-height:100px;" allowfullscreen></iframe>
+
+- <iframe src="https://iclr-blogposts.github.io/2026/blog/" width="100%" height="300px" frameborder="0" style="border:0; min-height:100px;" allowfullscreen></iframe>
+
+- <iframe src="https://the-principles-of-diffusion-models.github.io/" width="100%" height="300px" frameborder="0" style="border:0; min-height:100px;" allowfullscreen></iframe>
