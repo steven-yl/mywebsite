@@ -10,8 +10,8 @@ description: ""
 tags: [diffusion/flow, tutorial]
 categories: [diffusion/flow]
 series: [diffusion/flow系列]
-weight: 1
-series_weight: 1
+weight: 2
+series_weight: 2
 
 hiddenFromHomePage: false
 hiddenFromSearch: false

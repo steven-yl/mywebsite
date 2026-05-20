@@ -11,8 +11,8 @@ tags: [diffusion/flow]
 categories: [diffusion/flow]
 series: [diffusion/flow系列]
 
-weight: 0
-series_weight: 0
+weight: 3
+series_weight: 3
 
 hiddenFromHomePage: false
 hiddenFromSearch: false

@@ -10,8 +10,8 @@ description: "《Flow Matching Guide and Code》第5章 Non-Euclidean Flow Match
 tags: [diffusion/flow, tutorial, Riemannian, flow matching]
 categories: [diffusion/flow]
 series: [diffusion/flow系列]
-weight: 5
-series_weight: 5
+weight: 0
+series_weight: 0
 
 hiddenFromHomePage: false
 hiddenFromSearch: false

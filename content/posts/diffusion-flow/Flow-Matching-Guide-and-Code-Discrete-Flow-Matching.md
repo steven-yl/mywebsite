@@ -9,8 +9,8 @@ description: ""
 tags: [DiscreteFL, diffusion/flow, tutorial]
 categories: [diffusion/flow]
 series: [diffusion/flow系列]
-weight: 1
-series_weight: 1
+weight: 0
+series_weight: 0
 
 hiddenFromHomePage: false
 hiddenFromSearch: false
