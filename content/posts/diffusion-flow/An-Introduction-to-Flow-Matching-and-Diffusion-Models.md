@@ -213,7 +213,7 @@ $$
 
 基于此，我们可以将 ODE 扩展为 SDE：SDE 的轨迹在每个时间步不仅会沿着 $u_t(X_t)$ 的方向迈出确定性一步，还会叠加布朗运动带来的随机步，形式为：
 $$
-X_{t+h} = X_t + \underbrace{h u_t(X_t)}_{确定性项} + \sigma_t \underbrace{(W_{t+h} - W_t)}_{随机项} + \underbrace{h R_t(h)}_{误差项} \tag{6}
+X_{t+h} = X_t + \underbrace{h u_t(X_t)}_\text{确定性项} + \sigma_t \underbrace{(W_{t+h} - W_t)}_\text{随机项} + \underbrace{h R_t(h)}_\text{误差项} \tag{6}
 $$
 其中：
 - $\sigma_t \geq 0$ 是扩散系数，控制随机项的强度
