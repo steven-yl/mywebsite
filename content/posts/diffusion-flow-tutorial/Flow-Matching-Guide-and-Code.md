@@ -9,7 +9,7 @@ description: ""
 
 tags: [diffusion/flow, tutorial]
 categories: [diffusion/flow]
-series: [diffusion/flow系列]
+series: [diffusion/flow-tutorial]
 weight: 0
 series_weight: 0
 

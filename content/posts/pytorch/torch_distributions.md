@@ -6,9 +6,9 @@ authors: [Steven]
 description: "PyTorch 概率分布库 (`torch.distributions`) 完全指南"
 summary: "PyTorch 概率分布库 (`torch.distributions`) 完全指南"
 
-tags: [PyTorch]
-categories: [PyTorch]
-series: [PyTorch系列]
+tags: [PyTorch, distributions]
+categories: [PyTorch, distributions]
+series: [PyTorch实践指南]
 hiddenFromHomePage: false
 hiddenFromSearch: false
 featuredImage: ""
@@ -98,7 +98,7 @@ batch_sample = batch_dist.sample()       # tensor([0, 1])
 
 ### 3.2 `Bernoulli`
 
-**描述**：伯努利分布，单次二元试验（0/1）。  
+**描述**：伯努利分布，单次二元试验（0/1）。
 **参数**：`probs` (成功概率) 或 `logits`。
 
 ```python
@@ -111,7 +111,7 @@ logp = dist.log_prob(torch.tensor(1))  # ln(0.7)
 
 ### 3.3 `Binomial`
 
-**描述**：二项分布，`n` 次独立伯努利试验中的成功次数。  
+**描述**：二项分布，`n` 次独立伯努利试验中的成功次数。
 **参数**：`total_count` (试验次数), `probs` (单次成功概率)。
 
 ```python
@@ -123,7 +123,7 @@ samples = dist.sample((5,))   # 5个样本，每个介于0~10之间
 
 ### 3.4 `Poisson`
 
-**描述**：泊松分布，模拟单位时间内随机事件的发生次数。  
+**描述**：泊松分布，模拟单位时间内随机事件的发生次数。
 **参数**：`rate` (λ，事件发生率)。
 
 ```python
@@ -156,7 +156,7 @@ soft_sample = relaxed.rsample()   # 例如 [0.1, 0.8, 0.1]，梯度可传播
 
 ### 4.1 `Normal`
 
-**描述**：正态分布（高斯分布）。  
+**描述**：正态分布（高斯分布）。
 **参数**：`loc` (均值 μ), `scale` (标准差 σ > 0)。
 
 ```python
@@ -170,7 +170,7 @@ entropy = dist.entropy()   # 0.5 * ln(2πeσ^2)
 
 ### 4.2 `Uniform`
 
-**描述**：均匀分布。  
+**描述**：均匀分布。
 **参数**：`low` (下界), `high` (上界)。
 
 ```python
@@ -222,7 +222,7 @@ t = StudentT(df=2.5)
 
 ### 5.1 `MultivariateNormal`
 
-**描述**：多元正态分布。  
+**描述**：多元正态分布。
 **参数**：`loc` (均值向量), `covariance_matrix` 或 `precision_matrix` 或 `scale_tril`。
 
 ```python
@@ -237,7 +237,7 @@ samples = mvn.sample((5,))     # shape (5, 2)
 
 ### 5.2 `Dirichlet`
 
-**描述**：狄利克雷分布，样本是位于单纯形上的正向量（各分量和为 1）。常用于多项分布的共轭先验。  
+**描述**：狄利克雷分布，样本是位于单纯形上的正向量（各分量和为 1）。常用于多项分布的共轭先验。
 **参数**：`concentration` (浓度参数，α 向量)。
 
 ```python
