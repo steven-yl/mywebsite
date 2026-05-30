@@ -39,7 +39,7 @@ hiddenFromSearch: false
 | [十、高级索引写回](#十高级索引写回)   | gather/scatter            | gather、scatter/scatter_、index_add_/index_copy_、scatter_reduce_/index_reduce_、公式与示例                                                                                                                                                                          |
 | [十一、比较与逻辑](#十一比较与逻辑)   | 比较、where 与数值判断            | eq/ne/gt/ge/lt/le、where、logical_and/or/not、isfinite/isnan/isinf、isclose、equal/allclose、is_tensor/is_floating_point/is_complex                                                                                                                               |
 | [十二、其它工具](#十二其它工具)     | clone/expand/einsum/设备转换等 | clone、expand/repeat、narrow、einsum、roll、clamp、addcdiv/addcmul、tril/triu、renorm、设备与 NumPy 转换、复数与 torch.special、diff/broadcast_tensors/atleast_1d/bucketize/searchsorted、resize_/resize_as_、result_type/promote_types、uniform_/normal_/exponential_/bernoulli_ |
-| [十三、速查与小结](#十三速查与小结)   | 速查与延伸                     | 分类速查表、**常见遗漏清单**、与 [training_solver_guide](./training_solver_guide.md)/[dataloader_guide](./dataloader_guide.md) 的衔接                                                                                                                                        |
+| [十三、速查与小结](#十三速查与小结)   | 速查与延伸                     | 分类速查表、**常见遗漏清单**、与 [training_solver_guide](./PyTorch 模型训练技术文档：求解器、参数配置与训练循环.md)/[dataloader_guide](./PyTorch DataLoader 技术解读.md) 的衔接                                                                                                                                        |
 
 
 **阅读建议**：先读总览建立「创建 → 形状 → 拼接/拆分 → 运算 → 归约 → 索引」的全局图景，再按需跳转具体 API；实现时按「先创建/再变形/再运算/再索引」顺序对照各章。

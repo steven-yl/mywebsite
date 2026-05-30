@@ -1493,7 +1493,7 @@ for x_0, x_1 in dataloader:  ## 来自π0,1的样本，形状为[batch_size, *da
 ### 5.7 详细补充文档
   [Flow Matching Guide and Code 第5章解读：指数映射-对数映射-测地线条件流](/mywebsite/flow-matching-guide-and-code-5-non-euclidean-flow-matching/)
 
-  [Flow Matching Guide and Code 第5章解读：Non-Euclidean Flow Matching](/mywebsite/Flow-Matching-Guide-and-Code-5-Non-Euclidean-Flow-Matching.md/)
+  [Flow Matching Guide and Code 第5章解读：Non-Euclidean Flow Matching](./Flow%20Matching%20Guide%20and%20Code%20%E7%AC%AC5%E7%AB%A0%E8%A7%A3%E8%AF%BB%EF%BC%9ANon-Euclidean%20Flow%20Matching.md)
 
 ## 6 Continuous Time Markov Chain Models
 本节将连续时间马尔可夫链（CTMC）作为流模型的替代生成模型，适用于生成离散数据（即位于离散（且有限）状态空间中的数据）。CTMC是马尔可夫过程，是后面第7节讨论的离散流匹配（DFM）（Campbell等人，2024；Gat等人，2024）生成模型范式的基础。因此，本节与第3节类似，在第3节中我们将流作为流匹配（FM）生成模型范式的基础进行介绍。

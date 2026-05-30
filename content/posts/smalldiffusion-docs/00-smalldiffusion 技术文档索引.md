@@ -20,13 +20,13 @@ hiddenFromSearch: false
 
 | 文件 | 内容 |
 |------|------|
-| [01_overview.md](01_overview.md) | 项目总览：架构设计、模块关系、扩散模型数学基础 |
-| [02_diffusion.md](02_diffusion.md) | 核心模块：噪声调度、训练循环、采样算法 (`diffusion.py`) |
-| [03_data.md](03_data.md) | 数据模块：数据集工具、玩具数据集 (`data.py`) |
-| [04_model_base.md](04_model_base.md) | 模型基础：ModelMixin、预测模式修饰器、注意力机制、嵌入层 (`model.py`) |
-| [05_model_dit.md](05_model_dit.md) | Diffusion Transformer 模型 (`model_dit.py`) |
-| [06_model_unet.md](06_model_unet.md) | U-Net 模型 (`model_unet.py`) |
-| [07_examples.md](07_examples.md) | 实战示例：从玩具模型到 Stable Diffusion |
+| [01-smalldiffusion 项目总览.md](01-smalldiffusion 项目总览.md) | 项目总览：架构设计、模块关系、扩散模型数学基础 |
+| [02-smalldiffusion 核心模块：diffusion.py.md](02-smalldiffusion 核心模块：diffusion.py.md) | 核心模块：噪声调度、训练循环、采样算法 (`diffusion.py`) |
+| [03-smalldiffusion 数据模块：data.py.md](03-smalldiffusion 数据模块：data.py.md) | 数据模块：数据集工具、玩具数据集 (`data.py`) |
+| [04-smalldiffusion 模型基础：model.py.md](04-smalldiffusion 模型基础：model.py.md) | 模型基础：ModelMixin、预测模式修饰器、注意力机制、嵌入层 (`model.py`) |
+| [05-smalldiffusion 模型：model_dit.py.md](05-smalldiffusion 模型：model_dit.py.md) | Diffusion Transformer 模型 (`model_dit.py`) |
+| [06-smalldiffusion 模型：model_unet.py.md](06-smalldiffusion 模型：model_unet.py.md) | U-Net 模型 (`model_unet.py`) |
+| [07-smalldiffusion 实战示例.md](07-smalldiffusion 实战示例.md) | 实战示例：从玩具模型到 Stable Diffusion |
 
 ## 模块依赖关系
 

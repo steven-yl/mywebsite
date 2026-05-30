@@ -8,3 +8,6 @@
 /.pydeps
 /scripts
 .obsidian
+.copilot
+.claudian
+.claude

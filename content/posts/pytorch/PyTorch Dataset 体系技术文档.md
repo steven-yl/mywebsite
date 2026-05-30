@@ -34,7 +34,7 @@ featuredImagePreview: ""
 | [六、领域库数据集](#六领域库数据集)                                                  | torchvision / torchaudio                                                                              | transform 管线、典型用法                                                        |
 | [七、典型项目扩展模式](#七典型项目扩展模式)                                              | 多任务/RL/图风格数据入口                                                                                        | BaseDataset/RLDataset/GTDataset 等概念与调用关系（通用模式）                           |
 | [八、Padding 与 collate 协作](#八padding-与-collate-协作)                      | 变长样本成 batch                                                                                           | 单条 padding 与 collate_fn 的职责划分、典型实现模式                                     |
-| [九、与 DataLoader 的协作](#九与-dataloader-的协作)                              | Dataset → DataLoader → 训练                                                                             | collate_fn、多进程、与 [dataloader_guide.md](./dataloader_guide.md) 的衔接        |
+| [九、与 DataLoader 的协作](#九与-dataloader-的协作)                              | Dataset → DataLoader → 训练                                                                             | collate_fn、多进程、与 [PyTorch DataLoader 技术解读.md](./PyTorch DataLoader 技术解读.md) 的衔接        |
 
 
 ---

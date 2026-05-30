@@ -176,7 +176,7 @@ featuredImagePreview: ""
 在 **Cursor Settings → Rules** 中可对插件带来的技能/规则进行管理：
 
 - 技能可设为「始终应用 / Agent 决定 / 手动」；在聊天中输入 **`/skill-name`** 可手动触发对应技能。
-- 规则同样可配置生效方式（Always、Agent Decides、Manual 等），与 [Cursor 使用技巧](cursor-usage-tips.md) 中的 Rules 行为一致。
+- 规则同样可配置生效方式（Always、Agent Decides、Manual 等），与 [Cursor 使用技巧](Cursor 的使用技巧.md) 中的 Rules 行为一致。
 
 ### 9.3 MCP
 

@@ -19,7 +19,7 @@ featuredImage: ""
 featuredImagePreview: ""
 ---
 
-本文档面向**当前工作区已安装**的 Cursor 插件，逐项说明其用途、触发方式与技能列表，方便按场景使用。更多插件介绍与安装方式见 [Cursor 插件市场介绍](cursor-plugins.md)。
+本文档面向**当前工作区已安装**的 Cursor 插件，逐项说明其用途、触发方式与技能列表，方便按场景使用。更多插件介绍与安装方式见 [Cursor 插件市场介绍](Cursor 插件市场介绍.md)。
 
 <!--more-->
 
@@ -169,8 +169,8 @@ featuredImagePreview: ""
 
 **延伸阅读**
 
-- [Cursor 插件市场介绍](cursor-plugins.md) — 插件体系、分类与安装  
-- [Cursor 使用技巧](cursor-usage-tips.md) — Rules、Skills、MCP 等通用用法  
+- [Cursor 插件市场介绍](Cursor 插件市场介绍.md) — 插件体系、分类与安装  
+- [Cursor 使用技巧](Cursor 的使用技巧.md) — Rules、Skills、MCP 等通用用法  
 - [Plugins \| Cursor Docs](https://cursor.com/docs/plugins) — 官方插件文档  
 - [Superpowers - GitHub](https://github.com/obra/superpowers)  
 - [Hugging Face Skills - GitHub](https://github.com/huggingface/skills)

@@ -34,7 +34,7 @@ featuredImagePreview: ""
 | [八、损失函数选型](#八损失函数选型) | 常见 Loss 与使用场景 | MSE/CrossEntropy/NLL/BCE/L1/Huber、多任务与自定义 loss |
 | [九、参数配置经验](#九参数配置经验) | 学习率、warmup、weight decay | 学习率与 batch 缩放、warmup、常见坑与调参建议 |
 | [十、完整示例](#十完整示例) | 可运行脚本 | 从 DataLoader 到 optimizer + scheduler + 训练循环的端到端代码 |
-| [十一、速查与小结](#十一速查与小结) | 组件对照与延伸 | 优化器/调度器速查表、与 [distributed_training_guide](./distributed_training_guide.md) / [dataloader_guide](./dataloader_guide.md) 的衔接 |
+| [十一、速查与小结](#十一速查与小结) | 组件对照与延伸 | 优化器/调度器速查表、与 [distributed_training_guide](./PyTorch 分布式训练与操作工具技术文档.md) / [dataloader_guide](./PyTorch DataLoader 技术解读.md) 的衔接 |
 
 **阅读建议**：先读总览建立「数据 → 前向 → 损失 → 反向 → 优化器/调度器」的全局图景，再按需跳转优化器、调度器、参数组或配置经验；实现时按「构建 optimizer → 可选 scheduler → 循环内 zero_grad/backward/step/scheduler.step」顺序对照各章。
 
@@ -93,7 +93,7 @@ featuredImagePreview: ""
 | **LRScheduler** | 按 step/epoch 修改 optimizer 中 param_groups 的 lr | 绑定一个 optimizer；通常在 `optimizer.step()` 之后调用 `scheduler.step()` |
 | **param_groups** | 把参数分成多组，每组可有不同 lr、weight_decay 等 | 优化器构造时传入 list of dict；scheduler 通过改 `param_groups[i]['lr']` 生效 |
 | **Loss** | 把模型输出与目标变成标量，供 backward | 输出必须是标量；选择与任务匹配的 loss（分类 CE、回归 MSE 等） |
-| **训练循环** | 串联数据、前向、loss、反向、optimizer.step、zero_grad、可选 scheduler.step | 可与 [DataLoader](./dataloader_guide.md)、[DDP](./distributed_training_guide.md) 组合 |
+| **训练循环** | 串联数据、前向、loss、反向、optimizer.step、zero_grad、可选 scheduler.step | 可与 [DataLoader](./PyTorch DataLoader 技术解读.md)、[DDP](./PyTorch 分布式训练与操作工具技术文档.md) 组合 |
 
 ### 1.5 优缺点与适用场景对比
 
@@ -685,7 +685,7 @@ if __name__ == "__main__":
 
 ### 11.3 与其它文档的衔接
 
-- **数据流**：数据来自 [Dataset](./pytorch_dataset_guide.md) → [DataLoader](./dataloader_guide.md) → 本训练的 `for batch in dataloader`。
-- **多卡**：本训练的 optimizer/scheduler 每 rank 一份，与 [DDP](./distributed_training_guide.md) 无冲突；checkpoint 保存/加载时需同时保存 optimizer、scheduler 的 state_dict。
+- **数据流**：数据来自 [Dataset](./PyTorch Dataset 体系技术文档.md) → [DataLoader](./PyTorch DataLoader 技术解读.md) → 本训练的 `for batch in dataloader`。
+- **多卡**：本训练的 optimizer/scheduler 每 rank 一份，与 [DDP](./PyTorch 分布式训练与操作工具技术文档.md) 无冲突；checkpoint 保存/加载时需同时保存 optimizer、scheduler 的 state_dict。
 
 以上为模型训练中求解器、参数配置与训练循环的完整技术解读；按文档索引可快速定位到优化器、调度器、参数组或配置经验等小节。
