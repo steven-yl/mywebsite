@@ -1,0 +1,37 @@
+filters:
+  and:
+    - file.folder.startsWith("content/posts")
+views:
+  - type: table
+    name: 表格
+    groupBy:
+      property: file.folder
+      direction: ASC
+    order:
+      - file.name
+      - file.backlinks
+      - file.ctime
+      - file.basename
+      - file.ext
+      - file.embeds
+      - file.tags
+      - summary
+      - weight
+      - markmap
+      - draft
+      - description
+      - categories
+      - authors
+      - file.mtime
+      - file.fullname
+      - series
+      - series_weight
+      - tags
+      - title
+    sort:
+      - property: file.basename
+        direction: ASC
+    summaries:
+      file.name: Filled
+    columnSize:
+      file.embeds: 72
