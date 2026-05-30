@@ -148,7 +148,7 @@ class Swissroll(Dataset):
 
 $$x(t) = \frac{t \cos(t)}{t_{\max}}, \quad y(t) = \frac{t \sin(t)}{t_{\max}}$$
 
-其中 $t$ 在 $[t_{\min}, t_{\min} + t_{\max}]$ 上均匀采样。除以 $t_{\max}$ 使数据归一化到合理范围。
+其中$t$在$[t_{\min}, t_{\min} + t_{\max}]$上均匀采样。除以$t_{\max}$使数据归一化到合理范围。
 
 ### 使用示例
 

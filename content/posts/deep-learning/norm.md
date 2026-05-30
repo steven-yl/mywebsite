@@ -36,19 +36,19 @@ featuredImagePreview: ""
 **核心思想**：沿批次维度与空间维度对每个通道独立标准化，使每一层输入分布稳定，从而允许更高的学习率和更灵活的初始化。
 
 **公式**：
-对于输入张量 \(x \in \mathbb{R}^{N \times C \times H \times W}\)：
-\[
+对于输入张量$x \in \mathbb{R}^{N \times C \times H \times W}$：
+$$
 \mu_c = \frac{1}{NHW}\sum_{n=1}^{N}\sum_{h=1}^{H}\sum_{w=1}^{W} x_{nchw}
-\]
-\[
+$$
+$$
 \sigma_c^2 = \frac{1}{NHW}\sum_{n=1}^{N}\sum_{h=1}^{H}\sum_{w=1}^{W} (x_{nchw} - \mu_c)^2
-\]
-\[
+$$
+$$
 \hat{x}_{nchw} = \frac{x_{nchw} - \mu_c}{\sqrt{\sigma_c^2 + \epsilon}}
-\]
-\[
+$$
+$$
 y_{nchw} = \gamma_c \hat{x}_{nchw} + \beta_c
-\]
+$$
 
 **训练与推理**：
 - 训练时使用当前 mini-batch 的统计量，同时通过指数移动平均更新全局统计量（running_mean, running_var）。
@@ -73,18 +73,18 @@ bn = nn.BatchNorm2d(num_features=64)
 **核心思想**：对每个样本独立，在所有通道和空间维度上标准化，消除样本间依赖，适合序列模型。
 
 **公式**：
-\[
+$$
 \mu_n = \frac{1}{CHW}\sum_{c=1}^{C}\sum_{h=1}^{H}\sum_{w=1}^{W} x_{nchw}
-\]
-\[
+$$
+$$
 \sigma_n^2 = \frac{1}{CHW}\sum_{c=1}^{C}\sum_{h=1}^{H}\sum_{w=1}^{W} (x_{nchw} - \mu_n)^2
-\]
-\[
+$$
+$$
 \hat{x}_{nchw} = \frac{x_{nchw} - \mu_n}{\sqrt{\sigma_n^2 + \epsilon}}
-\]
-\[
+$$
+$$
 y_{nchw} = \gamma_c \hat{x}_{nchw} + \beta_c
-\]
+$$
 
 **特点**：
 - ✅ 不依赖批次，可处理变长序列和小批量。
@@ -108,18 +108,18 @@ ln = nn.LayerNorm(normalized_shape=512)
 **核心思想**：对每个样本的每个通道独立，仅在空间维度上标准化，去除样本间和通道间的统计关联，常用于风格迁移。
 
 **公式**：
-\[
+$$
 \mu_{nc} = \frac{1}{HW}\sum_{h=1}^{H}\sum_{w=1}^{W} x_{nchw}
-\]
-\[
+$$
+$$
 \sigma_{nc}^2 = \frac{1}{HW}\sum_{h=1}^{H}\sum_{w=1}^{W} (x_{nchw} - \mu_{nc})^2
-\]
-\[
+$$
+$$
 \hat{x}_{nchw} = \frac{x_{nchw} - \mu_{nc}}{\sqrt{\sigma_{nc}^2 + \epsilon}}
-\]
-\[
+$$
+$$
 y_{nchw} = \gamma_c \hat{x}_{nchw} + \beta_c
-\]
+$$
 
 **特点**：
 - ✅ 解耦内容与风格，保留单个样本内通道间的相对差异。
@@ -139,19 +139,19 @@ in_norm = nn.InstanceNorm2d(num_features=64)
 
 **核心思想**：将通道分为若干组，在组内通道与空间维度上标准化，介于 LN 和 IN 之间，不受批次大小限制。
 
-**公式**（设组数为 \(G\)，每组通道数 \(C_g = C/G\)）：
-\[
+**公式**（设组数为$G$，每组通道数$C_g = C/G$）：
+$$
 \mu_{ng} = \frac{1}{C_g HW}\sum_{c \in \text{group}_g}\sum_{h=1}^{H}\sum_{w=1}^{W} x_{nchw}
-\]
-\[
+$$
+$$
 \sigma_{ng}^2 = \frac{1}{C_g HW}\sum_{c \in \text{group}_g}\sum_{h=1}^{H}\sum_{w=1}^{W} (x_{nchw} - \mu_{ng})^2
-\]
-\[
+$$
+$$
 \hat{x}_{nchw} = \frac{x_{nchw} - \mu_{ng}}{\sqrt{\sigma_{ng}^2 + \epsilon}}
-\]
-\[
+$$
+$$
 y_{nchw} = \gamma_c \hat{x}_{nchw} + \beta_c
-\]
+$$
 
 **特点**：
 - ✅ 不依赖批次，性能与 BN 接近，适合小批量训练。
@@ -173,13 +173,13 @@ gn = nn.GroupNorm(num_groups=32, num_channels=64)
 ### 5. Batch Renormalization
 **提出**：Ioffe, 2017
 
-**核心思想**：在 BN 基础上引入两个额外参数 \(r\) 和 \(d\)，对小批次统计量进行约束，使模型在小批量时也能保持 BN 的性质。
+**核心思想**：在 BN 基础上引入两个额外参数$r$和$d$，对小批次统计量进行约束，使模型在小批量时也能保持 BN 的性质。
 
 **公式**：
-\[
+$$
 \hat{x} = \frac{x - \mu_{\mathcal{B}}}{\sqrt{\sigma_{\mathcal{B}}^2 + \epsilon}} \cdot r + d
-\]
-其中 \(r = \text{clip}(\frac{\sigma_{\text{running}}}{\sigma_{\mathcal{B}}}, 1/r_{\max}, r_{\max})\)，\(d = \text{clip}(\frac{\mu_{\text{running}} - \mu_{\mathcal{B}}}{\sqrt{\sigma_{\mathcal{B}}^2+\epsilon}}, -d_{\max}, d_{\max})\)，\(r_{\max}, d_{\max}\) 是预设阈值。
+$$
+其中$r = \text{clip}(\frac{\sigma_{\text{running}}}{\sigma_{\mathcal{B}}}, 1/r_{\max}, r_{\max})$，$d = \text{clip}(\frac{\mu_{\text{running}} - \mu_{\mathcal{B}}}{\sqrt{\sigma_{\mathcal{B}}^2+\epsilon}}, -d_{\max}, d_{\max})$，$r_{\max}, d_{\max}$是预设阈值。
 
 **特点**：
 - ✅ 允许小批量训练（如 batch size=1），同时保持 BN 的加速能力。
@@ -226,15 +226,15 @@ gn = nn.GroupNorm(num_groups=32, num_channels=64)
 **核心思想**：摒弃均值，仅用方差进行归一化，并结合一个可学习的偏移量，避免对 batch 的依赖。
 
 **公式**：
-\[
+$$
 \nu_{nc}^2 = \frac{1}{HW}\sum_{h,w} (x_{nchw})^2
-\]
-\[
+$$
+$$
 \hat{x}_{nchw} = \frac{x_{nchw}}{\sqrt{\nu_{nc}^2 + \epsilon}}
-\]
-\[
+$$
+$$
 y_{nchw} = \gamma_c \hat{x}_{nchw} + \beta_c
-\]
+$$
 再经过一个门控单元（TLU）处理。
 
 **特点**：
@@ -270,12 +270,12 @@ y_{nchw} = \gamma_c \hat{x}_{nchw} + \beta_c
 ### 10. Weight Normalization (WN)
 **提出**：Salimans & Kingma, 2016
 
-**核心思想**：将权重向量分解为方向 \(v\) 和幅度 \(g\)：\(w = g \cdot \frac{v}{\|v\|}\)，训练时优化 \(v\) 和 \(g\)。
+**核心思想**：将权重向量分解为方向$v$和幅度$g$：$w = g \cdot \frac{v}{\|v\|}$，训练时优化$v$和$g$。
 
 **公式**：
-\[
+$$
 w = \frac{g}{\|v\|} v
-\]
+$$
 梯度通过分解计算，解耦了权重大小与方向。
 
 **特点**：
@@ -300,10 +300,10 @@ linear = utils.weight_norm(linear)
 **核心思想**：约束权重的谱范数（最大奇异值），使网络满足 Lipschitz 条件，常用在 GAN 判别器上。
 
 **公式**：
-\[
+$$
 W_{\text{SN}} = \frac{W}{\sigma(W)}
-\]
-其中 \(\sigma(W)\) 是 \(W\) 的最大奇异值，通常通过幂迭代法近似。
+$$
+其中$\sigma(W)$是$W$的最大奇异值，通常通过幂迭代法近似。
 
 **特点**：
 - ✅ 稳定 GAN 训练，防止梯度爆炸。
@@ -327,10 +327,10 @@ conv = utils.spectral_norm(conv)
 **核心思想**：对卷积核权重进行标准化，使其均值为 0、方差为 1（沿输出通道维度），从而平滑损失景观。
 
 **公式**：
-\[
+$$
 \hat{W}_{i,j} = \frac{W_{i,j} - \mu_{i}}{\sqrt{\sigma_i^2 + \epsilon}}
-\]
-其中 \(\mu_i = \frac{1}{K}\sum_{j} W_{i,j}\)，\(\sigma_i^2 = \frac{1}{K}\sum_{j} (W_{i,j} - \mu_i)^2\)，\(K\) 是卷积核参数量。
+$$
+其中$\mu_i = \frac{1}{K}\sum_{j} W_{i,j}$，$\sigma_i^2 = \frac{1}{K}\sum_{j} (W_{i,j} - \mu_i)^2$，$K$是卷积核参数量。
 
 **特点**：
 - ✅ 与 BN 配合可进一步提升性能；可单独使用于小批量。
@@ -358,10 +358,10 @@ def weight_standardization(weight, eps=1e-5):
 **核心思想**：用风格图像的均值/方差替换 Instance Normalization 中的统计量，实现风格迁移。
 
 **公式**：
-\[
+$$
 \text{AdaIN}(x, y) = \sigma(y) \left( \frac{x - \mu(x)}{\sigma(x)} \right) + \mu(y)
-\]
-其中 \(x\) 是内容特征，\(y\) 是风格特征，\(\mu, \sigma\) 在每个样本每个通道的空间上计算。
+$$
+其中$x$是内容特征，$y$是风格特征，$\mu, \sigma$在每个样本每个通道的空间上计算。
 
 **特点**：
 - ✅ 实现任意风格迁移，风格与内容解耦。
@@ -384,13 +384,13 @@ def adain(content, style):
 ### 14. Spatially-Adaptive Denormalization (SPADE)
 **提出**：Park et al., 2019
 
-**核心思想**：利用语义分割图（mask）学习空间可变的 \(\gamma, \beta\)，实现对生成图像的精细控制。
+**核心思想**：利用语义分割图（mask）学习空间可变的$\gamma, \beta$，实现对生成图像的精细控制。
 
 **公式**：
-\[
+$$
 y = \gamma_{\text{spatial}}(mask) \cdot \hat{x} + \beta_{\text{spatial}}(mask)
-\]
-其中 \(\gamma_{\text{spatial}}, \beta_{\text{spatial}}\) 通过卷积层从 mask 学习。
+$$
+其中$\gamma_{\text{spatial}}, \beta_{\text{spatial}}$通过卷积层从 mask 学习。
 
 **特点**：
 - ✅ 能根据语义布局生成高质量图像，保留结构。
@@ -408,13 +408,13 @@ y = \gamma_{\text{spatial}}(mask) \cdot \hat{x} + \beta_{\text{spatial}}(mask)
 ### 15. Conditional Batch Normalization (CBN)
 **提出**：De Vries et al., 2017
 
-**核心思想**：根据类别或域条件学习不同的 \(\gamma, \beta\)，使 BN 具备条件生成能力。
+**核心思想**：根据类别或域条件学习不同的$\gamma, \beta$，使 BN 具备条件生成能力。
 
 **公式**：
-\[
+$$
 y = \gamma_c \odot \hat{x} + \beta_c
-\]
-其中 \(\gamma_c, \beta_c\) 由条件向量（如类别嵌入）通过 MLP 生成。
+$$
+其中$\gamma_c, \beta_c$由条件向量（如类别嵌入）通过 MLP 生成。
 
 **特点**：
 - ✅ 适合多模态生成、域自适应。
@@ -462,10 +462,10 @@ class ConditionalBN(nn.Module):
 **核心思想**：为每个归一化层学习 BN、LN、IN 的权重，动态融合三种统计量。
 
 **公式**：
-\[
+$$
 \hat{x} = w_1 \hat{x}_{\text{BN}} + w_2 \hat{x}_{\text{LN}} + w_3 \hat{x}_{\text{IN}}
-\]
-权重 \(w_i\) 通过 softmax 学习得到，且可随通道、位置变化。
+$$
+权重$w_i$通过 softmax 学习得到，且可随通道、位置变化。
 
 **特点**：
 - ✅ 自适应不同任务和批次大小，减少调参。
@@ -496,10 +496,10 @@ class ConditionalBN(nn.Module):
 **核心思想**：通过进化搜索发现新的归一化-激活函数组合，将 BN 与激活函数融合为单一操作。
 
 **公式**（EvoNorm-S0 为例）：
-\[
+$$
 y = \frac{x}{\sqrt{\text{Var}(x) + \epsilon}} \cdot \text{sigmoid}(s \cdot x)
-\]
-其中 \(s\) 为可学习参数。
+$$
+其中$s$为可学习参数。
 
 **特点**：
 - ✅ 性能优于 BN+ReLU，且可替换后直接使用。
@@ -521,9 +521,9 @@ y = \frac{x}{\sqrt{\text{Var}(x) + \epsilon}} \cdot \text{sigmoid}(s \cdot x)
 **核心思想**：仅使用均方根进行缩放，省去均值平移，计算更高效。
 
 **公式**：
-\[
+$$
 \hat{x}_i = \frac{x_i}{\sqrt{\frac{1}{d}\sum_{j=1}^{d} x_j^2 + \epsilon}} \cdot \gamma
-\]
+$$
 
 **特点**：
 - ✅ 与 LayerNorm 性能相当，但计算量更小。
@@ -551,10 +551,10 @@ class RMSNorm(nn.Module):
 **核心思想**：仅用 L2 范数进行缩放，类似 RMSNorm，但使用 L2 范数而非 RMS。
 
 **公式**：
-\[
+$$
 \hat{x} = \frac{x}{\|x\|_2} \cdot g
-\]
-其中 \(g\) 是可学习标量。
+$$
+其中$g$是可学习标量。
 
 **特点**：
 - ✅ 简单高效，适合极深 Transformer。
@@ -570,10 +570,10 @@ class RMSNorm(nn.Module):
 **核心思想**：在 Transformer 的残差连接后引入缩放因子，并结合 LayerNorm，使模型能稳定训练上千层。
 
 **公式**：
-\[
+$$
 x_{l+1} = \alpha \cdot \text{LN}(x_l + \text{Attn}(x_l)) + \beta \cdot \text{LN}(x_l + \text{FFN}(x_l))
-\]
-其中 \(\alpha, \beta\) 为可学习或固定参数。
+$$
+其中$\alpha, \beta$为可学习或固定参数。
 
 **特点**：
 - ✅ 支持超深 Transformer（如 1000 层以上）。
@@ -593,10 +593,10 @@ x_{l+1} = \alpha \cdot \text{LN}(x_l + \text{Attn}(x_l)) + \beta \cdot \text{LN}
 **核心思想**：在图级别上标准化节点特征，同时保留图间差异。
 
 **公式**：
-\[
+$$
 \hat{x}_{v} = \frac{x_v - \mu_{\mathcal{G}}}{\sqrt{\sigma_{\mathcal{G}}^2 + \epsilon}} \cdot \gamma + \beta
-\]
-其中 \(\mu_{\mathcal{G}}, \sigma_{\mathcal{G}}^2\) 是对全图所有节点特征计算的统计量。
+$$
+其中$\mu_{\mathcal{G}}, \sigma_{\mathcal{G}}^2$是对全图所有节点特征计算的统计量。
 
 **特点**：
 - ✅ 比 BN 更适应图数据，提升 GNN 性能。
@@ -614,10 +614,10 @@ x_{l+1} = \alpha \cdot \text{LN}(x_l + \text{Attn}(x_l)) + \beta \cdot \text{LN}
 **核心思想**：控制节点表示的全局方差，防止深层 GNN 的过平滑现象。
 
 **公式**：
-\[
+$$
 \hat{x}_v = s \cdot \frac{x_v - \frac{1}{n}\sum_{u} x_u}{\sqrt{\frac{1}{n}\sum_{u} \|x_u - \bar{x}\|^2}}
-\]
-其中 \(s\) 是可学习缩放参数。
+$$
+其中$s$是可学习缩放参数。
 
 **特点**：
 - ✅ 有效缓解过平滑，支持更深的 GNN。
@@ -637,9 +637,9 @@ x_{l+1} = \alpha \cdot \text{LN}(x_l + \text{Attn}(x_l)) + \beta \cdot \text{LN}
 **核心思想**：对特征之间的相关性进行标准化，解耦通道间的冗余信息。
 
 **公式**：
-\[
+$$
 \hat{x} = \frac{x - \mu}{\sigma} \quad \text{(传统)}
-\]
+$$
 CorrNorm 进一步将特征白化，使协方差矩阵接近单位阵。
 
 **特点**：
@@ -656,12 +656,12 @@ CorrNorm 进一步将特征白化，使协方差矩阵接近单位阵。
 **核心思想**：沿空间位置（H, W）进行归一化，类似 LayerNorm 但仅作用于空间维度。
 
 **公式**：
-\[
+$$
 \mu_{nhw} = \frac{1}{C}\sum_{c} x_{nchw}, \quad \sigma_{nhw}^2 = \frac{1}{C}\sum_{c} (x_{nchw} - \mu_{nhw})^2
-\]
-\[
+$$
+$$
 \hat{x}_{nchw} = \frac{x_{nchw} - \mu_{nhw}}{\sqrt{\sigma_{nhw}^2 + \epsilon}}
-\]
+$$
 
 **特点**：
 - ✅ 适合 3D 数据（视频、体数据），保留位置差异。
@@ -674,13 +674,13 @@ CorrNorm 进一步将特征白化，使协方差矩阵接近单位阵。
 ### 27. T-Norm
 **提出**：Khrulkov et al., 2023
 
-**核心思想**：引入温度系数 \(T\) 控制归一化强度，使模型在训练初期柔和地标准化，后期逐渐增强。
+**核心思想**：引入温度系数$T$控制归一化强度，使模型在训练初期柔和地标准化，后期逐渐增强。
 
 **公式**：
-\[
+$$
 \hat{x} = \frac{x - \mu}{\sqrt{\sigma^2 + \epsilon}} \cdot \frac{1}{T}
-\]
-其中 \(T\) 可随训练步数衰减。
+$$
+其中$T$可随训练步数衰减。
 
 **特点**：
 - ✅ 提升训练稳定性和最终性能。

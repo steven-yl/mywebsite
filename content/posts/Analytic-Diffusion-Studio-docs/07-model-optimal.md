@@ -20,11 +20,11 @@ summary: "Analytic Diffusion Studio — 最优贝叶斯去噪器"
 
 ## 7.1 概述
 
-Optimal 去噪器实现了贝叶斯最优估计——后验均值 $\mathbb{E}[x_0 | x_t]$。它不做任何分布假设，直接对数据集中的所有图像做 softmax 加权平均。
+Optimal 去噪器实现了贝叶斯最优估计——后验均值$\mathbb{E}[x_0 | x_t]$。它不做任何分布假设，直接对数据集中的所有图像做 softmax 加权平均。
 
 **解决的问题**：在给定有限数据集的条件下，计算理论上最优的去噪估计。
 
-**核心思想**：将数据集视为经验分布 $p(x_0) = \frac{1}{N}\sum_i \delta(x_0 - x_0^{(i)})$，则后验均值变为 softmax 加权平均。
+**核心思想**：将数据集视为经验分布$p(x_0) = \frac{1}{N}\sum_i \delta(x_0 - x_0^{(i)})$，则后验均值变为 softmax 加权平均。
 
 ## 7.2 数学公式
 
@@ -36,8 +36,8 @@ $$D^*(x_t, t) = \frac{\sum_{i=1}^{N} x_0^{(i)} \cdot w_i(x_t, t)}{\sum_{i=1}^{N}
 
 $$w_i(x_t, t) = \exp\left(-\frac{\bar{\alpha}_t \|x_t / \sqrt{\bar{\alpha}_t} - x_0^{(i)}\|^2}{2(1-\bar{\alpha}_t) \cdot \tau}\right)$$
 
-- $\tau$ 是温度参数（`temperature`），$\tau = 1$ 时为标准贝叶斯最优
-- 分子中 $x_t / \sqrt{\bar{\alpha}_t}$ 是对 $x_t$ 的缩放，使其与 $x_0$ 在同一尺度
+-$\tau$是温度参数（`temperature`），$\tau = 1$时为标准贝叶斯最优
+- 分子中$x_t / \sqrt{\bar{\alpha}_t}$是对$x_t$的缩放，使其与$x_0$在同一尺度
 
 ## 7.3 FAISS 加速
 
@@ -140,11 +140,11 @@ def denoise(self, latents, timestep, *, generator=None, **kwargs):
 
 ### 步骤详解
 
-1. **缩放查询**：将 $x_t$ 除以 $\sqrt{\bar{\alpha}_t}$，使查询向量与数据集图像在同一尺度。这等价于在原始空间中比较 $x_t$ 与 $\sqrt{\bar{\alpha}_t} x_0^{(i)}$。
+1. **缩放查询**：将$x_t$除以$\sqrt{\bar{\alpha}_t}$，使查询向量与数据集图像在同一尺度。这等价于在原始空间中比较$x_t$与$\sqrt{\bar{\alpha}_t} x_0^{(i)}$。
 
 2. **FAISS 搜索**：在缩放后的空间中找到 k 个最近邻。FAISS 返回 L2 距离和索引。
 
-3. **距离修正**：FAISS 返回的距离是缩放空间中的，乘以 $\bar{\alpha}_t$ 恢复到原始空间。
+3. **距离修正**：FAISS 返回的距离是缩放空间中的，乘以$\bar{\alpha}_t$恢复到原始空间。
 
 4. **softmax 权重**：$\text{logit}_i = -\frac{\bar{\alpha}_t d_i^2}{2(1-\bar{\alpha}_t)\tau}$，然后 softmax 归一化。
 

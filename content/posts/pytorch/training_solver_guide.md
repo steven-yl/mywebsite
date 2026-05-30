@@ -44,17 +44,17 @@ featuredImagePreview: ""
 
 ### 1.1 训练闭环在做什么
 
-**目标**：在给定数据上，通过迭代更新模型参数 $\theta$，使损失 $L(\theta)$ 下降，从而拟合数据或任务目标。
+**目标**：在给定数据上，通过迭代更新模型参数$\theta$，使损失$L(\theta)$下降，从而拟合数据或任务目标。
 
 **最小闭环**：每个 step 内依次执行：
 
 1. **前向**：输入 → 模型 → 输出  
 2. **损失**：输出与目标代入损失函数 → 标量 loss  
-3. **反向**：`loss.backward()` → 计算梯度 $\nabla_\theta L$  
-4. **更新**：优化器根据梯度更新参数，如 $\theta \leftarrow \theta - \eta \nabla_\theta L$（SGD 为例）  
+3. **反向**：`loss.backward()` → 计算梯度$\nabla_\theta L$ 
+4. **更新**：优化器根据梯度更新参数，如$\theta \leftarrow \theta - \eta \nabla_\theta L$（SGD 为例）  
 5. **清空梯度**：`optimizer.zero_grad()`，为下一轮 backward 做准备  
 
-其中「更新」由 **优化器（Optimizer / 求解器）** 完成；学习率 $\eta$ 可固定，也可由 **学习率调度器（LRScheduler）** 按 step 或 epoch 调整。因此：**优化器决定「如何用梯度更新参数」；调度器决定「学习率随时间如何变化」。**
+其中「更新」由 **优化器（Optimizer / 求解器）** 完成；学习率$\eta$可固定，也可由 **学习率调度器（LRScheduler）** 按 step 或 epoch 调整。因此：**优化器决定「如何用梯度更新参数」；调度器决定「学习率随时间如何变化」。**
 
 ### 1.2 整体架构与数据流
 
@@ -205,9 +205,9 @@ SGD 族包括：**SGD**（可选 momentum）、**Nesterov**。本节只讨论 `t
 ### 3.2 关键概念与公式
 
 - **SGD**：
-  $$\theta_{t+1} = \theta_t - \eta \nabla L(\theta_t)$$
+ $$\theta_{t+1} = \theta_t - \eta \nabla L(\theta_t)$$
   即用当前梯度乘以学习率更新。
-- **SGD with Momentum**：先累积动量 $v_{t+1} = \mu v_t + \nabla L(\theta_t)$，再更新 $\theta_{t+1} = \theta_t - \eta v_{t+1}$，减轻震荡、加速收敛。
+- **SGD with Momentum**：先累积动量$v_{t+1} = \mu v_t + \nabla L(\theta_t)$，再更新$\theta_{t+1} = \theta_t - \eta v_{t+1}$，减轻震荡、加速收敛。
 - **Nesterov**：在计算梯度前先做「临时更新」再算梯度，使动量更前瞻一步，公式上等价于对动量项做修正（PyTorch 中 `nesterov=True` 即启用）。
 
 **为什么需要 Momentum**：纯 SGD 在病态曲面上震荡大、收敛慢；动量起到平滑梯度、利用历史方向的作用。
@@ -260,12 +260,12 @@ opt = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9, weight_decay=1e
 
 ### 4.2 Adam
 
-**是什么**：对每个参数维护一阶矩估计 $m_t$ 和二阶矩估计 $v_t$，做偏差修正后用 $\hat{m}_t/(\sqrt{\hat{v}_t}+\epsilon)$ 方向更新，步长为 lr。
+**是什么**：对每个参数维护一阶矩估计$m_t$和二阶矩估计$v_t$，做偏差修正后用$\hat{m}_t/(\sqrt{\hat{v}_t}+\epsilon)$方向更新，步长为 lr。
 
 **为什么需要**：不同参数梯度量纲和曲率差异大；固定 lr 要么对某些参数过大要么过小；自适应步长能减少对 lr 的敏感度，收敛快、调参简单。
 
 **公式（简要）**：  
-$$m_t = \beta_1 m_{t-1} + (1-\beta_1)g_t,\quad v_t = \beta_2 v_{t-1} + (1-\beta_2)g_t^2$$  
+$$m_t = \beta_1 m_{t-1} + (1-\beta_1)g_t,\quad v_t = \beta_2 v_{t-1} + (1-\beta_2)g_t^2$$ 
 偏差修正：$\hat{m}_t = m_t/(1-\beta_1^t)$，$\hat{v}_t = v_t/(1-\beta_2^t)$。  
 更新：$\theta_{t+1} = \theta_t - \eta \cdot \hat{m}_t/(\sqrt{\hat{v}_t}+\epsilon)$。
 
@@ -279,13 +279,13 @@ torch.optim.Adam(params, lr=1e-3, betas=(0.9, 0.999), eps=1e-8, weight_decay=0, 
 |------|------|--------|
 | **lr** | 学习率 | 1e-3 最常用 |
 | **betas** | 一阶、二阶矩的指数衰减率 | (0.9, 0.999) |
-| **eps** | 数值稳定项，分母加在 $\sqrt{v}$ 上 | 1e-8 |
+| **eps** | 数值稳定项，分母加在$\sqrt{v}$上 | 1e-8 |
 | **weight_decay** | L2 惩罚（在 Adam 中会进动量） | 0 或 1e-2 |
-| **amsgrad** | 是否用 AMSGrad 变体（取 $v$ 的单调递增） | 一般 False |
+| **amsgrad** | 是否用 AMSGrad 变体（取$v$的单调递增） | 一般 False |
 
 ### 4.3 AdamW
 
-**是什么**：Adam 的变体，把 **weight decay** 从「加在梯度里」改为「直接对参数做衰减」，即每步先做 $\theta \leftarrow \theta - \eta\lambda\theta$ 再按 Adam 更新。这样 weight decay 不参与一阶/二阶矩计算，等价于解耦的 L2 正则。
+**是什么**：Adam 的变体，把 **weight decay** 从「加在梯度里」改为「直接对参数做衰减」，即每步先做$\theta \leftarrow \theta - \eta\lambda\theta$再按 Adam 更新。这样 weight decay 不参与一阶/二阶矩计算，等价于解耦的 L2 正则。
 
 **为什么需要**：原 Adam 里 weight decay 与梯度耦合，正则效果和收敛行为不如解耦形式；AdamW 在多数任务上更稳、泛化更好，**推荐作为默认选择**。
 
@@ -298,7 +298,7 @@ torch.optim.AdamW(params, lr=1e-3, betas=(0.9, 0.999), eps=1e-8, weight_decay=0.
 #### 4.3.1 Adam 与 AdamW 对比
 
 - **Adam**：weight_decay 在实现上等价于 L2 正则（对梯度加 weight_decay·θ，再参与动量与二阶矩），与自适应步长耦合后，对泛化有时不利。
-- **AdamW**：将 weight decay 从梯度更新中解耦，单独做 $\theta \leftarrow \theta - \eta\lambda\theta$，再按 Adam 公式更新；weight decay 不进入 $m_t/v_t$，更符合「参数衰减」语义，通常泛化更好，**推荐默认使用 AdamW**。
+- **AdamW**：将 weight decay 从梯度更新中解耦，单独做$\theta \leftarrow \theta - \eta\lambda\theta$，再按 Adam 公式更新；weight decay 不进入$m_t/v_t$，更符合「参数衰减」语义，通常泛化更好，**推荐默认使用 AdamW**。
 
 ### 4.4 RAdam / NAdam
 
@@ -309,7 +309,7 @@ torch.optim.AdamW(params, lr=1e-3, betas=(0.9, 0.999), eps=1e-8, weight_decay=0.
 
 ### 4.5 RMSprop / Adagrad / Adadelta
 
-- **RMSprop**：只维护二阶矩的指数平均，用 $\eta/\sqrt{v_t+\epsilon}$ 缩放梯度；适合 RNN、非平稳目标。
+- **RMSprop**：只维护二阶矩的指数平均，用$\eta/\sqrt{v_t+\epsilon}$缩放梯度；适合 RNN、非平稳目标。
 - **Adagrad**：累积平方梯度，步长单调降；适合稀疏梯度，但易过早变小。
 - **Adadelta**：在 Adagrad 基础上用滑动平均替代累积，避免步长趋 0。
 

@@ -149,7 +149,7 @@ def denoise(self, latents, timestep, *, generator=None, **kwargs):
 
 ### 步骤详解
 
-1. UNet 接收噪声图像 $x_t$ 和时间步 $t$，预测噪声 $\hat{\epsilon}$
+1. UNet 接收噪声图像$x_t$和时间步$t$，预测噪声$\hat{\epsilon}$
 2. 利用前向过程公式反推干净图像：
 
 $$\hat{x}_0 = \frac{x_t - \sqrt{1-\bar{\alpha}_t} \cdot \hat{\epsilon}}{\sqrt{\bar{\alpha}_t}}$$
@@ -187,8 +187,8 @@ if baseline_path:
 ```
 
 对比方式：
-1. **轨迹对比**：同一时间步下，解析方法和 UNet 的 $\hat{x}_0$ 预测
-2. **单步对比**：将解析方法的 $x_t$ 送入 UNet，比较两者的 $\hat{x}_0$
+1. **轨迹对比**：同一时间步下，解析方法和 UNet 的$\hat{x}_0$预测
+2. **单步对比**：将解析方法的$x_t$送入 UNet，比较两者的$\hat{x}_0$
 
 ## 11.8 预训练权重
 

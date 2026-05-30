@@ -26,35 +26,35 @@ hiddenFromSearch: false
 
 ### 2.1 输入构造
 
-假设原始输入序列包含 \(N\) 个 token（例如，文本中的单词或图像中的 patch），每个 token 的特征维度为 \(D\)。原始 token 序列为：
+假设原始输入序列包含$N$个 token（例如，文本中的单词或图像中的 patch），每个 token 的特征维度为$D$。原始 token 序列为：
 
-\[
+$$
 X_{\text{orig}} \in \mathbb{R}^{N \times D}
-\]
+$$
 
-定义一个可学习的向量 \( \text{cls} \in \mathbb{R}^{1 \times D} \)，将其拼接到序列最前面：
+定义一个可学习的向量$\text{cls} \in \mathbb{R}^{1 \times D}$，将其拼接到序列最前面：
 
-\[
+$$
 X = [\text{cls}; \; X_{\text{orig}}] \in \mathbb{R}^{(N+1) \times D}
-\]
+$$
 
 同时，为了保留位置信息，需要为 `cls_token` 分配一个位置编码（可以是固定的正弦编码或可学习的嵌入），并与输入相加：
 
-\[
+$$
 X_{\text{input}} = X + P
-\]
+$$
 
-其中 \(P \in \mathbb{R}^{(N+1) \times D}\) 是位置编码矩阵。
+其中$P \in \mathbb{R}^{(N+1) \times D}$是位置编码矩阵。
 
 ### 2.2 通过 Transformer 编码
 
-将 \(X_{\text{input}}\) 输入到 \(L\) 层 Transformer 编码器（每层包含多头自注意力和前馈网络，并带有残差连接和层归一化）。在每一层中，`cls_token` 作为一个普通的 token 参与自注意力计算：
+将$X_{\text{input}}$输入到$L$层 Transformer 编码器（每层包含多头自注意力和前馈网络，并带有残差连接和层归一化）。在每一层中，`cls_token` 作为一个普通的 token 参与自注意力计算：
 
 - **Query, Key, Value** 均来自所有 token（包括 `cls_token`）。
 - `cls_token` 可以“关注”到序列中的任何其他 token，并更新自己的表示。
 - 其他 token 也会关注 `cls_token`，从而将全局信息传播到局部表示。
 
-经过 \(L\) 层后，得到输出序列 \(Z \in \mathbb{R}^{(N+1) \times D}\)。其中第一个向量 \(Z_0\)（对应 `cls_token` 的位置）即为**全局聚合表示**。
+经过$L$层后，得到输出序列$Z \in \mathbb{R}^{(N+1) \times D}$。其中第一个向量$Z_0$（对应 `cls_token` 的位置）即为**全局聚合表示**。
 
 ### 2.3 为什么 `cls_token` 能聚合全局信息？
 

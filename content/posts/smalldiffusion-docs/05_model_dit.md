@@ -94,7 +94,7 @@ class PatchEmbed(nn.Module):
 
 ### 是什么
 
-从条件向量 $y$ 生成 $n$ 组调制参数的模块。
+从条件向量$y$生成$n$组调制参数的模块。
 
 ```python
 class Modulation(nn.Module):
@@ -111,9 +111,9 @@ class Modulation(nn.Module):
 
 ### 工作原理
 
-1. 输入条件向量 $y$：形状 `(B, D)`
+1. 输入条件向量$y$：形状 `(B, D)`
 2. 通过 `SiLU → Linear` 映射到 `(B, n*D)`
-3. 沿维度 1 分割为 $n$ 组，每组 `(B, D)`
+3. 沿维度 1 分割为$n$组，每组 `(B, D)`
 4. 每组增加维度变为 `(B, 1, D)` 用于广播
 
 ### 零初始化
@@ -143,7 +143,7 @@ class ModulatedLayerNorm(nn.LayerNorm):
 
 $$\text{adaLN}(x, y) = \text{LN}(x) \cdot (1 + \gamma(y)) + \beta(y)$$
 
-其中 $\gamma, \beta$ 是从条件 $y$ 生成的 scale 和 shift 参数。
+其中$\gamma, \beta$是从条件$y$生成的 scale 和 shift 参数。
 
 ### 为什么使用 adaLN
 
@@ -200,7 +200,7 @@ class DiTBlock(nn.Module):
 
 ### 设计要点
 
-1. **adaLN-Zero**：使用 `elementwise_affine=False` 的 LayerNorm，所有 scale/shift 完全由条件 $y$ 决定
+1. **adaLN-Zero**：使用 `elementwise_affine=False` 的 LayerNorm，所有 scale/shift 完全由条件$y$决定
 2. **门控机制**：`gate_msa` 和 `gate_mlp` 对注意力和 MLP 的输出进行缩放，初始化为 0 使训练初期残差连接为恒等映射
 3. **MLP 扩展比**：`mlp_ratio=4.0`，隐藏层维度是输入的 4 倍（标准 Transformer 设计）
 4. **近似 GELU**：使用 `tanh` 近似的 GELU 激活函数
@@ -232,7 +232,7 @@ def get_pos_embed(in_dim, patch_size, dim, N=10000):
 ### 工作原理
 
 1. 计算每边的 patch 数 `n = in_dim / patch_size`
-2. 生成频率向量 $\omega_k = 1/N^{k/(d/4)}$，其中 $N=10000$
+2. 生成频率向量$\omega_k = 1/N^{k/(d/4)}$，其中$N=10000$
 3. 对行坐标和列坐标分别计算正弦/余弦编码
 4. 将行编码和列编码拼接，得到 `dim` 维的 2D 位置编码
 5. 返回不可训练的参数（`requires_grad=False`）
@@ -335,7 +335,7 @@ def forward(self, x, sigma, cond=None):
     return self.unpatchify(x)                         # (B, C, H, W)
 ```
 
-条件信息（σ 嵌入 + 可选的类别嵌入）通过相加合并为统一的条件向量 $y$，然后通过 adaLN 注入每个 Transformer 块。
+条件信息（σ 嵌入 + 可选的类别嵌入）通过相加合并为统一的条件向量$y$，然后通过 adaLN 注入每个 Transformer 块。
 
 ### 使用示例
 

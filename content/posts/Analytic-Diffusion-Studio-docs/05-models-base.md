@@ -106,7 +106,7 @@ class BaseDenoiser(torch.nn.Module):
 
 关键属性：
 - `self.scheduler`：HuggingFace diffusers 的 `DDIMScheduler`，管理噪声调度表和时间步
-- `self.scheduler.alphas_cumprod`：累积 $\bar{\alpha}_t$ 数组，长度 1000
+- `self.scheduler.alphas_cumprod`：累积$\bar{\alpha}_t$数组，长度 1000
 - `self.scheduler.timesteps`：采样时间步（如 10 步时为 `[999, 899, 799, ...]`）
 
 ### denoise() — 抽象方法
@@ -118,11 +118,11 @@ def denoise(self, latents, timestep, *, generator=None, **kwargs):
 ```
 
 输入：
-- `latents`：当前噪声图像 $x_t$，形状 `[B, C, H, W]`
+- `latents`：当前噪声图像$x_t$，形状 `[B, C, H, W]`
 - `timestep`：当前时间步（标量或 0-d 张量）
 
 输出：
-- 预测的干净图像 $\hat{x}_0$，形状 `[B, C, H, W]`
+- 预测的干净图像$\hat{x}_0$，形状 `[B, C, H, W]`
 
 ### train() — 抽象方法
 
@@ -147,7 +147,7 @@ def prepare_latents(self, batch_size, generator=None):
     return latents * self.scheduler.init_noise_sigma
 ```
 
-生成初始噪声 $x_T \sim \mathcal{N}(0, I)$，乘以调度器的初始噪声标准差。
+生成初始噪声$x_T \sim \mathcal{N}(0, I)$，乘以调度器的初始噪声标准差。
 
 ### compute_noise_from_x0()
 
@@ -160,7 +160,7 @@ def compute_noise_from_x0(self, x_t, pred_x0, timestep):
     return (x_t - sqrt_alpha * pred_x0) / sqrt_beta
 ```
 
-从预测的 $\hat{x}_0$ 反推预测噪声 $\hat{\epsilon}$：
+从预测的$\hat{x}_0$反推预测噪声$\hat{\epsilon}$：
 
 $$\hat{\epsilon} = \frac{x_t - \sqrt{\bar{\alpha}_t} \hat{x}_0}{\sqrt{1 - \bar{\alpha}_t}}$$
 

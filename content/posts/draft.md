@@ -71,9 +71,9 @@ $$
 ## 1) `log_prob` 的计算公式（逐元素高斯对数似然）
 
 令（逐元素/逐维）：
-- $x = \texttt{prev\_sample}$
-- $\mu = \texttt{prev\_sample\_mean}$
-- $\sigma = \texttt{std\_dev\_t\_mul}$
+-$x = \texttt{prev\_sample}$
+-$\mu = \texttt{prev\_sample\_mean}$
+-$\sigma = \texttt{std\_dev\_t\_mul}$
 
 你的代码对应的是（先忽略求和）：
 $$
@@ -90,7 +90,7 @@ $$
 $$
 \texttt{log\_prob} = \sum_{d\in\{\,-2,-1\,\}} \log p(x_d \mid \mu_d,\sigma),
 $$
-等价于如果最后两维是 $H,W$：
+等价于如果最后两维是$H,W$：
 $$
 \log p(x\mid \mu,\sigma)=\sum_{h=1}^{H}\sum_{w=1}^{W}\left(
 -\frac{(x_{h,w}-\mu_{h,w})^2}{2\sigma^2}
@@ -99,13 +99,13 @@ $$
 \right).
 $$
 
-> 你代码里还用了 `prev_sample.detach()`，数学上等价于：在反传时把 $x$ 当常数处理（不改变该表达式的数值）。
+> 你代码里还用了 `prev_sample.detach()`，数学上等价于：在反传时把$x$当常数处理（不改变该表达式的数值）。
 
 ---
 
 ## 2) `compute_likelihood` 的对数似然公式（变换 + 散度积分）
 
-反向 ODE（从 $t=1 \to 0$）的连续性方程核心是：
+反向 ODE（从$t=1 \to 0$）的连续性方程核心是：
 $$
 \frac{d}{dt}\log p(x_t)= -\mathrm{div}\,u_t(x_t),
 $$
@@ -114,7 +114,7 @@ $$
 \log p_1(x_1)=\log p_0(x_0) + \int_{t=1}^{0}\Big(-\mathrm{div}\,u_t(x_t)\Big)\,dt.
 $$
 
-在实现上，你用“扩展状态” $(x_t,\log\det J_t)$ 积分，其中：
+在实现上，你用“扩展状态”$(x_t,\log\det J_t)$积分，其中：
 $$
 \frac{d x_t}{dt} = u_t(x_t),
 \qquad
@@ -132,17 +132,17 @@ $$
 
 ---
 
-## 3) 散度 $\mathrm{div}\,u_t$ 的两种计算
+## 3) 散度$\mathrm{div}\,u_t$的两种计算
 
 ### 3.1 精确散度（`exact_divergence=True`）
-对向量场 $u(x)=(u^1(x),\dots,u^D(x))$，散度定义：
+对向量场$u(x)=(u^1(x),\dots,u^D(x))$，散度定义：
 $$
 \mathrm{div}\,u(x)=\sum_{i=1}^{D}\frac{\partial u^i(x)}{\partial x^i}.
 $$
 代码的逻辑相当于对每个分量取偏导并求和。
 
 ### 3.2 Hutchinson 估计（`exact_divergence=False`）
-用随机向量 $z$ 满足（Rademacher）：
+用随机向量$z$满足（Rademacher）：
 $$
 z_i\in\{-1,+1\}, \quad \mathbb{E}[z]=0,\quad \mathbb{E}[zz^\top]=I.
 $$
@@ -159,7 +159,7 @@ $$
 $$
 \nabla_x (z^\top u) \in \mathbb{R}^D,
 $$
-最后再与 $z$ 点乘得到
+最后再与$z$点乘得到
 $$
 z^\top \nabla_x(z^\top u) = z^\top (\nabla_x u)\, z,
 $$
@@ -210,8 +210,8 @@ $$
 
 它做的事情是：
 
-- 给定目标样本 $x_1$（来自 $p_1$）
-- 反向求解 ODE，从 $t=1 \to 0$，轨迹是 $x_t$
+- 给定目标样本$x_1$（来自$p_1$）
+- 反向求解 ODE，从$t=1 \to 0$，轨迹是$x_t$
 - 同时在积分过程中累计 `log_det`（连续换变量的雅可比行列式对数）
 
 连续换变量的核心公式（你的代码对应这个结构）是：
@@ -223,7 +223,7 @@ $$
 \log p_1(x_1)=\log p_0(x_{\text{source}})
 +\int_{1}^{0} \Big(-\mathrm{div}\,u_t(x_t)\Big)\,dt
 $$
-其中速度场 $u_t(x)$ 就是：
+其中速度场$u_t(x)$就是：
 $$
 u_t(x)=\text{velocity\_model}(x,t)
 $$

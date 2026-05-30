@@ -40,7 +40,7 @@ $$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)
 4. 加权求和：$\text{output} = \text{weights} \times V$
 
 ### 为什么要缩放
-当 $d_k$ 较大时，$QK^T$ 的方差约为 $d_k$。除以 $\sqrt{d_k}$ 使方差回到 1，避免 softmax 输入过大导致梯度消失。
+当$d_k$较大时，$QK^T$的方差约为$d_k$。除以$\sqrt{d_k}$使方差回到 1，避免 softmax 输入过大导致梯度消失。
 
 ### 代码示例
 
@@ -87,7 +87,7 @@ $$\text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)$$
 ### 为什么需要多头
 - 单头注意力只能学习一种注意力模式
 - 多头允许模型同时关注不同位置的不同特征（如语法关系、语义关系、位置关系）
-- 每个头的维度 $d_k = d_{model} / h$，总计算量与单头相同
+- 每个头的维度$d_k = d_{model} / h$，总计算量与单头相同
 
 ### 结构说明
 - `W_q, W_k, W_v`：投影矩阵，形状 `(d_model, d_model)`
@@ -152,10 +152,10 @@ print(mha.forward(x, x, x).shape)  # (2, 10, 64)
 
 $$\text{scores}_{ij} = \begin{cases} \frac{Q_i \cdot K_j}{\sqrt{d_k}} & \text{if } j \le i \\ -\infty & \text{if } j > i \end{cases}$$
 
-将未来位置的分数设为 $-\infty$，经过 softmax 后权重变为 0。
+将未来位置的分数设为$-\infty$，经过 softmax 后权重变为 0。
 
 ### 掩码实现
-使用上三角矩阵（`torch.triu`）填充 $-\infty$：
+使用上三角矩阵（`torch.triu`）填充$-\infty$：
 
 ```python
 import torch
@@ -307,7 +307,7 @@ print("W_k 参数量:", gqa.W_k.weight.shape)  # (8, 32) 而非 (32, 32)
 每个位置只关注其周围固定大小窗口内的位置，而非全部位置。将注意力复杂度从 O(S²) 降低到 O(S·W)。
 
 ### 掩码规则
-位置 $i$ 只能关注位置 $j$，当且仅当 $|i - j| \le w$（窗口大小）。
+位置$i$只能关注位置$j$，当且仅当$|i - j| \le w$（窗口大小）。
 
 ### 边界情况
 - `window_size = 0`：每个位置只看自己，输出等于 V
@@ -355,15 +355,15 @@ print(torch.allclose(out0, V, atol=1e-5))  # True
 用核函数特征映射替代 softmax，将注意力复杂度从 O(S²·D) 降低到 O(S·D²)。
 
 ### 核心思想
-标准注意力：$\text{softmax}(QK^T)V$ 需要计算 S×S 矩阵。
+标准注意力：$\text{softmax}(QK^T)V$需要计算 S×S 矩阵。
 
 线性注意力利用结合律改变计算顺序：
 $$\text{LinearAttn}(Q,K,V) = \frac{\phi(Q)(\phi(K)^T V)}{\phi(Q) \sum \phi(K)}$$
 
-先计算 $\phi(K)^T V$（D×D 矩阵），再乘以 $\phi(Q)$，避免了 S×S 矩阵。
+先计算$\phi(K)^T V$（D×D 矩阵），再乘以$\phi(Q)$，避免了 S×S 矩阵。
 
 ### 特征映射
-使用 $\phi(x) = \text{elu}(x) + 1$ 确保非负性（模拟 softmax 的非负权重）。
+使用$\phi(x) = \text{elu}(x) + 1$确保非负性（模拟 softmax 的非负权重）。
 
 ### 代码示例
 
@@ -406,7 +406,7 @@ print(out.shape)  # (1, 1024, 64)
 在自回归生成（逐 token 生成）时，缓存已计算的 K 和 V，避免重复计算。
 
 ### 为什么需要
-生成第 $t$ 个 token 时，标准注意力需要对前 $t$ 个 token 全部重新计算 K 和 V。KV Cache 将之前的 K/V 存起来，每步只需计算新 token 的 K/V 并追加。
+生成第$t$个 token 时，标准注意力需要对前$t$个 token 全部重新计算 K 和 V。KV Cache 将之前的 K/V 存起来，每步只需计算新 token 的 K/V 并追加。
 
 ### 工作流程
 ```
@@ -487,10 +487,10 @@ RoPE 通过旋转 Q 和 K 向量来编码位置信息，使得注意力分数自
 
 $$[x_0, x_1] \rightarrow [x_0 \cos\theta - x_1 \sin\theta, \; x_0 \sin\theta + x_1 \cos\theta]$$
 
-角度 $\theta = \text{pos} / 10000^{2i/D}$，其中 pos 是位置，i 是维度对的索引。
+角度$\theta = \text{pos} / 10000^{2i/D}$，其中 pos 是位置，i 是维度对的索引。
 
 ### 关键性质
-旋转后 $\text{dot}(q_{rot}[i], k_{rot}[j])$ 只依赖于 $i - j$（相对位置），而非绝对位置。这是因为旋转矩阵的正交性：$R_i^T R_j = R_{i-j}$。
+旋转后$\text{dot}(q_{rot}[i], k_{rot}[j])$只依赖于$i - j$（相对位置），而非绝对位置。这是因为旋转矩阵的正交性：$R_i^T R_j = R_{i-j}$。
 
 ### 代码示例
 

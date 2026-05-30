@@ -159,15 +159,15 @@ pre-commit install        # 安装代码规范检查钩子
 
 ### 4.1 连续 Flow Matching
 
-Flow Matching 的核心思想是学习一个时间依赖的速度场 $u_t(x)$，使得沿该速度场的 ODE 流能将源分布 $p_0$（通常为高斯噪声）变换为目标分布 $p_1$（数据分布）。
+Flow Matching 的核心思想是学习一个时间依赖的速度场$u_t(x)$，使得沿该速度场的 ODE 流能将源分布$p_0$（通常为高斯噪声）变换为目标分布$p_1$（数据分布）。
 
 #### 核心公式
 
-给定源样本 $X_0 \sim p_0$ 和目标样本 $X_1 \sim p_1$，定义仿射条件概率路径：
+给定源样本$X_0 \sim p_0$和目标样本$X_1 \sim p_1$，定义仿射条件概率路径：
 
 $$X_t = \alpha_t X_1 + \sigma_t X_0$$
 
-其中 $\alpha_t$ 和 $\sigma_t$ 由调度器（Scheduler）控制。条件速度场为：
+其中$\alpha_t$和$\sigma_t$由调度器（Scheduler）控制。条件速度场为：
 
 $$\dot{X}_t = \dot{\alpha}_t X_1 + \dot{\sigma}_t X_0$$
 
@@ -202,7 +202,7 @@ return PathSample(x_t=x_t, dx_t=dx_t, x_1=x_1, x_0=x_0, t=t)
 
 $$\alpha_t = t, \quad \sigma_t = 1 - t$$
 
-此时路径为直线插值 $X_t = (1-t)X_0 + tX_1$，速度为常数 $\dot{X}_t = X_1 - X_0$。
+此时路径为直线插值$X_t = (1-t)X_0 + tX_1$，速度为常数$\dot{X}_t = X_1 - X_0$。
 
 ```python
 class CondOTScheduler(ConvexScheduler):
@@ -221,12 +221,12 @@ class CondOTScheduler(ConvexScheduler):
 
 | 方法 | 输入 → 输出 | 公式 |
 |------|-------------|------|
-| `target_to_velocity` | $X_1 \to \dot{X}_t$ | $\dot{X}_t = \frac{\dot{\sigma}_t}{\sigma_t} X_t + \frac{\dot{\alpha}_t \sigma_t - \dot{\sigma}_t \alpha_t}{\sigma_t} X_1$ |
-| `epsilon_to_velocity` | $\epsilon \to \dot{X}_t$ | $\dot{X}_t = \frac{\dot{\alpha}_t}{\alpha_t} X_t + \frac{\dot{\sigma}_t \alpha_t - \dot{\alpha}_t \sigma_t}{\alpha_t} \epsilon$ |
-| `velocity_to_target` | $\dot{X}_t \to X_1$ | 上式的逆变换 |
-| `epsilon_to_target` | $\epsilon \to X_1$ | $X_1 = \frac{1}{\alpha_t} X_t - \frac{\sigma_t}{\alpha_t} \epsilon$ |
-| `velocity_to_epsilon` | $\dot{X}_t \to \epsilon$ | 速度到噪声的转换 |
-| `target_to_epsilon` | $X_1 \to \epsilon$ | $\epsilon = \frac{1}{\sigma_t} X_t - \frac{\alpha_t}{\sigma_t} X_1$ |
+| `target_to_velocity` |$X_1 \to \dot{X}_t$|$\dot{X}_t = \frac{\dot{\sigma}_t}{\sigma_t} X_t + \frac{\dot{\alpha}_t \sigma_t - \dot{\sigma}_t \alpha_t}{\sigma_t} X_1$|
+| `epsilon_to_velocity` |$\epsilon \to \dot{X}_t$|$\dot{X}_t = \frac{\dot{\alpha}_t}{\alpha_t} X_t + \frac{\dot{\sigma}_t \alpha_t - \dot{\alpha}_t \sigma_t}{\alpha_t} \epsilon$|
+| `velocity_to_target` |$\dot{X}_t \to X_1$| 上式的逆变换 |
+| `epsilon_to_target` |$\epsilon \to X_1$|$X_1 = \frac{1}{\alpha_t} X_t - \frac{\sigma_t}{\alpha_t} \epsilon$|
+| `velocity_to_epsilon` |$\dot{X}_t \to \epsilon$| 速度到噪声的转换 |
+| `target_to_epsilon` |$X_1 \to \epsilon$|$\epsilon = \frac{1}{\sigma_t} X_t - \frac{\alpha_t}{\sigma_t} X_1$|
 
 ### 4.2 离散 Flow Matching
 
@@ -234,11 +234,11 @@ class CondOTScheduler(ConvexScheduler):
 
 #### 核心公式
 
-在离散空间 $\mathcal{S} = [K]^d$ 上，混合概率路径定义为：
+在离散空间$\mathcal{S} = [K]^d$上，混合概率路径定义为：
 
 $$P(X_t = X_0) = \sigma_t, \quad P(X_t = X_1) = 1 - \sigma_t$$
 
-即在时间 $t$，每个坐标以概率 $\sigma_t$ 保持为源值 $X_0$，以概率 $1-\sigma_t$ 翻转为目标值 $X_1$。
+即在时间$t$，每个坐标以概率$\sigma_t$保持为源值$X_0$，以概率$1-\sigma_t$翻转为目标值$X_1$。
 
 条件概率速度场为：
 
@@ -311,11 +311,11 @@ class MixturePathGeneralizedKL(_Loss):
 
 #### 核心公式
 
-在流形 $\mathcal{M}$ 上，测地线概率路径定义为：
+在流形$\mathcal{M}$上，测地线概率路径定义为：
 
 $$X_t = \psi_t(X_0 | X_1) = \exp_{X_1}(\kappa_t \log_{X_1}(X_0))$$
 
-其中 $\exp$ 和 $\log$ 分别是流形上的指数映射和对数映射，$\kappa_t$ 是调度器参数。
+其中$\exp$和$\log$分别是流形上的指数映射和对数映射，$\kappa_t$是调度器参数。
 
 #### 对应代码
 
@@ -363,9 +363,9 @@ def geodesic(manifold, start_point, end_point):
 
 | 流形 | 类名 | 空间 | 指数映射 | 对数映射 |
 |------|------|------|----------|----------|
-| 欧几里得空间 | `Euclidean` | $\mathbb{R}^D$ | $\exp_x(u) = x + u$ | $\log_x(y) = y - x$ |
-| 超球面 | `Sphere` | $S^{D-1}$ | 球面指数映射 | 球面对数映射 |
-| 平坦环面 | `FlatTorus` | $[0, 2\pi]^D$ | $(x + u) \mod 2\pi$ | $\text{atan2}(\sin(y-x), \cos(y-x))$ |
+| 欧几里得空间 | `Euclidean` |$\mathbb{R}^D$|$\exp_x(u) = x + u$|$\log_x(y) = y - x$|
+| 超球面 | `Sphere` |$S^{D-1}$| 球面指数映射 | 球面对数映射 |
+| 平坦环面 | `FlatTorus` |$[0, 2\pi]^D$|$(x + u) \mod 2\pi$|$\text{atan2}(\sin(y-x), \cos(y-x))$|
 
 球面的指数映射实现（`flow_matching/utils/manifolds/sphere.py`）：
 
@@ -432,19 +432,19 @@ class DiscretePathSample:
 
 ### 5.2 调度器 (scheduler)
 
-调度器控制概率路径的时间演化参数 $\alpha_t$ 和 $\sigma_t$。
+调度器控制概率路径的时间演化参数$\alpha_t$和$\sigma_t$。
 
 #### 调度器类型一览
 
-| 调度器 | $\alpha_t$ | $\sigma_t$ | 特点 |
+| 调度器 |$\alpha_t$|$\sigma_t$| 特点 |
 |--------|-----------|-----------|------|
-| `CondOTScheduler` | $t$ | $1-t$ | 最简单的线性插值，条件最优传输 |
-| `PolynomialConvexScheduler(n)` | $t^n$ | $1-t^n$ | 多项式调度，$n$ 控制曲线形状 |
-| `VPScheduler` | $e^{-T/2}$ | $\sqrt{1-e^{-T}}$ | 方差保持调度（VP-SDE 等价） |
-| `LinearVPScheduler` | $t$ | $\sqrt{1-t^2}$ | 线性方差保持 |
-| `CosineScheduler` | $\sin(\frac{\pi}{2}t)$ | $\cos(\frac{\pi}{2}t)$ | 余弦调度 |
+| `CondOTScheduler` |$t$|$1-t$| 最简单的线性插值，条件最优传输 |
+| `PolynomialConvexScheduler(n)` |$t^n$|$1-t^n$| 多项式调度，$n$控制曲线形状 |
+| `VPScheduler` |$e^{-T/2}$|$\sqrt{1-e^{-T}}$| 方差保持调度（VP-SDE 等价） |
+| `LinearVPScheduler` |$t$|$\sqrt{1-t^2}$| 线性方差保持 |
+| `CosineScheduler` |$\sin(\frac{\pi}{2}t)$|$\cos(\frac{\pi}{2}t)$| 余弦调度 |
 
-所有调度器都实现了 `snr_inverse` 方法，用于从信噪比 $\text{SNR} = \alpha_t / \sigma_t$ 反推时间 $t$，这在调度器变换中至关重要。
+所有调度器都实现了 `snr_inverse` 方法，用于从信噪比$\text{SNR} = \alpha_t / \sigma_t$反推时间$t$，这在调度器变换中至关重要。
 
 #### 调度器变换（Schedule Transform）
 
@@ -480,7 +480,7 @@ class ScheduleTransformedModel(ModelWrapper):
 
 #### MixturePathGeneralizedKL
 
-专为离散 Flow Matching 设计的广义 KL 散度损失。假设模型以 x-prediction 方式训练（即模型输出 $p_{1|t}(\cdot|x_t)$）。
+专为离散 Flow Matching 设计的广义 KL 散度损失。假设模型以 x-prediction 方式训练（即模型输出$p_{1|t}(\cdot|x_t)$）。
 
 接口：
 
@@ -552,8 +552,8 @@ x_0, log_likelihood = solver.compute_likelihood(
 ```
 
 散度计算有两种模式：
-- `exact_divergence=True`：精确计算 $\text{div}(u_t) = \sum_i \frac{\partial u_t^i}{\partial x^i}$，计算量为 $O(D)$ 次反向传播
-- `exact_divergence=False`：Hutchinson 估计器 $\text{div}(u_t) \approx z^T \nabla_x (u_t \cdot z)$，仅需 1 次反向传播
+- `exact_divergence=True`：精确计算$\text{div}(u_t) = \sum_i \frac{\partial u_t^i}{\partial x^i}$，计算量为$O(D)$次反向传播
+- `exact_divergence=False`：Hutchinson 估计器$\text{div}(u_t) \approx z^T \nabla_x (u_t \cdot z)$，仅需 1 次反向传播
 
 #### MixtureDiscreteEulerSolver
 
@@ -576,10 +576,10 @@ x_1 = solver.sample(
 ```
 
 每步的核心逻辑：
-1. 从模型采样 $X_1 \sim p_{1|t}(\cdot|X_t)$
-2. 计算条件速度 $u_t(x|X_t, X_1)$
-3. 计算跳跃强度 $\lambda = \sum_{x \neq X_t} u_t(x|X_t, X_1)$
-4. 以概率 $1 - e^{-h\lambda}$ 发生跳跃，跳跃目标按 $u_t$ 归一化后采样
+1. 从模型采样$X_1 \sim p_{1|t}(\cdot|X_t)$
+2. 计算条件速度$u_t(x|X_t, X_1)$
+3. 计算跳跃强度$\lambda = \sum_{x \neq X_t} u_t(x|X_t, X_1)$
+4. 以概率$1 - e^{-h\lambda}$发生跳跃，跳跃目标按$u_t$归一化后采样
 
 #### RiemannianODESolver
 

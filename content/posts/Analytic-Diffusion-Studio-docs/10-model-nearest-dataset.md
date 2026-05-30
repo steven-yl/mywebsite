@@ -20,17 +20,17 @@ summary: "Analytic Diffusion Studio — 最近邻基线"
 
 ## 10.1 概述
 
-Nearest Dataset 是最简单的去噪基线：对于每个噪声图像 $x_t$，在数据集中找到欧氏距离最近的图像作为 $\hat{x}_0$。
+Nearest Dataset 是最简单的去噪基线：对于每个噪声图像$x_t$，在数据集中找到欧氏距离最近的图像作为$\hat{x}_0$。
 
 **解决的问题**：提供一个最低复杂度的参考基线，用于衡量其他方法的改进幅度。
 
-**直觉**：如果 Optimal 去噪器的温度 $\tau \to 0$，softmax 退化为 argmax，就得到最近邻。
+**直觉**：如果 Optimal 去噪器的温度$\tau \to 0$，softmax 退化为 argmax，就得到最近邻。
 
 ## 10.2 数学公式
 
 $$D_{\text{NN}}(x_t, t) = x_0^{(i^*)}, \quad i^* = \arg\min_i \|x_t - x_0^{(i)}\|_2$$
 
-注意：这里直接用 $x_t$ 与 $x_0^{(i)}$ 比较，没有做 $\sqrt{\bar{\alpha}_t}$ 缩放（与 Optimal 不同）。
+注意：这里直接用$x_t$与$x_0^{(i)}$比较，没有做$\sqrt{\bar{\alpha}_t}$缩放（与 Optimal 不同）。
 
 ## 10.3 类定义
 
@@ -102,7 +102,7 @@ def denoise(self, latents, timestep, *, generator=None, **_):
 3. 沿数据集维度取最小值，得到最近邻索引
 4. 用索引取出对应的数据集图像
 
-**复杂度**：$O(B \cdot N \cdot n)$，其中 $N$ 是数据集大小，$n$ 是像素数。
+**复杂度**：$O(B \cdot N \cdot n)$，其中$N$是数据集大小，$n$是像素数。
 
 ## 10.6 配置示例
 
@@ -116,7 +116,7 @@ model:
 ## 10.7 局限性
 
 - 只能"复制"训练集中的图像，无法生成新图像
-- 不考虑时间步 $t$（距离计算不依赖 $\bar{\alpha}_t$）
+- 不考虑时间步$t$（距离计算不依赖$\bar{\alpha}_t$）
 - 需要将整个数据集放入 GPU 内存
 - `torch.cdist` 对大数据集可能内存不足（需要 `[B, N]` 距离矩阵）
 - 生成多样性完全取决于初始噪声到不同数据集图像的距离
@@ -125,7 +125,7 @@ model:
 
 | 特性 | Nearest | Optimal |
 |------|---------|---------|
-| 距离缩放 | 无 | $x_t / \sqrt{\bar{\alpha}_t}$ |
+| 距离缩放 | 无 |$x_t / \sqrt{\bar{\alpha}_t}$|
 | 选择方式 | argmax（硬选择） | softmax（软加权） |
 | 输出 | 单张数据集图像 | 多张图像的加权平均 |
 | 时间步感知 | 否 | 是 |

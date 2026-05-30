@@ -327,8 +327,8 @@ torch.stack([a, b], dim=0) # (2, 2, 2)
 
 公式（概念）：  
 
-- cat：沿 dim，$(\ldots, L_i, \ldots)$ 与 $(\ldots, L_j, \ldots)$ → $(\ldots, L_i+L_j, \ldots)$。  
-- stack：在 dim 插入新维，$(\ldots)$ 与 $(\ldots)$ → $(2, \ldots)$（2 为列表长度）。
+- cat：沿 dim，$(\ldots, L_i, \ldots)$与$(\ldots, L_j, \ldots)$→$(\ldots, L_i+L_j, \ldots)$。  
+- stack：在 dim 插入新维，$(\ldots)$与$(\ldots)$→$(2, \ldots)$（2 为列表长度）。
 
 ---
 
@@ -465,9 +465,9 @@ torch.lerp(a, b, 0.5) # [1.5, 2, 3]
 ### 6.5 三角函数与反三角
 
 - **torch.atan2(input, other)**  
-逐元素 atan2(y, x)，返回值域 $(-\pi,\pi]$，常用于角度/方向。  
+逐元素 atan2(y, x)，返回值域$(-\pi,\pi]$，常用于角度/方向。  
 - **torch.hypot(input, other)**  
-逐元素 $\sqrt{\texttt{input}^2 + \texttt{other}^2}$。  
+逐元素$\sqrt{\texttt{input}^2 + \texttt{other}^2}$。  
 - **torch.atan / asin / acos**  
 反三角函数，定义域需在 [-1,1]（asin/acos）内。
 

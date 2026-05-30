@@ -78,11 +78,11 @@ class ModelMixin:
 
 ### get_loss(x0, sigma, eps, cond)
 
-默认实现假设模型预测噪声 $\varepsilon$：
+默认实现假设模型预测噪声$\varepsilon$：
 
 $$\mathcal{L} = \text{MSE}(\varepsilon, f_\theta(x_0 + \sigma \cdot \varepsilon, \sigma))$$
 
-其中 $x_0 + \sigma \cdot \varepsilon$ 是加噪后的样本。此方法可被 `PredX0` 和 `PredV` 修饰器覆盖。
+其中$x_0 + \sigma \cdot \varepsilon$是加噪后的样本。此方法可被 `PredX0` 和 `PredV` 修饰器覆盖。
 
 ### predict_eps_cfg(x, sigma, cond, cfg_scale)
 
@@ -104,7 +104,7 @@ def predict_eps_cfg(self, x, sigma, cond, cfg_scale):
 
 $$\hat{\varepsilon} = \varepsilon_{\text{cond}} + s \cdot (\varepsilon_{\text{cond}} - \varepsilon_{\text{uncond}})$$
 
-其中 $s$ 是 `cfg_scale`。当 $s > 0$ 时，模型输出被推向条件方向，远离无条件方向。
+其中$s$是 `cfg_scale`。当$s > 0$时，模型输出被推向条件方向，远离无条件方向。
 
 **实现技巧：** 将条件和无条件输入拼接成一个 batch 一次前向传播，避免两次调用模型。
 
@@ -114,7 +114,7 @@ $$\hat{\varepsilon} = \varepsilon_{\text{cond}} + s \cdot (\varepsilon_{\text{co
 
 ### 是什么
 
-将标量 $\sigma$ 值编码为 2 维嵌入向量的函数。
+将标量$\sigma$值编码为 2 维嵌入向量的函数。
 
 ```python
 def get_sigma_embeds(batches, sigma, scaling_factor=0.5, log_scale=True):
@@ -130,9 +130,9 @@ def get_sigma_embeds(batches, sigma, scaling_factor=0.5, log_scale=True):
 
 ### 工作原理
 
-1. **标量处理**：若 $\sigma$ 是标量，扩展为 batch 大小
-2. **对数缩放**：默认取 $\log(\sigma)$，将指数级变化的 $\sigma$ 压缩到线性范围
-3. **正弦/余弦编码**：$[\sin(s \cdot f), \cos(s \cdot f)]$，其中 $f$ 是缩放因子
+1. **标量处理**：若$\sigma$是标量，扩展为 batch 大小
+2. **对数缩放**：默认取$\log(\sigma)$，将指数级变化的$\sigma$压缩到线性范围
+3. **正弦/余弦编码**：$[\sin(s \cdot f), \cos(s \cdot f)]$，其中$f$是缩放因子
 
 输出形状：`[B, 2]`。这是一种极简的时间嵌入，仅用 2 维就能有效编码噪声水平。
 
@@ -180,7 +180,7 @@ class SigmaEmbedderSinCos(nn.Module):
 
 ### 是什么
 
-$\sigma$ 参数化到 $\bar{\alpha}$ 参数化的转换函数。
+$\sigma$参数化到$\bar{\alpha}$参数化的转换函数。
 
 ```python
 def alpha(sigma):
@@ -210,11 +210,11 @@ def Scaled(cls: ModelMixin):
 
 ### 数学原理
 
-加噪样本 $x_t = x_0 + \sigma \varepsilon$ 的期望范数随 $\sigma$ 增大而增大。缩放因子 $\sqrt{\bar{\alpha}} = \frac{1}{\sqrt{1+\sigma^2}}$ 将输入归一化：
+加噪样本$x_t = x_0 + \sigma \varepsilon$的期望范数随$\sigma$增大而增大。缩放因子$\sqrt{\bar{\alpha}} = \frac{1}{\sqrt{1+\sigma^2}}$将输入归一化：
 
 $$\tilde{x}_t = \sqrt{\bar{\alpha}} \cdot x_t$$
 
-使得 $\mathbb{E}[\|\tilde{x}_t\|^2]$ 对所有 $\sigma$ 近似恒定。
+使得$\mathbb{E}[\|\tilde{x}_t\|^2]$对所有$\sigma$近似恒定。
 
 ### 使用方式
 
@@ -236,7 +236,7 @@ model = Scaled(Unet)(28, 1, 1, ch=64, ch_mult=(1, 1, 2))
 
 ### 是什么
 
-将模型从预测噪声 $\varepsilon$ 改为预测干净数据 $x_0$ 的类修饰器。
+将模型从预测噪声$\varepsilon$改为预测干净数据$x_0$的类修饰器。
 
 ```python
 def PredX0(cls: ModelMixin):
@@ -251,16 +251,16 @@ def PredX0(cls: ModelMixin):
 
 ### 数学原理
 
-若模型预测 $\hat{x}_0$，可以反推噪声预测：
+若模型预测$\hat{x}_0$，可以反推噪声预测：
 
 $$\hat{\varepsilon} = \frac{x_t - \hat{x}_0}{\sigma}$$
 
-因为 $x_t = x_0 + \sigma \varepsilon$，所以 $\varepsilon = (x_t - x_0) / \sigma$。
+因为$x_t = x_0 + \sigma \varepsilon$，所以$\varepsilon = (x_t - x_0) / \sigma$。
 
 ### 覆盖的方法
 
-- `get_loss`：损失变为 $\text{MSE}(x_0, f_\theta(x_t, \sigma))$
-- `predict_eps`：从 $\hat{x}_0$ 反推 $\hat{\varepsilon}$，使采样代码无需修改
+- `get_loss`：损失变为$\text{MSE}(x_0, f_\theta(x_t, \sigma))$
+- `predict_eps`：从$\hat{x}_0$反推$\hat{\varepsilon}$，使采样代码无需修改
 
 ---
 
@@ -268,7 +268,7 @@ $$\hat{\varepsilon} = \frac{x_t - \hat{x}_0}{\sigma}$$
 
 ### 是什么
 
-将模型改为预测 velocity $v$ 的类修饰器，来自 [Progressive Distillation](https://arxiv.org/abs/2202.00512)。
+将模型改为预测 velocity$v$的类修饰器，来自 [Progressive Distillation](https://arxiv.org/abs/2202.00512)。
 
 ```python
 def PredV(cls: ModelMixin):
@@ -289,13 +289,13 @@ Velocity 定义为：
 
 $$v = \sqrt{\bar{\alpha}} \cdot \varepsilon - \sqrt{1 - \bar{\alpha}} \cdot x_0$$
 
-从 $\hat{v}$ 反推噪声：
+从$\hat{v}$反推噪声：
 
 $$\hat{\varepsilon} = \sqrt{\bar{\alpha}} \cdot (\hat{v} + \sqrt{1 - \bar{\alpha}} \cdot x_t)$$
 
 ### 为什么使用 v-prediction
 
-在高噪声水平下，预测 $\varepsilon$ 的信噪比很低；在低噪声水平下，预测 $x_0$ 的信噪比很低。v-prediction 在两种极端情况下都有更均衡的信噪比。
+在高噪声水平下，预测$\varepsilon$的信噪比很低；在低噪声水平下，预测$x_0$的信噪比很低。v-prediction 在两种极端情况下都有更均衡的信噪比。
 
 ### 修饰器组合
 
@@ -526,7 +526,7 @@ def sq_norm(M, k):
     return (torch.norm(M, dim=1)**2).unsqueeze(1).repeat(1, k)
 ```
 
-用于高效计算成对平方距离矩阵 $\|x_i - d_j\|^2$。
+用于高效计算成对平方距离矩阵$\|x_i - d_j\|^2$。
 
 ---
 
@@ -560,7 +560,7 @@ class IdealDenoiser(nn.Module, ModelMixin):
 
 ### 数学原理
 
-对于高斯噪声模型 $x_t = x_0 + \sigma \varepsilon$，Bayes 最优去噪器为：
+对于高斯噪声模型$x_t = x_0 + \sigma \varepsilon$，Bayes 最优去噪器为：
 
 $$\hat{x}_0(x_t) = \mathbb{E}[x_0 | x_t] = \frac{\sum_{i} x_0^{(i)} \exp\left(-\frac{\|x_t - x_0^{(i)}\|^2}{2\sigma^2}\right)}{\sum_{i} \exp\left(-\frac{\|x_t - x_0^{(i)}\|^2}{2\sigma^2}\right)}$$
 

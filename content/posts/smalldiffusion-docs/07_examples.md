@@ -268,7 +268,7 @@ def set_text_condition(self, prompt, negative_prompt='', text_guidance_scale=7.5
 
 **sigma_to_t(sigma)**
 
-将 smalldiffusion 的 $\sigma$ 参数化转换为 Diffusers 的时间步 $t$：
+将 smalldiffusion 的$\sigma$参数化转换为 Diffusers 的时间步$t$：
 
 ```python
 def sigma_to_t(self, sigma):

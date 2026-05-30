@@ -40,9 +40,9 @@ def calculate_r2_score(x: torch.Tensor, y: torch.Tensor) -> float:
 
 $$R^2 = 1 - \frac{SS_{\text{res}}}{SS_{\text{tot}}} = 1 - \frac{\sum_j (x_j - y_j)^2}{\text{Var}(y) \cdot n}$$
 
-- $R^2 = 1$：完全一致
-- $R^2 = 0$：预测不比均值好
-- $R^2 < 0$：预测比均值还差
+-$R^2 = 1$：完全一致
+-$R^2 = 0$：预测不比均值好
+-$R^2 < 0$：预测比均值还差
 
 **用途**：衡量解析方法的预测与 UNet 预测的一致性。
 
@@ -114,7 +114,7 @@ def evaluate_main_model(model, dataset_bundle, result, cfg, run_paths,
 
 5. **保存中间步骤图像**（如果 `save_intermediate_images=True`）
    - 调用 `_save_intermediates()`
-   - 保存每个时间步的 $x_t$ 和 $\hat{x}_0$
+   - 保存每个时间步的$x_t$和$\hat{x}_0$
 
 6. **记录指标**：写入 `metrics.json` 和 WandB
 
@@ -129,13 +129,13 @@ def evaluate_comparison(dataset_bundle, main_result, baseline_result,
 
 对每个时间步执行：
 
-1. **轨迹对比**：比较同一时间步下两种方法的 $\hat{x}_0$
+1. **轨迹对比**：比较同一时间步下两种方法的$\hat{x}_0$
    ```python
    r2 = calculate_r2_score(main_x0, base_x0)
    mse = calculate_mse(main_x0, base_x0)
    ```
 
-2. **单步对比**：将解析方法的 $x_t$ 送入 UNet
+2. **单步对比**：将解析方法的$x_t$送入 UNet
    ```python
    xt = main_result.trajectory_xt[i].to(baseline_model.device)
    base_pred_single = baseline_model.denoise(xt, t)

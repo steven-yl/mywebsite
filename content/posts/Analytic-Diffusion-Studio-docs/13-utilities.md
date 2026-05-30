@@ -69,7 +69,7 @@ S = cov_accumulator / (total_samples - 1)
 - `S`：协方差矩阵 `[n_pixels, n_pixels]`
 - `mean`：均值向量 `[n_pixels]`
 
-**内存需求**：协方差矩阵大小为 $n^2$，其中 $n = C \times H \times W$：
+**内存需求**：协方差矩阵大小为$n^2$，其中$n = C \times H \times W$：
 - MNIST (784)：约 2.3 MB
 - CIFAR-10 (3072)：约 36 MB
 - 64×64 RGB (12288)：约 576 MB
@@ -179,7 +179,7 @@ class TimeEmbedding(nn.Module):
         )
 ```
 
-将离散时间步 $t \in \{0, 1, ..., T-1\}$ 编码为连续向量：
+将离散时间步$t \in \{0, 1, ..., T-1\}$编码为连续向量：
 1. 正弦/余弦位置编码（类似 Transformer）
 2. 两层 MLP 投影到 `tdim = ch * 4` 维
 

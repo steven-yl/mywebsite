@@ -20,26 +20,26 @@ hiddenFromSearch: false
 
 ### 2.1 问题设定
 
-假设干净数据 $x_0$ 服从未知分布 $p_{\text{data}}$。观测到带噪样本：
+假设干净数据$x_0$服从未知分布$p_{\text{data}}$。观测到带噪样本：
 $$
 x = x_0 + \sigma \,\epsilon, \quad \epsilon \sim \mathcal{N}(0, I)
 $$
-其中 $\sigma$ 为已知噪声标准差。MMSE 估计器为后验条件期望：
+其中$\sigma$为已知噪声标准差。MMSE 估计器为后验条件期望：
 $$
 \hat{x}_0 = \mathbb{E}[x_0 \mid x] = \int x_0 \, p(x_0 \mid x) \, dx_0
 $$
 
 ### 2.2 经验贝叶斯近似
 
-由于 $p_{\text{data}}$ 未知，我们用有限数据集 $\{x_0^{(i)}\}_{i=1}^{N}$ 代替。根据贝叶斯公式：
+由于$p_{\text{data}}$未知，我们用有限数据集$\{x_0^{(i)}\}_{i=1}^{N}$代替。根据贝叶斯公式：
 $$
 p(x_0^{(i)} \mid x) \propto p(x \mid x_0^{(i)}) \, p(x_0^{(i)})
 $$
-假设 $p(x_0^{(i)}) = 1/N$（均匀先验），且似然为高斯：
+假设$p(x_0^{(i)}) = 1/N$（均匀先验），且似然为高斯：
 $$
 p(x \mid x_0^{(i)}) = \frac{1}{(2\pi\sigma^2)^{d/2}} \exp\left(-\frac{\|x - x_0^{(i)}\|^2}{2\sigma^2}\right)
 $$
-则后验概率正比于 $\exp\left(-\frac{\|x - x_0^{(i)}\|^2}{2\sigma^2}\right)$。归一化后得到权重：
+则后验概率正比于$\exp\left(-\frac{\|x - x_0^{(i)}\|^2}{2\sigma^2}\right)$。归一化后得到权重：
 $$
 w_i = \text{softmax}\left( -\frac{\|x - x_0^{(i)}\|^2}{2\sigma^2} \right)
 $$
@@ -50,7 +50,7 @@ $$
 
 ### 2.3 输出含义
 
-在扩散模型中，去噪器通常预测噪声 $\epsilon_\theta(x, \sigma)$，并满足：
+在扩散模型中，去噪器通常预测噪声$\epsilon_\theta(x, \sigma)$，并满足：
 $$
 x = \hat{x}_0 + \sigma \,\epsilon_\theta(x, \sigma)
 $$
@@ -68,7 +68,7 @@ def sq_norm(M, k):
     return (torch.norm(M, dim=1)**2).unsqueeze(1).repeat(1, k)
 ```
 - **输入**：`M` 形状 `(b, dim)`，`k` 为目标重复次数。
-- **输出**：形状 `(b, k)`，每行均为对应样本的平方范数 $\|M_i\|^2$。
+- **输出**：形状 `(b, k)`，每行均为对应样本的平方范数$\|M_i\|^2$。
 - **用途**：为计算成对欧氏距离提供平方范数项。
 
 ### 3.2 `IdealDenoiser` 类
@@ -98,11 +98,11 @@ self.input_dims = self.data.shape[1:]
    其中 `xb` 为 batch 大小，`db` 为数据集大小（样本数），`xr == dr` 为展平后的特征维度。
 
 3. **平方距离矩阵计算**  
-   利用恒等式 $\|a-b\|^2 = \|a\|^2 + \|b\|^2 - 2 a\cdot b$：
+   利用恒等式$\|a-b\|^2 = \|a\|^2 + \|b\|^2 - 2 a\cdot b$：
    ```python
    sq_diffs = sq_norm(x_flat, db).T + sq_norm(d_flat, xb) - 2 * d_flat @ x_flat.T
    ```
-   - `sq_norm(x_flat, db)` 形状 `(xb, db)`，其中第 `i` 行元素均为 $\|x_i\|^2$。转置后为 `(db, xb)`。
+   - `sq_norm(x_flat, db)` 形状 `(xb, db)`，其中第 `i` 行元素均为$\|x_i\|^2$。转置后为 `(db, xb)`。
    - `sq_norm(d_flat, xb)` 形状 `(db, xb)`，每行均为对应数据样本的平方范数。
    - 矩阵乘积 `d_flat @ x_flat.T` 形状 `(db, xb)`，元素为 `d_j · x_i`。
    - 最终 `sq_diffs` 形状 `(db, xb)`，其中 `sq_diffs[j, i] = ||x_i - d_j||^2`。
@@ -120,14 +120,14 @@ self.input_dims = self.data.shape[1:]
    eps = torch.einsum('ij,i...->j...', weights, data)
    ```
    - `weights` 形状 `(db, xb)`，`data` 形状 `(db, *input_dims)`。
-   - Einstein 求和：对每个 batch 样本 `j`，计算 $\sum_i \text{weights}[i, j] \cdot \text{data}[i]$，输出形状 `(xb, *input_dims)`。  
-     该结果即为 $\hat{x}_0$（估计的干净信号）。
+   - Einstein 求和：对每个 batch 样本 `j`，计算$\sum_i \text{weights}[i, j] \cdot \text{data}[i]$，输出形状 `(xb, *input_dims)`。  
+     该结果即为$\hat{x}_0$（估计的干净信号）。
 
 6. **返回噪声预测**  
    ```python
    return (x - eps) / sigma
    ```
-   - 形状与 `x` 相同，对应噪声 $\epsilon$ 的估计。
+   - 形状与 `x` 相同，对应噪声$\epsilon$的估计。
 
 ## 4. 特性与限制
 
@@ -138,7 +138,7 @@ self.input_dims = self.data.shape[1:]
 
 ### 局限
 - **存储开销**：需在内存中保存整个数据集，对于大规模数据集（如 ImageNet）不可行。
-- **计算复杂度**：每 forward 需计算 $O(N \cdot B \cdot D)$ 的矩阵乘积，其中 $N$ 为数据集大小，$B$ 为 batch 大小，$D$ 为特征维度；随 $N$ 线性增长。
+- **计算复杂度**：每 forward 需计算$O(N \cdot B \cdot D)$的矩阵乘积，其中$N$为数据集大小，$B$为 batch 大小，$D$为特征维度；随$N$线性增长。
 - **分布假设**：隐含假设数据集样本为独立同分布，且先验均匀；若数据集有偏差，输出也会偏差。
 
 ## 5. 使用示例

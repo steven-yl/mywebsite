@@ -47,23 +47,23 @@ markmap:
 
 ### 2. 方差爆炸（Variance Exploding，VE）
 - **加噪公式**：$x_t = x_0 + \sigma_t\,\varepsilon$
-- **性质**：$x_t$ 的方差随 $t$ 单调增长至无穷（若不归一化）
+- **性质**：$x_t$的方差随$t$单调增长至无穷（若不归一化）
 - **典型调度**：NCSN 几何序列、EDM 连续调度
 
 - **转换关系**：$\sigma_t = \sqrt{1/\bar\alpha_t - 1}$，两者完全等价。
-  VE（方差爆炸）模型喜欢用**后验噪声标准差** \(\sigma_t\) 来描述扩散强度，定义为：
-  $$
+  VE（方差爆炸）模型喜欢用**后验噪声标准差**$\sigma_t$来描述扩散强度，定义为：
+ $$
   \sigma_t = \frac{\text{噪声幅度}}{\text{信号幅度}}
-  $$
+ $$
 
   也就是：
-  $$
+ $$
   \sigma_t = \frac{\sqrt{1-\bar\alpha_t}}{\sqrt{\bar\alpha_t}}
-  $$
+ $$
 
-  - **\(\sigma_t = \sqrt{1/\bar\alpha_t - 1}\)** 是从VP参数到VE参数的**等价变换**，它使得信号部分系数为1，噪声部分系数为 \(\sigma_t\)。
-  - VE模型采用这种形式是因为它更符合“噪声爆炸”的直观：信号强度固定，噪声强度单调增长到无穷，\(\sigma_t\) 直接描述了这一过程。
-  - VP模型则保持总方差恒定，因此不会用 \(\sigma_t\) 作为主要参数，而更常用 \(\beta_t\) 或 \(\bar\alpha_t\) 来描述扩散进程。
+  - **$\sigma_t = \sqrt{1/\bar\alpha_t - 1}$** 是从VP参数到VE参数的**等价变换**，它使得信号部分系数为1，噪声部分系数为$\sigma_t$。
+  - VE模型采用这种形式是因为它更符合“噪声爆炸”的直观：信号强度固定，噪声强度单调增长到无穷，$\sigma_t$直接描述了这一过程。
+  - VP模型则保持总方差恒定，因此不会用$\sigma_t$作为主要参数，而更常用$\beta_t$或$\bar\alpha_t$来描述扩散进程。
 
 - 代码示例：
   ```python
@@ -88,27 +88,27 @@ markmap:
 $$
 \mathbf{x}_t = \sqrt{\bar\alpha_t}\,\mathbf{x}_0 + \sqrt{1-\bar\alpha_t}\,\boldsymbol{\epsilon},\quad \boldsymbol{\epsilon}\sim\mathcal{N}(\mathbf{0},\mathbf{I})
 $$
-其中 $\bar\alpha_t$ 是累积信噪比相关的量，满足 $\bar\alpha_t \in [0,1]$，且随 $t$ 增加而减小。
+其中$\bar\alpha_t$是累积信噪比相关的量，满足$\bar\alpha_t \in [0,1]$，且随$t$增加而减小。
 
-- **VP（方差保持）模型**（如DDPM）：强制所有时刻的边际方差恒为1，即 $\mathbb{E}[\|\mathbf{x}_t\|^2] = 1$（假设 $\mathbf{x}_0$ 方差为1）。这意味着：
-  $$
+- **VP（方差保持）模型**（如DDPM）：强制所有时刻的边际方差恒为1，即$\mathbb{E}[\|\mathbf{x}_t\|^2] = 1$（假设$\mathbf{x}_0$方差为1）。这意味着：
+ $$
   \bar\alpha_t + (1-\bar\alpha_t) = 1
-  $$
-  所以信号方差 $\bar\alpha_t$ 和噪声方差 $1-\bar\alpha_t$ 之和恒为1。
+ $$
+  所以信号方差$\bar\alpha_t$和噪声方差$1-\bar\alpha_t$之和恒为1。
 
-- **VE（方差爆炸）模型**（如宋飏等人的Score-Based SDE）：不限制总方差，而是让信号方差随 $t$ 衰减到0，噪声方差单调增长到无穷。此时通常定义：
-  $$
+- **VE（方差爆炸）模型**（如宋飏等人的Score-Based SDE）：不限制总方差，而是让信号方差随$t$衰减到0，噪声方差单调增长到无穷。此时通常定义：
+ $$
   \mathbf{x}_t = \mathbf{x}_0 + \sigma_t \boldsymbol{\epsilon}
-  $$
-  即信号部分保持不变（系数为1），噪声部分由 $\sigma_t$ 控制。此时边际方差为 $1 + \sigma_t^2$，随 $t$ 增长而爆炸。
+ $$
+  即信号部分保持不变（系数为1），噪声部分由$\sigma_t$控制。此时边际方差为$1 + \sigma_t^2$，随$t$增长而爆炸。
 
 ---
 
 ### 2. 从VP到VE的转换
 
-若将VE形式的 $\mathbf{x}_t = \mathbf{x}_0 + \sigma_t \boldsymbol{\epsilon}$ 与VP形式 $\mathbf{x}_t = \sqrt{\bar\alpha_t}\,\mathbf{x}_0 + \sqrt{1-\bar\alpha_t}\,\boldsymbol{\epsilon}$ 做对比，它们实际上是同一种分布的两种参数化。要使两者等价，需要将VP中的系数缩放为VE的形式。
+若将VE形式的$\mathbf{x}_t = \mathbf{x}_0 + \sigma_t \boldsymbol{\epsilon}$与VP形式$\mathbf{x}_t = \sqrt{\bar\alpha_t}\,\mathbf{x}_0 + \sqrt{1-\bar\alpha_t}\,\boldsymbol{\epsilon}$做对比，它们实际上是同一种分布的两种参数化。要使两者等价，需要将VP中的系数缩放为VE的形式。
 
-设我们想将VP的 $\mathbf{x}_t$ 除以某个因子 $s_t$，使其信号部分系数变为1。令：
+设我们想将VP的$\mathbf{x}_t$除以某个因子$s_t$，使其信号部分系数变为1。令：
 $$
 \frac{\sqrt{\bar\alpha_t}\,\mathbf{x}_0 + \sqrt{1-\bar\alpha_t}\,\boldsymbol{\epsilon}}{s_t} = \mathbf{x}_0 + \sigma_t \boldsymbol{\epsilon}
 $$
@@ -124,30 +124,30 @@ $$
 $$
 \sigma_t = \sqrt{\frac{1}{\bar\alpha_t} - 1}
 $$
-就得到了VE中的噪声标准差。注意这里的 $\sigma_t$ 是**后验噪声标准差**（即噪声与信号幅度的比值），而不是边际噪声方差。
+就得到了VE中的噪声标准差。注意这里的$\sigma_t$是**后验噪声标准差**（即噪声与信号幅度的比值），而不是边际噪声方差。
 
 ---
 
-### 3. 为什么VE模型“喜欢”用 $\sigma_t$
+### 3. 为什么VE模型“喜欢”用$\sigma_t$
 
-VE模型的核心设计是让**信噪比**随着时间逐渐降低，并且最终趋向于0（即信号完全被噪声淹没）。在VE的参数化中，$\sigma_t$ 直接扮演了这个角色：
+VE模型的核心设计是让**信噪比**随着时间逐渐降低，并且最终趋向于0（即信号完全被噪声淹没）。在VE的参数化中，$\sigma_t$直接扮演了这个角色：
 
-- 当 $t=0$ 时，$\bar\alpha_0=1$，则 $\sigma_0=0$，对应无噪声。
-- 当 $t \to T$ 时，$\bar\alpha_T \to 0$，则 $\sigma_T \to \infty$，对应信号相对于噪声可忽略。
+- 当$t=0$时，$\bar\alpha_0=1$，则$\sigma_0=0$，对应无噪声。
+- 当$t \to T$时，$\bar\alpha_T \to 0$，则$\sigma_T \to \infty$，对应信号相对于噪声可忽略。
 
-而VP模型中，虽然信噪比 $\sqrt{\bar\alpha_t}/\sqrt{1-\bar\alpha_t}$ 也在下降，但边际方差被限制为1，因此不能直接用 $\sigma_t$ 这种“噪声/信号”比值来作为唯一的扩散强度参数，因为信号强度本身也在变化。
+而VP模型中，虽然信噪比$\sqrt{\bar\alpha_t}/\sqrt{1-\bar\alpha_t}$也在下降，但边际方差被限制为1，因此不能直接用$\sigma_t$这种“噪声/信号”比值来作为唯一的扩散强度参数，因为信号强度本身也在变化。
 
 ---
 
 ### 4. 为什么不是“保持型”（VP）
 
-如果试图将 $\sigma_t = \sqrt{1/\bar\alpha_t - 1}$ 放到VP框架中，会导致矛盾。因为在VP中，我们通常用 $\beta_t$ 或 $\bar\alpha_t$ 直接控制噪声添加量，并且 $\mathbf{x}_t$ 的方差始终归一化。而 $\sigma_t$ 在这里扮演的是**缩放后的噪声幅度**，它隐含了信号部分的缩放因子 $\sqrt{\bar\alpha_t}$。如果强行在VP中使用 $\sigma_t$，就会丢失信号缩放信息，无法唯一确定前向过程。
+如果试图将$\sigma_t = \sqrt{1/\bar\alpha_t - 1}$放到VP框架中，会导致矛盾。因为在VP中，我们通常用$\beta_t$或$\bar\alpha_t$直接控制噪声添加量，并且$\mathbf{x}_t$的方差始终归一化。而$\sigma_t$在这里扮演的是**缩放后的噪声幅度**，它隐含了信号部分的缩放因子$\sqrt{\bar\alpha_t}$。如果强行在VP中使用$\sigma_t$，就会丢失信号缩放信息，无法唯一确定前向过程。
 
-反过来，VE模型天然以 $\sigma_t$ 为核心参数，因为它的前向SDE写作：
+反过来，VE模型天然以$\sigma_t$为核心参数，因为它的前向SDE写作：
 $$
 d\mathbf{x} = \sqrt{\frac{d\sigma_t^2}{dt}} \, d\mathbf{w}
 $$
-即扩散系数直接由 $\sigma_t$ 的导数决定，信号部分没有漂移项（或只有可忽略的漂移）。因此 $\sigma_t$ 是VE模型中最直观的“噪声水平”指标。
+即扩散系数直接由$\sigma_t$的导数决定，信号部分没有漂移项（或只有可忽略的漂移）。因此$\sigma_t$是VE模型中最直观的“噪声水平”指标。
 
 {{< /admonition >}}
 
@@ -155,25 +155,25 @@ $$
 
 ## 三、VP 类调度详解
 
-这类调度以离散时间步 $t=1..T$ 给出噪声方差 $\beta_t$，再计算累积信号保持率 $\bar\alpha_t = \prod_{s=1}^t (1-\beta_s)$。  
-**核心思想**：控制信号与噪声的混合比例，使得 $x_t$ 的方差保持不变（$\mathbb{E}[\|x_t\|^2] = \mathbb{E}[\|x_0\|^2]$）。
+这类调度以离散时间步$t=1..T$给出噪声方差$\beta_t$，再计算累积信号保持率$\bar\alpha_t = \prod_{s=1}^t (1-\beta_s)$。  
+**核心思想**：控制信号与噪声的混合比例，使得$x_t$的方差保持不变（$\mathbb{E}[\|x_t\|^2] = \mathbb{E}[\|x_0\|^2]$）。
 
 ### 3.1 线性调度（DDPM 原始）(Ho et al., 2020) <!-- markmap: foldAll -->
 
 #### **定义与公式**
-- DDPM 中，$\beta_t$ 从 $\beta_{\min}$ 到 $\beta_{\max}$ 线性增长：
-  $$
+- DDPM 中，$\beta_t$从$\beta_{\min}$到$\beta_{\max}$线性增长：
+ $$
   \beta_t = \beta_{\min} + \frac{t-1}{T-1}(\beta_{\max} - \beta_{\min}), \quad t=1,\dots,T
-  $$
+ $$
   典型参数：$T=1000,\ \beta_{\min}=10^{-4},\ \beta_{\max}=0.02$。  
-  由此计算 $\alpha_t = 1-\beta_t$，$\bar\alpha_t = \prod_{s=1}^t \alpha_s$。
+  由此计算$\alpha_t = 1-\beta_t$，$\bar\alpha_t = \prod_{s=1}^t \alpha_s$。
 
 #### **设计动机**
-线性调度是扩散模型最早的调度形式，其直观性在于噪声方差的增长速率是恒定的。早期阶段 $\beta$ 很小，图像变化缓慢，符合“逐步破坏数据”的直觉；后期 $\beta$ 较大，使数据快速变成纯噪声。
+线性调度是扩散模型最早的调度形式，其直观性在于噪声方差的增长速率是恒定的。早期阶段$\beta$很小，图像变化缓慢，符合“逐步破坏数据”的直觉；后期$\beta$较大，使数据快速变成纯噪声。
 
 #### **数学特性**
-- 信噪比 $\text{SNR}(t) = \frac{\bar\alpha_t}{1-\bar\alpha_t}$ 在早期下降缓慢，中期加速下降，末期趋于 0。
-- 由于 $\beta_t$ 线性增长，累积乘积 $\bar\alpha_t$ 在后期呈指数级衰减。
+- 信噪比$\text{SNR}(t) = \frac{\bar\alpha_t}{1-\bar\alpha_t}$在早期下降缓慢，中期加速下降，末期趋于 0。
+- 由于$\beta_t$线性增长，累积乘积$\bar\alpha_t$在后期呈指数级衰减。
 
 #### **代码示例**
 ```python
@@ -197,7 +197,7 @@ sigmas = alpha_bar_to_sigma(alpha_bar.numpy())
 plt.figure(figsize=(12, 3))
 plt.subplot(1, 3, 1)
 plt.plot(betas.numpy())
-plt.title(r'$\beta_t$ (linear)')
+plt.title(r'$\beta_t$(linear)')
 plt.subplot(1, 3, 2)
 plt.plot(alpha_bar.numpy())
 plt.title(r'$\bar\alpha_t$')
@@ -211,19 +211,19 @@ plt.show()
 ### 3.2 余弦调度（Improved DDPM）(Nichol & Dhariwal, 2021)  <!-- markmap: foldAll -->
 
 #### **定义与公式**
-- 改进的 DDPM 不再直接定义 $\beta_t$，而是定义 $\bar\alpha_t$ 的余弦形式：
-  $$
+- 改进的 DDPM 不再直接定义$\beta_t$，而是定义$\bar\alpha_t$的余弦形式：
+ $$
   \bar\alpha_t = \frac{\cos^2\left(\frac{t/T + s}{1+s}\cdot\frac{\pi}{2}\right)}{\cos^2\left(\frac{s}{1+s}\cdot\frac{\pi}{2}\right)}, \quad s=0.008
-  $$
-  然后通过 $\beta_t = 1 - \bar\alpha_t / \bar\alpha_{t-1}$ 反推 $\beta_t$。其中 $s$ 是一个很小的偏移量，防止 $t=0$ 时 $\bar\alpha_0$ 恰好为 1 导致数值问题。
+ $$
+  然后通过$\beta_t = 1 - \bar\alpha_t / \bar\alpha_{t-1}$反推$\beta_t$。其中$s$是一个很小的偏移量，防止$t=0$时$\bar\alpha_0$恰好为 1 导致数值问题。
 
 #### **设计动机**  
-线性调度在中间阶段信噪比下降过快，使得网络难以学习中等噪声水平的去噪。余弦调度通过让 $\bar\alpha_t$ 在中间阶段缓慢下降，保持了较高的信噪比，使网络有更多机会学习有意义的去噪映射。
+线性调度在中间阶段信噪比下降过快，使得网络难以学习中等噪声水平的去噪。余弦调度通过让$\bar\alpha_t$在中间阶段缓慢下降，保持了较高的信噪比，使网络有更多机会学习有意义的去噪映射。
 
 #### **数学特性**  
-- 在 $t=0$ 附近 $\bar\alpha_0\approx 1$，在 $t=T$ 时 $\bar\alpha_T\approx 0$。
+- 在$t=0$附近$\bar\alpha_0\approx 1$，在$t=T$时$\bar\alpha_T\approx 0$。
 - 信噪比在对数域大致呈线性下降，但中间段比线性调度更平缓。
-- $\beta_t$ 在两端较小，中间稍大，呈现先增后减的形状（非单调）。
+-$\beta_t$在两端较小，中间稍大，呈现先增后减的形状（非单调）。
 
 #### **代码示例**
 ```python
@@ -247,7 +247,7 @@ sigmas_cos = alpha_bar_to_sigma(alpha_bar_cos.numpy())
 plt.figure(figsize=(12, 3))
 plt.subplot(1, 3, 1)
 plt.plot(betas_cos.numpy())
-plt.title(r'$\beta_t$ (cosine)')
+plt.title(r'$\beta_t$(cosine)')
 plt.subplot(1, 3, 2)
 plt.plot(alpha_bar_cos.numpy())
 plt.title(r'$\bar\alpha_t$')
@@ -261,16 +261,16 @@ plt.show()
 ### 3.3 平方根调度（常见变种） <!-- markmap: foldAll -->
 
 #### **定义与公式**  
-- 直接定义 $\bar\alpha_t = 1 - (t/T)^p$，其中 $p>0$ 是幂指数。  
-  当 $p=1$ 时，$\bar\alpha_t$ 线性衰减，对应信噪比 $\text{SNR}(t) = (1 - t/T) / (t/T)$，即与线性调度类似但参数不同。  
-  当 $p>1$ 时，早期 $\bar\alpha_t$ 接近 1 的时间更长，信噪比保持更高；当 $p<1$ 时，早期衰减更快。
+- 直接定义$\bar\alpha_t = 1 - (t/T)^p$，其中$p>0$是幂指数。  
+  当$p=1$时，$\bar\alpha_t$线性衰减，对应信噪比$\text{SNR}(t) = (1 - t/T) / (t/T)$，即与线性调度类似但参数不同。  
+  当$p>1$时，早期$\bar\alpha_t$接近 1 的时间更长，信噪比保持更高；当$p<1$时，早期衰减更快。
 
 #### **设计动机**  
-通过调整幂指数 $p$ 可以精细控制信息保留的速度。例如，对于需要长期依赖的数据（如文本、时间序列），使用 $p>1$ 可使早期信息保留更久，帮助网络学习全局结构。
+通过调整幂指数$p$可以精细控制信息保留的速度。例如，对于需要长期依赖的数据（如文本、时间序列），使用$p>1$可使早期信息保留更久，帮助网络学习全局结构。
 
 #### **数学特性**  
-- 信噪比 $\text{SNR}(t) = \frac{1 - (t/T)^p}{(t/T)^p}$，在 $t$ 较小时 SNR 极高，随 $t$ 增大按幂律衰减。
-- $\beta_t$ 可通过差分得到：$\beta_t = 1 - \frac{1 - ((t+1)/T)^p}{1 - (t/T)^p}$，但通常不显式计算 $\beta_t$，而是直接使用 $\bar\alpha_t$。
+- 信噪比$\text{SNR}(t) = \frac{1 - (t/T)^p}{(t/T)^p}$，在$t$较小时 SNR 极高，随$t$增大按幂律衰减。
+-$\beta_t$可通过差分得到：$\beta_t = 1 - \frac{1 - ((t+1)/T)^p}{1 - (t/T)^p}$，但通常不显式计算$\beta_t$，而是直接使用$\bar\alpha_t$。
 
 #### **代码示例**
 ```python
@@ -287,7 +287,7 @@ sigmas_sqrt = alpha_bar_to_sigma(alpha_bar_sqrt.numpy())
 plt.figure(figsize=(12, 3))
 plt.subplot(1, 3, 1)
 plt.plot(betas_sqrt.numpy())
-plt.title(r'$\beta_t$ (sqrt, p=2)')
+plt.title(r'$\beta_t$(sqrt, p=2)')
 plt.subplot(1, 3, 2)
 plt.plot(alpha_bar_sqrt.numpy())
 plt.title(r'$\bar\alpha_t$')
@@ -301,18 +301,18 @@ plt.show()
 ### 3.4 Sigmoid 调度（GeoDiff, Xu et al., 2022） <!-- markmap: foldAll -->
 
 #### **定义与公式**  
-- 利用 sigmoid 函数构造 $\beta_t$：
-  $$
+- 利用 sigmoid 函数构造$\beta_t$：
+ $$
   \beta_t = \sigma\left(-6 + \frac{12t}{N-1}\right) \cdot (\beta_{\text{end}} - \beta_{\text{start}}) + \beta_{\text{start}}
-  $$
-  其中 $\sigma(x) = 1/(1+e^{-x})$ 是标准 sigmoid 函数。通常 $\beta_{\text{start}}=0.0001,\ \beta_{\text{end}}=0.02$，但也可按需调整。
+ $$
+  其中$\sigma(x) = 1/(1+e^{-x})$是标准 sigmoid 函数。通常$\beta_{\text{start}}=0.0001,\ \beta_{\text{end}}=0.02$，但也可按需调整。
 
 #### **设计动机**  
 sigmoid 函数在中间区域变化快，两端变化慢，形成 S 形曲线。这种形状可以使噪声在中间阶段快速增加，而在两端缓慢变化，适合某些需要精细控制早期和后期噪声的任务，如分子构象生成或超分辨率。
 
 #### **数学特性**  
-- $\beta_t$ 从 $\beta_{\text{start}}$ 开始，缓慢上升，在 $t\approx N/2$ 附近迅速增长，最后缓慢趋近 $\beta_{\text{end}}$。
-- 对应的 $\bar\alpha_t$ 在中段快速下降，两端平缓，信噪比在两端保持较好。
+-$\beta_t$从$\beta_{\text{start}}$开始，缓慢上升，在$t\approx N/2$附近迅速增长，最后缓慢趋近$\beta_{\text{end}}$。
+- 对应的$\bar\alpha_t$在中段快速下降，两端平缓，信噪比在两端保持较好。
 
 #### **代码示例**
 ```python
@@ -332,7 +332,7 @@ sigmas_sigmoid = alpha_bar_to_sigma(alpha_bar_sigmoid.numpy())
 plt.figure(figsize=(12, 3))
 plt.subplot(1, 3, 1)
 plt.plot(betas_sigmoid.numpy())
-plt.title(r'$\beta_t$ (sigmoid)')
+plt.title(r'$\beta_t$(sigmoid)')
 plt.subplot(1, 3, 2)
 plt.plot(alpha_bar_sigmoid.numpy())
 plt.title(r'$\bar\alpha_t$')
@@ -346,14 +346,14 @@ plt.show()
 ### 3.5 多项式调度（常见变种） <!-- markmap: foldAll -->
 
 #### **定义与公式**  
-- 定义 $\bar\alpha_t = 1 - t/T$ 的 $k$ 次方：$\bar\alpha_t = (1 - t/T)^k$，或更一般地 $\bar\alpha_t = (1 - (t/T)^p)^q$。  
-  当 $k=1$ 时即为线性衰减；$k>1$ 时早期衰减慢；$k<1$ 时早期衰减快。
+- 定义$\bar\alpha_t = 1 - t/T$的$k$次方：$\bar\alpha_t = (1 - t/T)^k$，或更一般地$\bar\alpha_t = (1 - (t/T)^p)^q$。  
+  当$k=1$时即为线性衰减；$k>1$时早期衰减慢；$k<1$时早期衰减快。
 
 #### **设计动机**  
 多项式调度提供了比幂律更灵活的曲线族，可用于模拟不同数据分布下的信息衰减速率。
 
 #### **数学特性**  
-- 信噪比 $\text{SNR}(t) = \frac{(1 - t/T)^k}{1 - (1 - t/T)^k}$，在 $t=0$ 时无穷大，$t=T$ 时为 0。
+- 信噪比$\text{SNR}(t) = \frac{(1 - t/T)^k}{1 - (1 - t/T)^k}$，在$t=0$时无穷大，$t=T$时为 0。
 - 通过调整指数可以控制曲率。
 
 #### **代码示例**
@@ -372,7 +372,7 @@ sigmas_poly = alpha_bar_to_sigma(alpha_bar_poly.numpy())
 plt.figure(figsize=(12, 3))
 plt.subplot(1, 3, 1)
 plt.plot(betas_poly.numpy())
-plt.title(r'$\beta_t$ (poly, k=2)')
+plt.title(r'$\beta_t$(poly, k=2)')
 plt.subplot(1, 3, 2)
 plt.plot(alpha_bar_poly.numpy())
 plt.title(r'$\bar\alpha_t$')
@@ -386,13 +386,13 @@ plt.show()
 ### 3.6 学习调度（可学习参数） <!-- markmap: foldAll -->
 
 #### **定义与公式**  
-- 将 $\beta_t$ 作为可学习参数，在训练过程中通过梯度下降优化。通常需要添加正则化项（如平滑性约束）防止过拟合。
+- 将$\beta_t$作为可学习参数，在训练过程中通过梯度下降优化。通常需要添加正则化项（如平滑性约束）防止过拟合。
 
 #### **设计动机**  
 摆脱人工设计的调度，让模型自动找到最优的噪声增长曲线，可能提高最终生成质量或采样效率。
 
 #### **数学特性**  
-- $\beta_t$ 不再是固定值，而是随训练更新。
+-$\beta_t$不再是固定值，而是随训练更新。
 - 可以结合信噪比约束或单调性约束保证物理合理性。
 
 #### **代码示例**
@@ -431,25 +431,25 @@ for step in range(100):
 
 ## 四、VE / EDM 类调度详解
 
-这类调度直接以噪声强度 $\sigma_t$ 为核心，常常在**连续时间框架**下设计，便于与高效采样器（如 DDIM、DPM-Solver）结合。加噪公式为 $x = x_0 + \sigma_t\,\varepsilon$，其中 $\sigma_t$ 从 $\sigma_{\min}$ 单调递增到 $\sigma_{\max}$。
+这类调度直接以噪声强度$\sigma_t$为核心，常常在**连续时间框架**下设计，便于与高效采样器（如 DDIM、DPM-Solver）结合。加噪公式为$x = x_0 + \sigma_t\,\varepsilon$，其中$\sigma_t$从$\sigma_{\min}$单调递增到$\sigma_{\max}$。
 
 ### 4.1 NCSN 指数调度（VE）(Song & Ermon, 2019)  <!-- markmap: foldAll -->
 
 #### **定义与公式**  
-- NCSN（Noise Conditional Score Network）使用几何级数定义 $\sigma_t$：
-  $$
+- NCSN（Noise Conditional Score Network）使用几何级数定义$\sigma_t$：
+ $$
   \sigma_t = \sigma_{\min} \left(\frac{\sigma_{\max}}{\sigma_{\min}}\right)^{\frac{t-1}{T-1}},\quad t=1,\dots,T
-  $$
+ $$
   典型参数：$\sigma_{\min}=0.01,\ \sigma_{\max}=50,\ T=1000$。  
-  也可写作 $\sigma_t = \sigma_{\min} \cdot r^{t-1}$，其中 $r = (\sigma_{\max}/\sigma_{\min})^{1/(T-1)}$。
+  也可写作$\sigma_t = \sigma_{\min} \cdot r^{t-1}$，其中$r = (\sigma_{\max}/\sigma_{\min})^{1/(T-1)}$。
 
 #### **设计动机**  
-在 $\log\sigma$ 轴上均匀分布，使得网络在训练时看到各噪声水平的样本数均衡，从而更好地学习得分函数（score function）。因为得分函数在不同噪声水平下具有不同的尺度，均匀覆盖有助于网络泛化。
+在$\log\sigma$轴上均匀分布，使得网络在训练时看到各噪声水平的样本数均衡，从而更好地学习得分函数（score function）。因为得分函数在不同噪声水平下具有不同的尺度，均匀覆盖有助于网络泛化。
 
 #### **数学特性**  
-- $\log\sigma_t$ 随 $t$ 线性增长。
-- 信噪比 $\text{SNR}(t) = 1/\sigma_t^2$ 在 $\log$ 轴上线性递减。
-- 加噪样本 $x_t = x_0 + \sigma_t\varepsilon$，方差随 $t$ 指数增长。
+-$\log\sigma_t$随$t$线性增长。
+- 信噪比$\text{SNR}(t) = 1/\sigma_t^2$在$\log$轴上线性递减。
+- 加噪样本$x_t = x_0 + \sigma_t\varepsilon$，方差随$t$指数增长。
 
 #### **代码示例**
 ```python
@@ -466,7 +466,7 @@ betas_ncsn = 1 - alpha_bar_ncsn / np.concatenate(([1.0], alpha_bar_ncsn[:-1]))
 plt.figure(figsize=(12, 3))
 plt.subplot(1, 3, 1)
 plt.plot(betas_ncsn)
-plt.title(r'$\beta_t$ (NCSN)')
+plt.title(r'$\beta_t$(NCSN)')
 plt.subplot(1, 3, 2)
 plt.plot(alpha_bar_ncsn)
 plt.title(r'$\bar\alpha_t$')
@@ -480,22 +480,22 @@ plt.show()
 ### 4.2 EDM 调度（Elucidating Diffusion Models）(Karras et al., 2022)  <!-- markmap: foldAll -->
 
 #### **定义与公式**  
-- EDM 将噪声水平视为连续时间 $t$ 的函数 $\sigma(t)$，并统一了训练与采样框架。常见形式：
-  - **线性**：$\sigma(t) = t$，$t\in[0,1]$ 或 $t\in[\sigma_{\min},\sigma_{\max}]$。
-  - **幂次**：$\sigma(t) = t^p$，$p>0$，例如 $p=1/2$ 或 $p=2$。
+- EDM 将噪声水平视为连续时间$t$的函数$\sigma(t)$，并统一了训练与采样框架。常见形式：
+  - **线性**：$\sigma(t) = t$，$t\in[0,1]$或$t\in[\sigma_{\min},\sigma_{\max}]$。
+  - **幂次**：$\sigma(t) = t^p$，$p>0$，例如$p=1/2$或$p=2$。
 
-- 训练时，从 $[\log\sigma_{\min},\log\sigma_{\max}]$ 上均匀采样 $\log\sigma$，即 $\sigma = \exp(\log\sigma_{\min} + u(\log\sigma_{\max}-\log\sigma_{\min})),\ u\sim U(0,1)$。  
-  加噪：$x = x_0 + \sigma\varepsilon$，网络输入为 $(x, \log\sigma)$，输出预测的噪声 $\varepsilon_\theta(x,\sigma)$。
+- 训练时，从$[\log\sigma_{\min},\log\sigma_{\max}]$上均匀采样$\log\sigma$，即$\sigma = \exp(\log\sigma_{\min} + u(\log\sigma_{\max}-\log\sigma_{\min})),\ u\sim U(0,1)$。  
+  加噪：$x = x_0 + \sigma\varepsilon$，网络输入为$(x, \log\sigma)$，输出预测的噪声$\varepsilon_\theta(x,\sigma)$。
 
-- 采样时，定义离散化路径 $\{\sigma_i\}_{i=0}^{N}$，通常取 $\sigma_0 = \sigma_{\max} > \sigma_1 > \dots > \sigma_N = 0$，然后使用 ODE 求解器（如 Heun 二阶方法）从 $\sigma_{\max}$ 逐步积分到 0。
+- 采样时，定义离散化路径$\{\sigma_i\}_{i=0}^{N}$，通常取$\sigma_0 = \sigma_{\max} > \sigma_1 > \dots > \sigma_N = 0$，然后使用 ODE 求解器（如 Heun 二阶方法）从$\sigma_{\max}$逐步积分到 0。
 
 #### **设计动机**  
-将调度与采样器统一设计，使得训练时的噪声分布与采样时的离散化路径相匹配，从而在少步数下获得高质量生成。EDM 特别强调使用二阶或高阶 ODE 求解器，并针对这些求解器优化了调度参数（如 $\sigma_{\min},\sigma_{\max}$ 的选择）。
+将调度与采样器统一设计，使得训练时的噪声分布与采样时的离散化路径相匹配，从而在少步数下获得高质量生成。EDM 特别强调使用二阶或高阶 ODE 求解器，并针对这些求解器优化了调度参数（如$\sigma_{\min},\sigma_{\max}$的选择）。
 
 #### **数学特性**  
-- 信噪比 $\text{SNR}(t) = 1/\sigma(t)^2$，与 $\sigma(t)$ 的选择直接相关。
-- 训练时对数均匀采样 $\sigma$，使得网络在 $\log\sigma$ 空间均匀分布，避免某些噪声水平被忽视。
-- 采样时使用 Heun 等二阶方法，误差项与 $\sigma$ 的步长相关，因此调度通常设计为在 $\log\sigma$ 轴上均匀离散化，以平衡步长。
+- 信噪比$\text{SNR}(t) = 1/\sigma(t)^2$，与$\sigma(t)$的选择直接相关。
+- 训练时对数均匀采样$\sigma$，使得网络在$\log\sigma$空间均匀分布，避免某些噪声水平被忽视。
+- 采样时使用 Heun 等二阶方法，误差项与$\sigma$的步长相关，因此调度通常设计为在$\log\sigma$轴上均匀离散化，以平衡步长。
 
 #### **代码示例**
 ```python
@@ -513,7 +513,7 @@ betas_edm = 1 - alpha_bar_edm / np.concatenate(([1.0], alpha_bar_edm[:-1]))
 plt.figure(figsize=(12, 3))
 plt.subplot(1, 3, 1)
 plt.plot(betas_edm)
-plt.title(r'$\beta_t$ (EDM)')
+plt.title(r'$\beta_t$(EDM)')
 plt.subplot(1, 3, 2)
 plt.plot(alpha_bar_edm)
 plt.title(r'$\bar\alpha_t$')
@@ -527,18 +527,18 @@ plt.show()
 ### 4.3 基于信噪比的线性调度（常见于连续时间扩散）  <!-- markmap: foldAll -->
 
 #### **定义与公式**  
-- 直接定义 $\log\text{SNR}(t)$ 随时间线性递减：
-  $$
+- 直接定义$\log\text{SNR}(t)$随时间线性递减：
+ $$
   \log\text{SNR}(t) = \log\text{SNR}_{\min} + t \cdot (\log\text{SNR}_{\max} - \log\text{SNR}_{\min}),\quad t\in[0,1]
-  $$
-  其中 $\text{SNR}_{\max}$ 对应 $t=0$ 时的信噪比（通常很大），$\text{SNR}_{\min}$ 对应 $t=1$ 时的信噪比（通常很小）。  
+ $$
+  其中$\text{SNR}_{\max}$对应$t=0$时的信噪比（通常很大），$\text{SNR}_{\min}$对应$t=1$时的信噪比（通常很小）。  
 
 - 然后可以转换为 VP 或 VE 参数化：
   - VP：$\bar\alpha_t = \frac{\text{SNR}(t)}{1+\text{SNR}(t)},\quad \sigma_t = \sqrt{1/\bar\alpha_t - 1}$
   - VE：$\sigma_t = 1/\sqrt{\text{SNR}(t)}$
 
 #### **设计动机**  
-信噪比是衡量信号与噪声相对强度的直接指标，控制其变化率能够更直观地反映信息保留过程。线性衰减在 $\log\text{SNR}$ 上均匀，相当于在“感知”尺度上均匀变化，适合许多数据分布。
+信噪比是衡量信号与噪声相对强度的直接指标，控制其变化率能够更直观地反映信息保留过程。线性衰减在$\log\text{SNR}$上均匀，相当于在“感知”尺度上均匀变化，适合许多数据分布。
 
 #### **数学特性**  
 - 在 VP 下，$\bar\alpha_t = \frac{1}{1+\exp(-a t - b)}$，即 sigmoid 形式。
@@ -561,7 +561,7 @@ betas_snr = 1 - alpha_bar_snr / torch.cat((torch.tensor([1.0]), alpha_bar_snr[:-
 plt.figure(figsize=(12, 3))
 plt.subplot(1, 3, 1)
 plt.plot(betas_snr.numpy())
-plt.title(r'$\beta_t$ (SNR-based)')
+plt.title(r'$\beta_t$(SNR-based)')
 plt.subplot(1, 3, 2)
 plt.plot(alpha_bar_snr.numpy())
 plt.title(r'$\bar\alpha_t$')
@@ -575,18 +575,18 @@ plt.show()
 ### 4.4 Log-Linear 调度（与 NCSN 指数调度等价）  <!-- markmap: foldAll -->
 
 #### **定义与公式**  
-- 定义 $\log\sigma_t$ 随 $t$ 线性增长：
-  $$
+- 定义$\log\sigma_t$随$t$线性增长：
+ $$
   \log\sigma_t = \log\sigma_{\min} + \frac{t-1}{T-1}(\log\sigma_{\max} - \log\sigma_{\min})
-  $$
-  即 $\sigma_t = \sigma_{\min} \left(\frac{\sigma_{\max}}{\sigma_{\min}}\right)^{\frac{t-1}{T-1}}$，这实际上与 NCSN 指数调度完全相同。但在连续时间版本中，$\sigma(t) = \exp(a t + b)$，与 SNR 线性调度等价。
+ $$
+  即$\sigma_t = \sigma_{\min} \left(\frac{\sigma_{\max}}{\sigma_{\min}}\right)^{\frac{t-1}{T-1}}$，这实际上与 NCSN 指数调度完全相同。但在连续时间版本中，$\sigma(t) = \exp(a t + b)$，与 SNR 线性调度等价。
 
 #### **设计动机**  
-在 $\log\sigma$ 轴上均匀分布，使网络在噪声强度的对数尺度上学习，这在很多工作中被证明有利于训练。此外，Log-Linear 调度实现简单，仅需两个端点。
+在$\log\sigma$轴上均匀分布，使网络在噪声强度的对数尺度上学习，这在很多工作中被证明有利于训练。此外，Log-Linear 调度实现简单，仅需两个端点。
 
 #### **数学特性**  
 - 与 NCSN 指数调度完全一致，可视为其特例。
-- 信噪比 $\text{SNR}(t) = 1/\sigma_t^2$ 在 $\log$ 轴上线性递减。
+- 信噪比$\text{SNR}(t) = 1/\sigma_t^2$在$\log$轴上线性递减。
 
 #### **代码示例**（与 NCSN 相同，可重用）
 ```python
@@ -597,11 +597,11 @@ plt.show()
 
 #### **定义与公式**  
 - 将调度分为若干段，每段采用不同的函数形式。例如：
-  - 早期（$t\in[0,0.3]$）：线性增长 $\sigma(t)$，保持低噪声水平。
+  - 早期（$t\in[0,0.3]$）：线性增长$\sigma(t)$，保持低噪声水平。
   - 中期（$t\in[0.3,0.7]$）：指数增长，快速提高噪声。
-  - 后期（$t\in[0.7,1]$）：饱和，$\sigma(t)$ 趋近 $\sigma_{\max}$。
+  - 后期（$t\in[0.7,1]$）：饱和，$\sigma(t)$趋近$\sigma_{\max}$。
 
-- 具体形式可根据任务设计，如 $\sigma(t) = \begin{cases} a t & t < t_1 \\ b e^{c t} & t_1 \le t < t_2 \\ \sigma_{\max} & t \ge t_2 \end{cases}$。
+- 具体形式可根据任务设计，如$\sigma(t) = \begin{cases} a t & t < t_1 \\ b e^{c t} & t_1 \le t < t_2 \\ \sigma_{\max} & t \ge t_2 \end{cases}$。
 
 #### **设计动机**  
 为了兼顾不同阶段的特性，例如早期需要精细保留结构，中期需要快速扩散，后期需要稳定到纯噪声。通过分段可以灵活定制，优化特定任务（如图像修复、编辑）的生成路径。
@@ -638,7 +638,7 @@ betas_piece = 1 - alpha_bar_piece / np.concatenate(([1.0], alpha_bar_piece[:-1])
 plt.figure(figsize=(12, 3))
 plt.subplot(1, 3, 1)
 plt.plot(betas_piece)
-plt.title(r'$\beta_t$ (piecewise)')
+plt.title(r'$\beta_t$(piecewise)')
 plt.subplot(1, 3, 2)
 plt.plot(alpha_bar_piece)
 plt.title(r'$\bar\alpha_t$')
@@ -656,13 +656,13 @@ plt.show()
 ### 5.1 连续时间调度  <!-- markmap: foldAll -->
 
 #### **定义**  
-- 将时间 $t$ 视为连续变量（如 $t\in[0,1]$），用函数 $\sigma(t)$ 或 $\bar\alpha(t)$ 定义噪声水平。训练时在 $[0,1]$ 上随机采样 $t$，加噪对应 $\sigma(t)$；采样时可根据需要选择任意步数离散化该函数。
+- 将时间$t$视为连续变量（如$t\in[0,1]$），用函数$\sigma(t)$或$\bar\alpha(t)$定义噪声水平。训练时在$[0,1]$上随机采样$t$，加噪对应$\sigma(t)$；采样时可根据需要选择任意步数离散化该函数。
 
 #### **设计动机**  
 摆脱离散时间步的限制，使模型能够以任意精度采样，并与 ODE/SDE 理论无缝结合。连续时间框架也便于推导高阶求解器，如 DPM-Solver。
 
 #### **数学特性**  
-- 前向过程可写为 SDE：$dx = f(x,t)dt + g(t)dw$，其中 $f,g$ 与 $\sigma(t)$ 或 $\bar\alpha(t)$ 相关。
+- 前向过程可写为 SDE：$dx = f(x,t)dt + g(t)dw$，其中$f,g$与$\sigma(t)$或$\bar\alpha(t)$相关。
 - 逆向过程对应 ODE：$\frac{dx}{dt} = \text{(score function)}$，可使用数值积分求解。
 
 #### **代码示例**
@@ -686,9 +686,9 @@ print(f"t: {t}\nsigma: {sigma}")
 ### 5.2 自适应/数据依赖调度  <!-- markmap: foldAll -->
 
 #### **定义**  
-- 调度参数（如 $\beta_t$ 或 $\sigma_t$）根据数据分布或训练状态动态调整。例如：
+- 调度参数（如$\beta_t$或$\sigma_t$）根据数据分布或训练状态动态调整。例如：
   - 根据当前噪声水平下网络损失的大小，动态调整该水平的采样概率（重要性采样）。
-  - 根据数据集的方差或图像复杂度，调整 $\sigma_{\max}$ 或 $\sigma_{\min}$。
+  - 根据数据集的方差或图像复杂度，调整$\sigma_{\max}$或$\sigma_{\min}$。
   - 在训练过程中逐渐增加噪声范围（调度预热）。
 
 #### **设计动机**
@@ -723,7 +723,7 @@ class AdaptiveSchedule:
 
 ## 六、信噪比（SNR）与调度设计的内在联系  <!-- markmap: foldAll -->
 
-SNR 是衡量信号与噪声相对强度的核心指标。在扩散模型中，SNR 随 $t$ 单调递减。调度设计本质上是在控制 SNR 的衰减曲线。
+SNR 是衡量信号与噪声相对强度的核心指标。在扩散模型中，SNR 随$t$单调递减。调度设计本质上是在控制 SNR 的衰减曲线。
 
 - **VP 参数化下**：$\text{SNR}(t) = \frac{\bar\alpha_t}{1-\bar\alpha_t}$
 - **VE 参数化下**：$\text{SNR}(t) = \frac{1}{\sigma_t^2}$
@@ -767,11 +767,11 @@ def plot_snr_curves():
 
 ## 七、调度与采样器的关系  <!-- markmap: foldAll -->
 
-采样器（如 DDPM、DDIM、DPM-Solver）依赖调度提供的噪声序列（$\sigma_t$ 或 $\bar\alpha_t$）来执行逆向步骤。
+采样器（如 DDPM、DDIM、DPM-Solver）依赖调度提供的噪声序列（$\sigma_t$或$\bar\alpha_t$）来执行逆向步骤。
 
-- **DDPM**：使用完整的 $\beta_t$ 或 $\sigma_t$ 序列，每步添加随机噪声（$\eta>0$）。采样质量高但步数多。
+- **DDPM**：使用完整的$\beta_t$或$\sigma_t$序列，每步添加随机噪声（$\eta>0$）。采样质量高但步数多。
 - **DDIM**：利用确定性去噪，允许跳过中间步，可在调度上任意子采样。采样效率高，但质量受调度连续性影响。
-- **DPM-Solver**：基于 ODE 的高阶求解器，假设 SNR 或 $\sigma(t)$ 满足某些平滑性。与连续时间调度（如 EDM 的 $\sigma(t)=t$）配合最佳。
+- **DPM-Solver**：基于 ODE 的高阶求解器，假设 SNR 或$\sigma(t)$满足某些平滑性。与连续时间调度（如 EDM 的$\sigma(t)=t$）配合最佳。
 - **Heun 等二阶方法**：在 EDM 框架下，配合幂次调度可实现 20–50 步高质量生成。
 
 调度与采样器的匹配：例如，余弦调度配合 DDIM 能显著减少步数；EDM 调度本身设计时已考虑二阶 ODE 求解器。
@@ -796,9 +796,9 @@ print(f"DDIM 使用 {len(sigmas_ddim)-1} 步，σ 范围 {sigmas_ddim[0]:.2f} ->
 
 网络通常需要接受噪声水平作为条件输入。常见做法有：
 
-- **原始时间步 $t$**：嵌入为位置编码（如正弦/余弦），用于 VP 调度。
-- **$\log\sigma$**：直接使用噪声水平的对数，适合 VE 调度。EDM 推荐使用 $\log\sigma$ 作为输入，因为它在训练中对数均匀采样，使网络更易学习。
-- **SNR 或 $\log\text{SNR}$**：在某些工作中直接嵌入信噪比，方便与理论分析对应。
+- **原始时间步$t$**：嵌入为位置编码（如正弦/余弦），用于 VP 调度。
+- **$\log\sigma$**：直接使用噪声水平的对数，适合 VE 调度。EDM 推荐使用$\log\sigma$作为输入，因为它在训练中对数均匀采样，使网络更易学习。
+- **SNR 或$\log\text{SNR}$**：在某些工作中直接嵌入信噪比，方便与理论分析对应。
 
 选择哪种嵌入形式会影响网络对不同噪声水平的泛化能力。
 
@@ -826,10 +826,10 @@ class TimeEmbedding(nn.Module):
 
 ## 九、训练中的噪声分布采样策略  <!-- markmap: foldAll -->
 
-训练时，我们需要从调度中采样 $\sigma_t$（或 $t$）来构造加噪样本。采样策略影响网络在各个噪声水平上的学习均衡性。
+训练时，我们需要从调度中采样$\sigma_t$（或$t$）来构造加噪样本。采样策略影响网络在各个噪声水平上的学习均衡性。
 
-- **均匀采样 $t$**：经典做法，但若 $\sigma_t$ 或 SNR 变化剧烈，会导致某些水平样本过少。
-- **对数均匀采样 $\sigma$**：在 VE 调度中常用，使网络在 $\log\sigma$ 空间均匀分布，避免极端值主导。
+- **均匀采样$t$**：经典做法，但若$\sigma_t$或 SNR 变化剧烈，会导致某些水平样本过少。
+- **对数均匀采样$\sigma$**：在 VE 调度中常用，使网络在$\log\sigma$空间均匀分布，避免极端值主导。
 - **基于 SNR 的均匀采样**：在 SNR 对数域均匀采样，与 VP 结合时相当于让网络在信噪比空间均匀分布。
 
 #### **代码示例（对数均匀采样 σ）**
@@ -853,7 +853,7 @@ plt.show()
 ## 十、条件生成中调度对 CFG 的影响  <!-- markmap: foldAll -->
 
 Classifier-Free Guidance (CFG) 通过在采样时混合条件与无条件预测来增强条件控制。调度影响 CFG 的强度选择：
-- 当 SNR 较高（$\sigma$ 小）时，条件信号容易被淹没，CFG 可能需要更高系数；
+- 当 SNR 较高（$\sigma$小）时，条件信号容易被淹没，CFG 可能需要更高系数；
 - 在噪声水平较低的区域，CFG 可能导致过饱和或 artifacts，因此常对调度末段进行截断或特殊处理。
 
 #### **代码示例（CFG 权重衰减）**
@@ -899,7 +899,7 @@ for epoch in range(100):
 
 ## 十二、v-parameterization 中的调度  <!-- markmap: foldAll -->
 
-v-parameterization（如 ProlificDreamer 中使用）将网络输出改为预测速度 $v = \sqrt{\bar\alpha_t}\,\varepsilon - \sqrt{1-\bar\alpha_t}\,x_0$。此时调度公式需相应调整，但核心仍是 $\bar\alpha_t$ 序列。该参数化常用于高分辨率生成或扩散蒸馏。
+v-parameterization（如 ProlificDreamer 中使用）将网络输出改为预测速度$v = \sqrt{\bar\alpha_t}\,\varepsilon - \sqrt{1-\bar\alpha_t}\,x_0$。此时调度公式需相应调整，但核心仍是$\bar\alpha_t$序列。该参数化常用于高分辨率生成或扩散蒸馏。
 
 #### **代码示例**
 ```python
@@ -952,26 +952,26 @@ def rectified_flow_schedule(t, sigma_max=1.0):
 
 | 类型 | 常见训练采样变量 | 典型做法 |
 |------|------------------|---------|
-| 线性调度（DDPM） | 离散时间步 \(t\)（或离散索引） | 先均匀采样 \(t\in\{1,\dots,T\}\)，再由 \(\beta_t\rightarrow\bar\alpha_t\rightarrow\sigma_t\) 计算噪声强度 |
-| 余弦调度（Improved DDPM） | 离散时间步 \(t\)（或连续 \(u=t/T\)） | 常见是均匀采样 \(t\)；调度本身定义在 \(\bar\alpha_t\) 上 |
-| 平方根/多项式/Sigmoid（VP 变种） | 时间 \(t\)（离散或连续） | 先采样 \(t\)，再由 \(\bar\alpha(t)\) 或 \(\beta(t)\) 得到噪声 |
-| NCSN 指数调度（VE） | \(\log\sigma\)（等价于几何采样 \(\sigma\)） | 在 \([\log\sigma_{\min},\log\sigma_{\max}]\) 上均匀采样 |
-| EDM 调度（VE） | \(\log\sigma\) | 训练通常对数均匀采样 \(\sigma\)，采样阶段再按求解器离散化 \(\sigma\) 路径 |
-| SNR-based 调度 | \(\log\mathrm{SNR}\)（或 \(t\)） | 常将 \(\log\mathrm{SNR}\) 设为线性函数并均匀覆盖，再映射到 \(\bar\alpha\) / \(\sigma\) |
-| Log-Linear 调度 | \(\log\sigma\)（与 NCSN 指数等价） | 在 \(\log\sigma\) 轴均匀采样 |
-| 分段调度（自定义） | 取决于设计（常见为 \(t\)） | 先采样 \(t\)，再按分段函数映射到 \(\sigma(t)\) 或 \(\bar\alpha(t)\) |
-| 学习调度 / 自适应调度 | 基础变量 \(t\) 或 \(\log\sigma\)，外加可学习权重 | 一边采样一边动态调整某些区间的采样概率（重要性采样） |
+| 线性调度（DDPM） | 离散时间步$t$（或离散索引） | 先均匀采样$t\in\{1,\dots,T\}$，再由$\beta_t\rightarrow\bar\alpha_t\rightarrow\sigma_t$计算噪声强度 |
+| 余弦调度（Improved DDPM） | 离散时间步$t$（或连续$u=t/T$） | 常见是均匀采样$t$；调度本身定义在$\bar\alpha_t$上 |
+| 平方根/多项式/Sigmoid（VP 变种） | 时间$t$（离散或连续） | 先采样$t$，再由$\bar\alpha(t)$或$\beta(t)$得到噪声 |
+| NCSN 指数调度（VE） |$\log\sigma$（等价于几何采样$\sigma$） | 在$[\log\sigma_{\min},\log\sigma_{\max}]$上均匀采样 |
+| EDM 调度（VE） |$\log\sigma$| 训练通常对数均匀采样$\sigma$，采样阶段再按求解器离散化$\sigma$路径 |
+| SNR-based 调度 |$\log\mathrm{SNR}$（或$t$） | 常将$\log\mathrm{SNR}$设为线性函数并均匀覆盖，再映射到$\bar\alpha$/$\sigma$|
+| Log-Linear 调度 |$\log\sigma$（与 NCSN 指数等价） | 在$\log\sigma$轴均匀采样 |
+| 分段调度（自定义） | 取决于设计（常见为$t$） | 先采样$t$，再按分段函数映射到$\sigma(t)$或$\bar\alpha(t)$|
+| 学习调度 / 自适应调度 | 基础变量$t$或$\log\sigma$，外加可学习权重 | 一边采样一边动态调整某些区间的采样概率（重要性采样） |
 
 > 经验法则：  
-> - **VP 家族**（\(\beta_t,\bar\alpha_t\)）通常“先采样时间 \(t\)”；  
-> - **VE/EDM 家族**（\(\sigma\)）通常“先采样 \(\log\sigma\)”。
+> - **VP 家族**（$\beta_t,\bar\alpha_t$）通常“先采样时间$t$”；  
+> - **VE/EDM 家族**（$\sigma$）通常“先采样$\log\sigma$”。
 
 ---
 
 ## 十五、总结与趋势
 
 - 噪声调度是扩散模型的“时间轴”，决定了训练与采样的行为。
-- 两种主流参数化 VP 与 VE 通过 $\sigma = \sqrt{1/\bar\alpha - 1}$ 等价，选择取决于实现便利性和社区习惯。
+- 两种主流参数化 VP 与 VE 通过$\sigma = \sqrt{1/\bar\alpha - 1}$等价，选择取决于实现便利性和社区习惯。
 - 经典调度（线性、余弦）简单有效，适合入门和复现；现代调度（EDM、SNR-based）更注重统一性与采样效率。
 - 调度与采样器、时间嵌入、训练采样策略、条件生成等因素紧密耦合，需综合考虑。
 - 未来方向：更精细的自适应调度、与架构联合优化、以及扩展到离散数据的统一调度框架。同时，扩散蒸馏和流匹配等新范式正在重新定义调度的作用。
@@ -997,12 +997,12 @@ def rectified_flow_schedule(t, sigma_max=1.0):
 
 | 名称 | 符号 | 定义 | 与调度关系 |
 |------|------|------|-----------|
-| 噪声方差（VP） | $\beta_t$ | 前向噪声方差 | 基础序列 |
-| 信号保持率 | $\bar\alpha_t$ | $\prod_{s=1}^t (1-\beta_s)$ | 控制信号强度 |
-| 噪声水平（VE） | $\sigma_t$ | $\sqrt{1/\bar\alpha_t - 1}$ | 直接控制加噪 |
-| 信噪比（SNR） | $\text{SNR}_t$ | $\bar\alpha_t/(1-\bar\alpha_t) = 1/\sigma_t^2$ | 核心设计指标 |
-| 时间步（离散） | $t$ | $1,\dots,T$ | 调度索引 |
-| 连续时间 | $s$ 或 $t$ | $0$ 到 $1$ | 连续调度函数参数 |
+| 噪声方差（VP） |$\beta_t$| 前向噪声方差 | 基础序列 |
+| 信号保持率 |$\bar\alpha_t$|$\prod_{s=1}^t (1-\beta_s)$| 控制信号强度 |
+| 噪声水平（VE） |$\sigma_t$|$\sqrt{1/\bar\alpha_t - 1}$| 直接控制加噪 |
+| 信噪比（SNR） |$\text{SNR}_t$|$\bar\alpha_t/(1-\bar\alpha_t) = 1/\sigma_t^2$| 核心设计指标 |
+| 时间步（离散） |$t$|$1,\dots,T$| 调度索引 |
+| 连续时间 |$s$或$t$|$0$到$1$| 连续调度函数参数 |
 
 
 ## 十八、图解
