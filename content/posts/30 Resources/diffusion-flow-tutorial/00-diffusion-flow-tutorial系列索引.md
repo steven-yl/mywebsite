@@ -5,12 +5,13 @@ draft: false
 authors: [Steven]
 description: "diffusion/flow-tutorial系列索引：Obsidian 双链导航。"
 summary: "本目录全部笔记的 wikilink 索引，便于图谱与反向链接浏览。"
-tags: [diffusion/flow-tutorial]
-categories: [diffusion/flow-tutorial]
+tags: [diffusion/flow, tutorial, 索引]
+categories: [diffusion/flow]
 series: [diffusion/flow-tutorial]
 weight: 0
 series_weight: 0
 hiddenFromHomePage: false
+seriesNavigation: false
 hiddenFromSearch: false
 ---
 

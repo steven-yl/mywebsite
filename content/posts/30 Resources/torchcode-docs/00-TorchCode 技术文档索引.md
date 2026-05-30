@@ -12,6 +12,7 @@ series: [TorchCode 系列]
 weight: 0
 series_weight: 0
 hiddenFromHomePage: false
+seriesNavigation: false
 hiddenFromSearch: false
 ---
 

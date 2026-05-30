@@ -5,12 +5,13 @@ draft: false
 authors: [Steven]
 description: "math系列索引：Obsidian 双链导航。"
 summary: "本目录全部笔记的 wikilink 索引，便于图谱与反向链接浏览。"
-tags: [Deep Learning系列]
-categories: [Deep Learning系列]
-series: [Deep Learning系列]
+tags: [math, 索引]
+categories: [math]
+series: []
 weight: 0
 series_weight: 0
 hiddenFromHomePage: false
+seriesNavigation: false
 hiddenFromSearch: false
 ---
 

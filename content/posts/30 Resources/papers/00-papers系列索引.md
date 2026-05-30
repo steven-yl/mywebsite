@@ -11,6 +11,7 @@ series: []
 weight: 0
 series_weight: 0
 hiddenFromHomePage: false
+seriesNavigation: false
 hiddenFromSearch: false
 ---
 
