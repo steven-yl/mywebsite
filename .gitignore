@@ -7,7 +7,22 @@
 /.venv
 /.pydeps
 /scripts
-.obsidian
 .copilot
 .claudian
 .claude
+# 忽略操作系统生成的文件
+.DS_Store
+Thumbs.db
+
+# 忽略 Obsidian 工作区状态文件
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+
+# 忽略特定插件的索引或缓存目录
+.obsidian/plugins/omnisearch/cache/
+.obsidian/plugins/dataview/.data/
+.obsidian/plugins/obsidian-git/data.json
+
+# 忽略其他临时或备份文件
+*.bak
+*.tmp

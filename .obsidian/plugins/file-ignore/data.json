@@ -1,0 +1,31 @@
+{
+  "rules": "node_modules/\ndist/\n.next/\n.cache/\n.DS_Store\npublic\n",
+  "ignoredFiles": [],
+  "debug": false,
+  "rulesHistory": [
+    "node_modules/\ndist/\n.next/\n.cache/\n.DS_Store\npublic\n",
+    "node_modules/\ndist/\n.next/\n.cache/\n.DS_Store\n\n",
+    "node_modules/\ndist/\n.next/\n.cache/\n.DS_Store\n",
+    "node_modules/\ndist/\n.next/\n.cache/\n.DS_Store"
+  ],
+  "lastBatch": {
+    "id": "mprma4h5-show",
+    "action": "show",
+    "createdAt": 1780101179177,
+    "updatedAt": 1780101179183,
+    "rulesText": "node_modules/\ndist/\n.next/\n.cache/\n.DS_Store\npublic\n",
+    "plannedCount": 1,
+    "skippedProtected": 0,
+    "skippedNested": 0,
+    "skippedConflicts": 0,
+    "completed": [
+      {
+        "oldPath": ".public",
+        "newPath": "public",
+        "timestamp": 1780101179180
+      }
+    ],
+    "pending": [],
+    "status": "completed"
+  }
+}
