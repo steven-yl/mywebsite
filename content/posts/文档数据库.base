@@ -35,3 +35,19 @@ views:
       file.name: Filled
     columnSize:
       file.embeds: 72
+  - type: cards
+    name: 视图
+    groupBy:
+      property: file.folder
+      direction: ASC
+    order:
+      - file.name
+      - description
+      - summary
+      - file.tags
+      - categories
+      - series
+    imageAspectRatio: 0.25
+    image: file.file
+    cardSize: 290
+    markers: number

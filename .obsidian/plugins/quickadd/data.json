@@ -4,7 +4,7 @@
   "persistInputPromptDrafts": true,
   "useSelectionAsCaptureValue": true,
   "devMode": false,
-  "templateFolderPath": "",
+  "templateFolderPath": "content/posts/50 Templates",
   "announceUpdates": "major",
   "version": "2.12.3",
   "globalVariables": {},

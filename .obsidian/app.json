@@ -1,3 +1,7 @@
 {
-  "defaultViewMode": "preview"
+  "defaultViewMode": "preview",
+  "focusNewTab": true,
+  "propertiesInDocument": "visible",
+  "foldHeading": true,
+  "showLineNumber": true
 }

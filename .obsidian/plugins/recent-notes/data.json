@@ -1,0 +1,28 @@
+{
+  "maxNotesToShow": 100,
+  "showMarkdownFiles": true,
+  "showImageFiles": true,
+  "showPDFFiles": true,
+  "showAudioFiles": true,
+  "showVideoFiles": true,
+  "showCanvasFiles": true,
+  "showCSVFiles": true,
+  "showBaseFiles": true,
+  "excludedFolders": [
+    "public"
+  ],
+  "excludedFiles": [],
+  "excludedTags": [],
+  "previewLines": 1,
+  "showTime": true,
+  "showFolderName": false,
+  "pinnedNotes": [],
+  "dateFormat": "DD/MM/YYYY",
+  "propertyModified": "",
+  "density": "comfortable",
+  "openInNewTab": "new",
+  "showThumbnail": true,
+  "thumbnailProperty": "image",
+  "thumbnailPosition": "right",
+  "pageStepSize": 2
+}
