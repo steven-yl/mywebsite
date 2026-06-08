@@ -62,6 +62,14 @@ $$
 
 ---
 ### VAE
+$$
+\begin{aligned}
+\log p_{\phi(x)} 
+&= \int q(z|x)\, \log p_\phi(x)\, dz \\
+&= \mathbb{E}_{z \sim q(z|x)} \left[ \log p_\phi(x) \right] \\
+&= \mathbb{E}_{z \sim q(z|x)} \left[\log \frac{p_\phi(x,z)}{p_\phi(z|x)} \right]
+\end{aligned}
+$$
 #### ELBO
 
 ---
