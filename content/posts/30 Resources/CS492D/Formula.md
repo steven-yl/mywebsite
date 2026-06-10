@@ -62,20 +62,20 @@ $$
 
 ---
 ### VAE
-$$
-\begin{aligned}
-\log p_{\phi(x)} 
-&= \int q(z|x)\, \log p_\phi(x)\, dz \\
-&= \mathbb{E}_{z \sim q(z|x)} \left[ \log p_\phi(x) \right] \\
-&= \mathbb{E}_{z \sim q(z|x)} \left[\log \frac{p_\phi(x,z)}{p_\phi(z|x)} \right]
-\end{aligned}
-$$
 #### ELBO
 
 ---
 ### DDPM
 #### VAE2DDPM
-####$u、x_0、\varepsilon_t$
+**特殊设定**：
+马尔可夫分层 VAE 的一个特例：
+- 隐变量维度与数据维度相同
+- 变分后验$q_{\phi}(x_{t+1}|x_t)$不是学习的，而是预定义的：
+ $$
+  q_{\phi}(x_{t+1}|x_t) \rightarrow q(x_{t+1}|x_t)
+ $$
+
+#### $u、x_0、\varepsilon_t$
 #### Connection to Score-Based Models (SMLD)
 
 ---
