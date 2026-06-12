@@ -2,7 +2,7 @@
   "version": 4,
   "homepages": {
     "Main Homepage": {
-      "value": "content/posts/文档数据库.base",
+      "value": "content/posts/HomePage",
       "kind": "File",
       "openOnStartup": true,
       "openMode": "Replace all open notes",

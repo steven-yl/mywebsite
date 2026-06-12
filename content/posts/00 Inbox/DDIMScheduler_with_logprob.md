@@ -7,7 +7,6 @@ authors:
   - Steven
 description: ""
 tags:
-  - draft
 categories:
   - draft
 series:
