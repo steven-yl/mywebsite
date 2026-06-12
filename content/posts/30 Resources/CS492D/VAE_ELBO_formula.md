@@ -6,6 +6,7 @@ draft: false
 authors: [Steven]
 tags: [CS492D]
 categories: [CS492D]
+series: [CS492D系列]
 ---
 
 ## VAE
