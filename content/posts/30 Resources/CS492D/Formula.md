@@ -85,6 +85,7 @@ $$
 ---
 ### Score Distillation
 #### SDS
+#### VSD
 #### SDI
 #### DDS
 #### Instruct-NeRF2NeRF

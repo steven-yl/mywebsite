@@ -221,8 +221,10 @@ p_\theta(x_{t-1}|x_t) = \mathcal{N}\left(\frac{\sqrt{\alpha_t}(1-\bar{\alpha}_{t
 $$
 
 - 选项3：$\varepsilon_t$预测器$\hat{\varepsilon}_\theta(x_t, t)$
+---
 
 ## DDIM 完整推导
+
 $$
 \boxed{
 \begin{aligned}
@@ -264,7 +266,22 @@ $$
 
 **参数求解步骤说明**：  
 - 步骤 (5) 写出 $x_{t-1}$ 关于 $x_0$、$x_t$ 和噪声的表达式。  
-- 步骤 (6) 代入 \(x_t\) 与 \(x_0\) 的关系，将 \(x_{t-1}\) 表示为 \(x_0\) 与两个独立高斯噪声的线性组合。  
+- 步骤 (6) 代入 $x_t$ 与 $x_0$ 的关系，将 $x_{t-1}$ 表示为 $x_0$ 与两个独立高斯噪声的线性组合。  
 - 步骤 (7) 要求条件期望与 DDPM 边际一致，得到均值的两个方程（$\omega_0+\omega_t\sqrt{\bar{\alpha}_t}=\sqrt{\bar{\alpha}_{t-1}}$ 且 $b=0$）。  
 - 步骤 (8) 要求条件方差与 DDPM 边际一致，得到方差方程 $\omega_t^2(1-\bar{\alpha}_t)+\sigma_t^2=1-\bar{\alpha}_{t-1}$。  
 - 步骤 (9)(10) 解出 $\omega_t$ 和 $\omega_0$，代入即得步骤 (11)。
+
+
+## 对比 DDPM 与 DDIM 的核心公式与参数关系表格：
+
+| 项目 | DDPM | DDIM |
+|------|------|------|
+| **后验分布** $ q(x_{t-1} \mid x_t, x_0) $ | $$ \mathcal{N}\left( \frac{\sqrt{\alpha_t}(1-\bar\alpha_{t-1})}{1-\bar\alpha_t}x_t + \frac{\sqrt{\bar\alpha_{t-1}}\beta_t}{1-\bar\alpha_t}x_0,\; \frac{1-\bar\alpha_{t-1}}{1-\bar\alpha_t}\beta_t \mathbf{I} \right) $$ | $$ \mathcal{N}\left( \sqrt{\bar\alpha_{t-1}}x_0 + \sqrt{1-\bar\alpha_{t-1}-\sigma_t^2}\cdot\frac{x_t-\sqrt{\bar\alpha_t}x_0}{\sqrt{1-\bar\alpha_t}},\; \sigma_t^2\mathbf{I} \right) $$ |
+| **采样步骤**（每步） | 1. $ x_{0\mid t} = \frac{1}{\sqrt{\alpha_t}}(x_t - \sqrt{1-\bar\alpha_t}\,\hat\epsilon_\theta(x_t,t)) $ <br> 2. $ \tilde\mu = \frac{\sqrt{\alpha_t}(1-\bar\alpha_{t-1})}{1-\bar\alpha_t}x_t + \frac{\sqrt{\bar\alpha_{t-1}}\beta_t}{1-\bar\alpha_t}x_{0\mid t} $ <br> 3. 采样 $ z_t \sim \mathcal{N}(0,\mathbf{I}) $ <br> 4. $ x_{t-1} = \tilde\mu + \sqrt{\frac{1-\bar\alpha_{t-1}}{1-\bar\alpha_t}\beta_t}\;z_t $ | 1. $ x_{0\mid t} = \frac{1}{\sqrt{\bar\alpha_t}}(x_t - \sqrt{1-\bar\alpha_t}\,\hat\epsilon_\theta(x_t,t)) $ <br> 2. $ \tilde\mu = \sqrt{\bar\alpha_{t-1}}x_{0\mid t} + \sqrt{1-\bar\alpha_{t-1}-\sigma_t^2}\cdot\frac{x_t-\sqrt{\bar\alpha_t}x_{0\mid t}}{\sqrt{1-\bar\alpha_t}} $ <br> 3. 采样 $ z_t \sim \mathcal{N}(0,\mathbf{I}) $ <br> 4. $ x_{t-1} = \tilde\mu + \sigma_t z_t $ |
+| **基于 $\epsilon_t$ 的等价形式**（后验均值） | $$ \tilde\mu = \frac{1}{\sqrt{\alpha_t}}\left(x_t - \frac{1-\alpha_t}{\sqrt{1-\bar\alpha_t}}\hat\epsilon_\theta(x_t,t)\right) $$ | $$ \tilde\mu = \sqrt{\bar\alpha_{t-1}}\left(\frac{x_t - \sqrt{1-\bar\alpha_t}\,\hat\epsilon_\theta}{\sqrt{\bar\alpha_t}}\right) + \sqrt{1-\bar\alpha_{t-1}-\sigma_t^2}\;\hat\epsilon_\theta $$ |
+| **方差项**（随机性） | $$ \frac{1-\bar\alpha_{t-1}}{1-\bar\alpha_t}\beta_t $$ | $ \sigma_t^2 $（可调） |
+| **DDPM 作为特例** | — | 当 $ \sigma_t^2 = \frac{1-\bar\alpha_{t-1}}{1-\bar\alpha_t}\beta_t $ 时，DDIM 退化为 DDPM |
+| **随机性控制参数 $\eta$** | $ \eta = 1 $（固定） | $ \sigma_t = \eta \sqrt{\frac{1-\bar\alpha_{t-1}}{1-\bar\alpha_t}\beta_t} $ <br> • $ \eta = 0 $：确定性过程 <br> • $ \eta = 1 $：等价于 DDPM |
+| **$\sigma_t$ 最大值** | — | 由 $ 1-\bar\alpha_{t-1}-\sigma_t^2 \ge 0 $ 得 $ \sigma_t^{\max} = \sqrt{1-\bar\alpha_{t-1}} $ |
+
+> 注：表格中 $ \bar\alpha_t = \prod_{i=1}^t \alpha_i $，$ \beta_t = 1-\alpha_t $，$ \hat\epsilon_\theta(x_t,t) $ 为噪声预测网络。
