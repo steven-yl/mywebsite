@@ -3,7 +3,7 @@ title: World Model（世界模型）深度研究报告
 date: 2026-06-28
 tags: [robots, papers, research]
 categories: [robots, papers, research]
-series: [robots系列, 研究报告]
+series: [robots系列, 研究报告系列]
 weight: 50
 series_weight: 50
 draft: false

@@ -6,7 +6,7 @@ description: 离散余弦变换（DCT）深度技术研究报告
 summary: 离散余弦变换（DCT）深度技术研究报告
 tags: [DCT, research, Discrete Cosine Transform]
 categories: [研究报告]
-series: [研究报告, DCT系列]
+series: [研究报告系列, DCT系列]
 weight: 0
 series_weight: 0
 hiddenFromHomePage: false
