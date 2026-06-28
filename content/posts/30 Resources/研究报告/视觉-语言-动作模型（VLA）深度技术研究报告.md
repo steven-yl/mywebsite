@@ -1,5 +1,5 @@
 ---
-title: VLA模型深度研究报告
+title: VLA模型深度技术研究报告
 date: 2026-06-28
 tags: [robots, papers, research]
 categories: [robots, papers, research]
