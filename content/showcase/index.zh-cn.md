@@ -13,10 +13,15 @@ draft: false
 {{< showcase "An Introduction to Flow Matching and Diffusion Models" "Flow Matching 与 diffusion原理解析" "/mywebsite/posts/images/an-introduction-to-flow-matching-and-diffusion-models.webp" "../an-introduction-to-flow-matching-and-diffusion-models/" >}}
 
 ---
-## 引用
+## 外部资源导航
+- [Paper Notes](https://zhaoyang97.github.io/Paper-Notes) — 23000+ 篇 AI 顶会论文解读，每篇约 5 分钟读懂核心思想
+- [The Principles of Diffusion Models](https://the-principles-of-diffusion-models.github.io) — MIT Press 扩散模型专著官网
+- [Embodied AI Learning](https://zhuyun97.github.io/embodied-ai-learning/vla/papers/pi05) — 视觉语言 Agent 学习笔记
 
-- <iframe src="https://zhaoyang97.github.io/Paper-Notes/" width="100%" height="300px" frameborder="0" style="border:0; min-height:100px;" allowfullscreen></iframe>
 
-- <iframe src="https://iclr-blogposts.github.io/2026/blog/" width="100%" height="300px" frameborder="0" style="border:0; min-height:100px;" allowfullscreen></iframe>
 
-- <iframe src="https://the-principles-of-diffusion-models.github.io/" width="100%" height="300px" frameborder="0" style="border:0; min-height:100px;" allowfullscreen></iframe>
+## 临时
+- [[content/posts/00 Inbox/待读链接]]
+- [[content/posts/00 Inbox/待读链接整理]]
+- [[content/posts/00 Inbox/question]]
+- [[content/posts/00 Inbox/temp]]
