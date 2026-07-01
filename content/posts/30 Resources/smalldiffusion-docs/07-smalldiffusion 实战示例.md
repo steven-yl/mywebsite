@@ -5,7 +5,7 @@ draft: false
 authors: [Steven]
 description: "smalldiffusion 实战示例"
 tags: [diffusion/flow, smalldiffusion]
-categories: [diffusion/flow, smalldiffusion]
+categories: [diffusion/flow, docs smalldiffusion]
 series: [smalldiffusion系列]
 weight: 7
 hiddenFromHomePage: false

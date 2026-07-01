@@ -6,7 +6,7 @@ authors: [Steven]
 description: "Analytic Diffusion Studio — 技术文档索引：Obsidian 双链导航。"
 summary: "本目录全部笔记的 wikilink 索引，便于图谱与反向链接浏览。"
 tags: [diffusion/flow, Analytic Diffusion Studio]
-categories: [diffusion/flow, Analytic Diffusion Studio]
+categories: [diffusion/flow, docs Analytic Diffusion Studio]
 series: [Analytic Diffusion Studio系列]
 weight: 0
 series_weight: 0

@@ -5,7 +5,7 @@ draft: false
 authors: [Steven]
 description: "Analytic Diffusion Studio — 基线 UNet 模型"
 tags: [diffusion/flow, Analytic Diffusion Studio]
-categories: [diffusion/flow, Analytic Diffusion Studio]
+categories: [diffusion/flow, docs Analytic Diffusion Studio]
 series: [Analytic Diffusion Studio系列]
 weight: 11
 hiddenFromHomePage: false

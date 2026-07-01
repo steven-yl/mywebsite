@@ -7,7 +7,7 @@ draft: false
 authors: [Steven]
 description: ""
 tags: [CS492D]
-categories: [CS492D]
+categories: [docs CS492D]
 series: [CS492D系列]
 ---
 

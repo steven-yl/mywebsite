@@ -5,7 +5,7 @@ draft: false
 authors: [Steven]
 description: "smalldiffusion 模型基础：model.py"
 tags: [diffusion/flow, smalldiffusion]
-categories: [diffusion/flow, smalldiffusion]
+categories: [diffusion/flow, docs smalldiffusion]
 series: [smalldiffusion系列]
 weight: 4
 hiddenFromHomePage: false

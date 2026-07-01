@@ -5,7 +5,7 @@ draft: false
 authors: [Steven]
 description: "Analytic Diffusion Studio — 配置系统"
 tags: [diffusion/flow, Analytic Diffusion Studio]
-categories: [diffusion/flow, Analytic Diffusion Studio]
+categories: [diffusion/flow, docs Analytic Diffusion Studio]
 series: [Analytic Diffusion Studio系列]
 weight: 3
 hiddenFromHomePage: false

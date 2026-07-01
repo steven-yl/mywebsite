@@ -7,7 +7,7 @@ description: "LayerNorm、BatchNorm、RMSNorm 的数学定义、训练/推理差
 summary: "TorchCode 文档第二章：归一化技术全解。"
 
 tags: [PyTorch, TorchCode]
-categories: [PyTorch]
+categories: [PyTorch, docs TorchCode]
 series: [TorchCode 系列]
 weight: 3
 series_weight: 3

@@ -5,7 +5,7 @@ draft: false
 authors: [Steven]
 description: "smalldiffusion 核心模块：diffusion.py"
 tags: [diffusion/flow, smalldiffusion]
-categories: [diffusion/flow, smalldiffusion]
+categories: [diffusion/flow, docs smalldiffusion]
 series: [smalldiffusion系列]
 weight: 2
 hiddenFromHomePage: false

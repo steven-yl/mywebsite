@@ -5,7 +5,7 @@ date: 2026-06-10T12:22:25+08:00
 draft: false
 authors: [Steven]
 tags: [CS492D]
-categories: [CS492D]
+categories: [docs CS492D]
 series: [CS492D系列]
 ---
 

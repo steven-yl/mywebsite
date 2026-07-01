@@ -5,7 +5,7 @@ draft: false
 authors: [Steven]
 description: "Analytic Diffusion Studio — 扩散模型理论基础"
 tags: [diffusion/flow, Analytic Diffusion Studio]
-categories: [diffusion/flow, Analytic Diffusion Studio]
+categories: [diffusion/flow, docs Analytic Diffusion Studio]
 series: [Analytic Diffusion Studio系列]
 weight: 2
 hiddenFromHomePage: false

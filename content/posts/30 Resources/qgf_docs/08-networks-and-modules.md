@@ -7,7 +7,7 @@ draft: false
 authors: [Steven]
 description: ""
 tags: [diffusion/flow, qgf]
-categories: [qgf]
+categories: [docs qgf]
 series: [qgf-docs]
 weight: 0
 series_weight: 0

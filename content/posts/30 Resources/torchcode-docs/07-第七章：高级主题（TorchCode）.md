@@ -7,7 +7,7 @@ description: "BPE、INT8 量化、DPO/GRPO/PPO 等对齐与工程向主题的实
 summary: "TorchCode 文档第七章：分词、量化与 RLHF 损失。"
 
 tags: [PyTorch, TorchCode]
-categories: [PyTorch]
+categories: [PyTorch, docs TorchCode]
 series: [TorchCode 系列]
 weight: 8
 series_weight: 8

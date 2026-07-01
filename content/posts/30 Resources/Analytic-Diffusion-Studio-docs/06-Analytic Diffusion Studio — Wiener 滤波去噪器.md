@@ -5,7 +5,7 @@ draft: false
 authors: [Steven]
 description: "Analytic Diffusion Studio — Wiener 滤波去噪器"
 tags: [diffusion/flow, Analytic Diffusion Studio]
-categories: [diffusion/flow, Analytic Diffusion Studio]
+categories: [diffusion/flow, docs Analytic Diffusion Studio]
 series: [Analytic Diffusion Studio系列]
 weight: 6
 hiddenFromHomePage: false

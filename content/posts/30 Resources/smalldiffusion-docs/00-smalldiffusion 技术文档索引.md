@@ -5,7 +5,7 @@ draft: false
 authors: [Steven]
 description: "smalldiffusion 技术文档索引"
 tags: [diffusion/flow, smalldiffusion]
-categories: [diffusion/flow, smalldiffusion]
+categories: [diffusion/flow, docs smalldiffusion]
 series: [smalldiffusion系列]
 weight: 0
 series_weight: 0

@@ -5,7 +5,7 @@ draft: false
 authors: [Steven]
 description: "Analytic Diffusion Studio — 最优贝叶斯去噪器"
 tags: [diffusion/flow, Analytic Diffusion Studio]
-categories: [diffusion/flow, Analytic Diffusion Studio]
+categories: [diffusion/flow, docs Analytic Diffusion Studio]
 series: [Analytic Diffusion Studio系列]
 weight: 7
 hiddenFromHomePage: false
