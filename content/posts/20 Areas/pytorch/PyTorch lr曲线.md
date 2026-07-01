@@ -201,6 +201,6 @@ print(f'Plotted {len(curves)} LR schedulers')
 
 ```
 
-![lr Functions](/mywebsite/posts/70 Attachments/images/lr.png)
-![lr Category](/mywebsite/posts/70 Attachments/images/lr_category.png)
-![All lr](/mywebsite/posts/70 Attachments/images/lr_all.png)
+![lr Functions](/mywebsite/posts/70_Attachments/images/lr.png)
+![lr Category](/mywebsite/posts/70_Attachments/images/lr_category.png)
+![All lr](/mywebsite/posts/70_Attachments/images/lr_all.png)

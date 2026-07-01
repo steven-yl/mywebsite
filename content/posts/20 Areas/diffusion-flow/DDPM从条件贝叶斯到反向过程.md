@@ -17,7 +17,7 @@ hiddenFromHomePage: false
 hiddenFromSearch: false
 
 featuredImage: ""
-featuredImagePreview: "/mywebsite/posts/70 Attachments/images/ddpm从条件贝叶斯到反向过程.webp"
+featuredImagePreview: "/mywebsite/posts/70_Attachments/images/ddpm从条件贝叶斯到反向过程.webp"
 ---
 
 

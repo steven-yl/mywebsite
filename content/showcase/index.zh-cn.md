@@ -21,7 +21,7 @@ draft: false
 
 
 ## 临时
-- [[content/posts/00 Inbox/待读链接]]
-- [[content/posts/00 Inbox/待读链接整理]]
-- [[content/posts/00 Inbox/question]]
-- [[content/posts/00 Inbox/temp]]
+- [待读链接](../待读链接/)
+- [待读链接整理](../待读链接整理/)
+- [question](../question/)
+- [temp](../temp/)

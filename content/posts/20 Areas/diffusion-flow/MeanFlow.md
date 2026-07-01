@@ -16,7 +16,7 @@ series_weight: 4
 hiddenFromHomePage: false
 hiddenFromSearch: false
 featuredImage: ""
-featuredImagePreview: "/mywebsite/posts/70 Attachments/images/meanflow.webp"
+featuredImagePreview: "/mywebsite/posts/70_Attachments/images/meanflow.webp"
 
 ---
 MeanFlow 算法完整技术文档（原理+数学推导+训练推理+工程代码）

@@ -16,7 +16,7 @@ series_weight: 0
 hiddenFromHomePage: false
 hiddenFromSearch: false
 featuredImage: ""
-featuredImagePreview: "/mywebsite/posts/70 Attachments/images/flow-matching-guide-and-code.webp"
+featuredImagePreview: "/mywebsite/posts/70_Attachments/images/flow-matching-guide-and-code.webp"
 
 summary: "《Flow Matching Guide and Code》全文技术解读：从流模型数学基础与欧氏空间 FM（概率路径、速度场、条件流匹配、线性/仿射条件流），到黎曼流形、离散 FM 与 Generator Matching 统一框架，并阐明与扩散模型、去噪分数匹配的关系。"
 ---

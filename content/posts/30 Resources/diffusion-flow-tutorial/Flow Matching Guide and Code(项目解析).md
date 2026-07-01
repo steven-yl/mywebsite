@@ -17,7 +17,7 @@ hiddenFromHomePage: false
 hiddenFromSearch: false
 
 featuredImage: ""
-featuredImagePreview: "/mywebsite/posts/70 Attachments/images/flow-matching-guide-and-code-项目解析.webp"
+featuredImagePreview: "/mywebsite/posts/70_Attachments/images/flow-matching-guide-and-code-项目解析.webp"
 
 summary: "Meta flow_matching 库与论文《Flow Matching Guide and Code》(arXiv:2412.06264) 的技术解析：项目结构、三种范式（连续/离散/黎曼 Flow Matching）、概率路径与调度器、损失与求解器、流形与测地线实现，以及 2D/图像/文本示例、训练后调度器变换与 log 似然计算等使用指南。"
 ---

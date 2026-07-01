@@ -16,7 +16,7 @@ series_weight: 5
 hiddenFromHomePage: false
 hiddenFromSearch: false
 featuredImage: ""
-featuredImagePreview: "/mywebsite/posts/70 Attachments/images/consistency-model.webp"
+featuredImagePreview: "/mywebsite/posts/70_Attachments/images/consistency-model.webp"
 ---
 
 Consistency Model 技术文档（原理 + 自洽性 + 蒸馏/直接训练 + 采样 + 对比）

@@ -211,9 +211,9 @@ plt.show()
 ---
 
 ## 2、激活函数可视化
-![Activation Functions](/mywebsite/posts/70 Attachments/images/activation_functions.png)
-![Activation Functions Category](/mywebsite/posts/70 Attachments/images/activation_functions_category.png)
-![All Activation Functions](/mywebsite/posts/70 Attachments/images/activation_functions_all.png)
+![Activation Functions](/mywebsite/posts/70_Attachments/images/activation_functions.png)
+![Activation Functions Category](/mywebsite/posts/70_Attachments/images/activation_functions_category.png)
+![All Activation Functions](/mywebsite/posts/70_Attachments/images/activation_functions_all.png)
 
 
 ---

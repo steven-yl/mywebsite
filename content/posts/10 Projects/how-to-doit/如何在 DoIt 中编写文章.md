@@ -16,7 +16,7 @@ hiddenFromHomePage: false
 hiddenFromSearch: false
 
 featuredImage: ""
-featuredImagePreview: "/mywebsite/posts/70 Attachments/images/how-to-doit.webp"
+featuredImagePreview: "/mywebsite/posts/70_Attachments/images/how-to-doit.webp"
 
 summary: "指导在 content/posts 中新增与编写文档，说明 front matter 各字段含义、编写规范，以及与 content 下各目录的兼容关系。"
 

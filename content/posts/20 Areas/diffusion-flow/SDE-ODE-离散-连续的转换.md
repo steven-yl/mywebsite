@@ -17,7 +17,7 @@ hiddenFromHomePage: false
 hiddenFromSearch: false
 
 featuredImage: ""
-featuredImagePreview: "/mywebsite/posts/70 Attachments/images/sde-ode-离散-连续的转换.webp"
+featuredImagePreview: "/mywebsite/posts/70_Attachments/images/sde-ode-离散-连续的转换.webp"
 ---
 
 

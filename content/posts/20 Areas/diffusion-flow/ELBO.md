@@ -17,7 +17,7 @@ hiddenFromHomePage: false
 hiddenFromSearch: false
 
 featuredImage: ""
-featuredImagePreview: "/mywebsite/posts/70 Attachments/images/elbo.webp"
+featuredImagePreview: "/mywebsite/posts/70_Attachments/images/elbo.webp"
 ---
 
 

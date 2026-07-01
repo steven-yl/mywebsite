@@ -17,7 +17,7 @@ hiddenFromHomePage: false
 hiddenFromSearch: false
 
 featuredImage: ""
-featuredImagePreview: "/mywebsite/posts/70 Attachments/images/an-introduction-to-flow-matching-and-diffusion-models.webp"
+featuredImagePreview: "/mywebsite/posts/70_Attachments/images/an-introduction-to-flow-matching-and-diffusion-models.webp"
 
 summary: "《An Introduction to Flow Matching and Diffusion Models》全文技术解读：从生成即采样与 ODE/SDE 基础出发，系统介绍流模型与扩散模型、连续性方程与福克-普朗克方程、流匹配与得分匹配训练目标及其与 DDPM 的对应，并涵盖条件生成、无分类器引导（CFG）与 U-Net/DiT 等架构。"
 ---

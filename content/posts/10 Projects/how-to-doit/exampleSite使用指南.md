@@ -15,7 +15,7 @@ hiddenFromHomePage: false
 hiddenFromSearch: false
 
 featuredImage: ""
-featuredImagePreview: "/mywebsite/posts/70 Attachments/images/examplesite-usage-guide.webp"
+featuredImagePreview: "/mywebsite/posts/70_Attachments/images/examplesite-usage-guide.webp"
 
 summary: "themes/DoIt/exampleSite 下各文件/目录的作用及如何在自己的站点中使用。"
 ---
