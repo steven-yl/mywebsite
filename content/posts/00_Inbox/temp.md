@@ -17,3 +17,5 @@
 ### 系统与硬件
 - **边缘计算**：NVIDIA Jetson、华为昇腾、CUDA编程
 - **工程工具**：Git、Docker、CI/CD
+
+https://mp.weixin.qq.com/s/lqibxf6qMz6OqZww1jl7Mw
