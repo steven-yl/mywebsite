@@ -59,33 +59,48 @@ user/MIT_Controller/Controllers/convexMPC/
 
 ## 3. 状态与控制
 
-### 3.1 13 维状态 \(\mathbf{x}\)
+### 3.1 13 维状态 $\mathbf{x}$
 
 | 索引 | 分量 |
 |------|------|
 | 0-2 | roll, pitch, yaw |
-| 3-5 | 位置 \(p_x, p_y, p_z\) |
-| 6-8 | 角速度 \(\omega_x, \omega_y, \omega_z\) |
-| 9-11 | 线速度 \(v_x, v_y, v_z\) |
+| 3-5 | 位置 $p_x, p_y, p_z$ |
+| 6-8 | 角速度 $\omega_x, \omega_y, \omega_z$ |
+| 9-11 | 线速度 $v_x, v_y, v_z$ |
 | 12 | 重力常数项（固定 -9.81 技巧） |
 
-### 3.2 12 维控制 \(\mathbf{u}\)
+### 3.2 12 维控制 $\mathbf{u}$
 
-4 足 × 3D 力 \([f_{FR}, f_{FL}, f_{RR}, f_{RL}]\)，每足 \(f \in \mathbb{R}^3\)
+4 足 × 3D 力 $[f_{FR}, f_{FL}, f_{RR}, f_{RL}]$，每足 $f \in \mathbb{R}^3$
 
 ### 3.3 连续时间线性化 `ct_ss_mats`
 
-```cpp
-void ct_ss_mats(Matrix<fpt,3,3> I_world, fpt m, Matrix<fpt,3,4> r_feet,
-                Matrix<fpt,3,3> R_yaw, Matrix<fpt,13,13>& A, Matrix<fpt,13,12>& B);
-```
+`ct_ss_mats(I_world, m, r_feet, R_yaw, A, B, x_drag)` 构建 $\dot{\mathbf{x}} = \mathbf{A}_c\mathbf{x} + \mathbf{B}_c\mathbf{u}$。
 
-- \(I_world\)：世界系惯性张量  
-- \(r_feet\)：足端相对质心位置（3×4）  
-- \(R_yaw\)：仅 yaw 旋转（解耦水平动力学）  
-- 输出 \( \dot{x} = A x + B u \)
+**$\mathbf{A}_c$ 非零元素**（13×13）：
 
-**物理含义**：\(\dot{v} = \sum f_i / m + g\)，\(\dot{\omega} = I^{-1} \sum r_i \times f_i\)
+| 行 | 列 | 值 | 含义 |
+|----|----|-----|------|
+| 0–2 | 6–8 | $R_{yaw}^T$ | RPY ← body 角速度 |
+| 3–5 | 9–11 | $\mathbf{I}_3$ | 位置 ← 速度 |
+| 11 | 9 | $x_{drag}$ | 水平阻尼 |
+| 11 | 12 | 1 | $\dot{v}_z = g$ |
+
+**$\mathbf{B}_c$ 对第 $i$ 足**（列 $3i:3i+2$）：
+
+$$
+\mathbf{B}_c(6:8,\ 3i:3i+2) = \mathbf{I}_w^{-1}[\mathbf{r}_i]_\times, \qquad
+\mathbf{B}_c(9:11,\ 3i:3i+2) = \frac{1}{m}\mathbf{I}_3
+$$
+
+**物理含义**：
+
+$$
+\dot{\boldsymbol{\omega}} = \mathbf{I}_w^{-1}\sum_i \mathbf{r}_i \times \mathbf{f}_i, \qquad
+\dot{\mathbf{v}} = \frac{1}{m}\sum_i \mathbf{f}_i + \mathbf{g}
+$$
+
+完整矩阵结构见 [13-algorithms-and-formulas.md §5.2](./13-algorithms-and-formulas.md#52-连续时间状态空间)。
 
 ---
 
@@ -93,15 +108,15 @@ void ct_ss_mats(Matrix<fpt,3,3> I_world, fpt m, Matrix<fpt,3,4> r_feet,
 
 使用矩阵指数（零阶保持）：
 
-\[
+$$
 \exp\left(\begin{bmatrix} A_c & B_c \\ 0 & 0 \end{bmatrix} \Delta t\right) \rightarrow A_d, B_d
-\]
+$$
 
-堆叠 horizon \(N\) 步：
+堆叠 horizon $N$ 步：
 
-\[
+$$
 X = A_{qp} x_0 + B_{qp} U
-\]
+$$
 
 `c2qp(Ac, Bc, dt, horizon)` 填充 `A_qp`, `B_qp`（最大 horizon 19）。
 
@@ -111,22 +126,44 @@ X = A_{qp} x_0 + B_{qp} U
 
 ### 5.1 代价
 
-\[
-\min_U \ (X - X_d)^T Q (X - X_d) + \alpha \|U\|^2
-\]
+堆叠预测 $\mathbf{X} = \mathbf{A}_{qp}\mathbf{x}_0 + \mathbf{B}_{qp}\mathbf{U}$，QP 标准形式：
 
-- \(X_d\)：来自 `DesiredStateCommand::stateTrajDes`  
-- \(Q\)：12/13 维权重（`MIT_UserParameters`）  
-- \(\alpha\)：控制正则 `cmpc_alpha`
+$$
+\min_{\mathbf{U}} \ (\mathbf{A}_{qp}\mathbf{x}_0 + \mathbf{B}_{qp}\mathbf{U} - \mathbf{X}_d)^T \mathbf{S} (\mathbf{A}_{qp}\mathbf{x}_0 + \mathbf{B}_{qp}\mathbf{U} - \mathbf{X}_d) + \alpha \|\mathbf{U}\|^2
+$$
+
+化为 $\min \frac{1}{2}\mathbf{U}^T\mathbf{H}\mathbf{U} + \mathbf{g}^T\mathbf{U}$（`SolverMPC.cpp`）：
+
+$$
+\mathbf{H} = 2(\mathbf{B}_{qp}^T\mathbf{S}\mathbf{B}_{qp} + \alpha\mathbf{I}), \quad
+\mathbf{g} = 2\mathbf{B}_{qp}^T\mathbf{S}(\mathbf{A}_{qp}\mathbf{x}_0 - \mathbf{X}_d)
+$$
+
+- $\mathbf{X}_d$：来自 `DesiredStateCommand::stateTrajDes`  
+- $\mathbf{S}$：13 维权重对角块重复 $N$ 次（`MIT_UserParameters`）  
+- $\alpha$：控制正则 `cmpc_alpha`
 
 ### 5.2 约束
 
+**摩擦金字塔**（每足 5 行线性不等式，近似 $\mu$-摩擦锥）：
+
+$$
+\begin{bmatrix}
+\mu & 0 & 1 \\
+-\mu & 0 & 1 \\
+0 & \mu & 1 \\
+0 & -\mu & 1 \\
+0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix} f_x \\ f_y \\ f_z \end{bmatrix} \ge \mathbf{0}, \quad 0 \le f_z \le f_{max} \cdot \text{gait}_{contact}
+$$
+
 | 约束 | 说明 |
 |------|------|
-| 摩擦锥 | \(\|f_{xy}\| \le \mu f_z\)，\(f_z \ge 0\) |
-| 力上限 | \(\|f\| \le f_{max}\) |
-| 接触 | 摆动相对应力为 0（via `gait` table） |
-| 初始状态 | \(x_0\) 固定为当前估计 |
+| 摩擦锥 | 上式金字塔近似 $\|f_{xy}\| \le \mu f_z$ |
+| 力上限 | $f_z \le f_{max}$（gait=1 时） |
+| 接触 | 摆动腿 gait=0 → $f_z$ 上界 0，变量消元强制 $\mathbf{f}_i=\mathbf{0}$ |
+| 初始状态 | $x_0$ 固定为当前估计 |
 
 ### 5.3 求解器
 
@@ -335,4 +372,5 @@ cd build
 ---
 
 上一章：[03-state-estimation.md](./03-state-estimation.md)  
-下一章：[05-vision-mpc-and-sparse-cmpc.md](./05-vision-mpc-and-sparse-cmpc.md)
+下一章：[05-vision-mpc-and-sparse-cmpc.md](./05-vision-mpc-and-sparse-cmpc.md)  
+算法公式：[13-algorithms-and-formulas.md §5](./13-algorithms-and-formulas.md#5-convex-mpc--质心模型预测控制)

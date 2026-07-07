@@ -43,10 +43,10 @@ featuredImagePreview: ""
 
 ### 2.2 关键概念
 
-**空间运动向量** \(\hat{v} = [ \omega^T,\ v^T ]^T\)（角速度在前）  
-**空间力向量** \(\hat{f} = [ \tau^T,\ f^T ]^T\)
+**空间运动向量** $\hat{v} = [ \omega^T,\ v^T ]^T$（角速度在前）  
+**空间力向量** $\hat{f} = [ \tau^T,\ f^T ]^T$
 
-**空间变换** \(X\)：将向量从坐标系 A 变换到 B。
+**空间变换** $X$：将向量从坐标系 A 变换到 B。
 
 ### 2.3 函数完整说明
 
@@ -80,16 +80,16 @@ featuredImagePreview: ""
 
 ### 3.2 公式
 
-给定质量 \(m\)、质心位置 \(\mathbf{c}\)（相对连杆原点）、关于质心的惯性张量 \(\mathbf{I}_c\)：
+给定质量 $m$、质心位置 $\mathbf{c}$（相对连杆原点）、关于质心的惯性张量 $\mathbf{I}_c$：
 
-\[
+$$
 \mathcal{I} = \begin{bmatrix}
 \mathbf{I}_c + m[\mathbf{c}]_\times[\mathbf{c}]_\times^T & m[\mathbf{c}]_\times \\
 m[\mathbf{c}]_\times^T & m\mathbf{I}
 \end{bmatrix}
-\]
+$$
 
-其中 \([\mathbf{c}]_\times\) 为反对称矩阵（`ori::crossMatrix`）。
+其中 $[\mathbf{c}]_\times$ 为反对称矩阵（`ori::crossMatrix`）。
 
 ### 3.3 类方法
 
@@ -141,7 +141,7 @@ m[\mathbf{c}]_\times^T & m\mathbf{I}
 | `forwardKinematics()` | 递归 FK |
 | `biasAccelerations()` | 偏置加速度 |
 | `forwardAccelerationKinematics()` | 加速度 FK |
-| `contactJacobians()` | 接触点 Jacobian \(J_c\) |
+| `contactJacobians()` | 接触点 Jacobian $J_c$ |
 | `getPosition(link_idx, local_pos?)` | 连杆/点位置 |
 | `getOrientation(link_idx)` | 连杆姿态 |
 | `getLinearVelocity(link_idx, point?)` | 线速度 |
@@ -152,22 +152,28 @@ m[\mathbf{c}]_\times^T & m\mathbf{I}
 
 | 方法 | 算法 | 说明 |
 |------|------|------|
-| `generalizedGravityForce()` | — | \(G(q)\) |
-| `generalizedCoriolisForce()` | — | \(C(q,\dot{q})\) |
-| `massMatrix()` | CRBA | \(H(q)\) |
-| `inverseDynamics(dState)` | RNEA | 给定 \(\ddot{q}\) 求 \(\tau\) |
-| `runABA(tau, dstate)` | ABA | 给定 \(\tau\) 求 \(\ddot{q}\) |
+| `generalizedGravityForce()` | — | $G(q)$ |
+| `generalizedCoriolisForce()` | — | $C(q,\dot{q})$ |
+| `massMatrix()` | CRBA | $H(q)$ |
+| `inverseDynamics(dState)` | RNEA | 给定 $\ddot{q}$ 求 $\tau$ |
+| `runABA(tau, dstate)` | ABA | 给定 $\tau$ 求 $\ddot{q}$ |
 | `getMassMatrix()` / `getGravityForce()` / `getCoriolisForce()` | 缓存访问 | 避免重复计算 |
+
+**RNEA（逆动力学）**：给定 $\ddot{q}$，自叶至根递推求 $\tau = H\ddot{q} + C\dot{q} + G$。
+
+**ABA（前向动力学）**：给定 $\tau$，自根至叶递推求 $\ddot{q} = H^{-1}(\tau - C\dot{q} - G + J_c^T F_{ext})$。
+
+两者均为 Featherstone 空间向量 $O(n)$ 算法，详见 [13-algorithms-and-formulas.md §2](./13-algorithms-and-formulas.md#2-浮基动力学)。
 
 ### 4.5 接触与测试力
 
 | 方法 | 说明 |
 |------|------|
-| `invContactInertia(gc_index, force_directions)` | 接触逆惯性 \(\Lambda\) |
-| `applyTestForce(gc_index, force, dstate_out)` | 单位测试力，返回 \(\Lambda\) |
+| `invContactInertia(gc_index, force_directions)` | 接触逆惯性 $\Lambda$ |
+| `applyTestForce(gc_index, force, dstate_out)` | 单位测试力，返回 $\Lambda$ |
 | `resetExternalForces()` | 清零外力 |
 
-**接触逆惯性**：用于 `ContactImpulse` 的 sequential impulse 求解，\(\Lambda = (J H^{-1} J^T)^{-1}\) 的等价实现。
+**接触逆惯性**：用于 `ContactImpulse` 的 sequential impulse 求解，$\Lambda = (J H^{-1} J^T)^{-1}$ 的等价实现。
 
 ### 4.6 转子建模
 

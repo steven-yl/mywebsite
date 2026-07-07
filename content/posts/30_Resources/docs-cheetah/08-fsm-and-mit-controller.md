@@ -284,7 +284,7 @@ MPC 更新频率：Mini `27/(1000*dt)` iter；C3 `33/(1000*dt)` iter。
 
 | 方法 | 条件 |
 |------|------|
-| `checkSafeOrientation()` | \(\|roll\|, \|pitch\| < 0.5\) rad |
+| `checkSafeOrientation()` | $\|roll\|, \|pitch\| < 0.5$ rad |
 | `checkPDesFoot()` | clamp `pDes` 到 kinematic 可达范围 |
 | `checkForceFeedForward()` | GRF clamp：Mini 350N，C3 1800N |
 

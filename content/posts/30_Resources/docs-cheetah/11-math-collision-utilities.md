@@ -42,7 +42,7 @@ featuredImagePreview: ""
 |------|------|
 | `rad2deg` / `deg2rad` | 角度转换 |
 | `coordinateRotation(axis, theta)` | 单轴旋转矩阵 |
-| `crossMatrix(v)` | 向量→反对称矩阵 \([v]_\times\) |
+| `crossMatrix(v)` | 向量→反对称矩阵 $[v]_\times$ |
 | `rpyToRotMat(v)` | RPY→R（X-Y-Z 内禀） |
 | `vectorToSkewMat` / `matToSkewVec` | 双向 skew |
 | `rotationMatrixToQuaternion(R)` | R→q |
@@ -50,7 +50,7 @@ featuredImagePreview: ""
 | `quatToRPY` / `rpyToQuat` | 四元数↔RPY |
 | `quatToso3(q)` | q→so(3) 向量 |
 | `rotationMatrixToRPY(R)` | R→RPY |
-| `quatDerivative(q, omega)` | \(\dot{q} = \frac{1}{2} q \otimes \omega_{body}\) |
+| `quatDerivative(q, omega)` | $\dot{q} = \frac{1}{2} q \otimes \omega_{body}$ |
 | `quatProduct(q1, q2)` | Hamilton 积 |
 | `integrateQuat` / `integrateQuatImplicit` | 离散积分 |
 | `quaternionToso3` / `so3ToQuat` | 小角度转换 |
@@ -63,10 +63,10 @@ featuredImagePreview: ""
 
 | 函数 | 公式 |
 |------|------|
-| `lerp(y0, yf, x)` | \(y = y_0 + x(y_f - y_0)\) |
+| `lerp(y0, yf, x)` | $y = y_0 + x(y_f - y_0)$ |
 | `cubicBezier(y0, yf, x)` | 端点导数 0 的三次 Bézier |
-| `cubicBezierFirstDerivative` | \(6x(1-x)\) 缩放 |
-| `cubicBezierSecondDerivative` | \((6-12x)\) 缩放 |
+| `cubicBezierFirstDerivative` | $6x(1-x)$ 缩放 |
+| `cubicBezierSecondDerivative` | $(6-12x)$ 缩放 |
 
 ---
 
@@ -74,9 +74,9 @@ featuredImagePreview: ""
 
 一阶低通：
 
-\[
+$$
 \alpha = 1 - e^{-2\pi f_c / f_s}, \quad y_k = \alpha x_k + (1-\alpha) y_{k-1}
-\]
+$$
 
 | 方法 | 说明 |
 |------|------|
@@ -182,10 +182,10 @@ featuredImagePreview: ""
 ### 7.4 ContactImpulse — Sequential Impulse
 
 **算法**：
-1. 对每个接触点，用法向/切向 impulse 修正 \(\dot{q}\)  
-2. 用 `applyTestForce` 得 \(\Lambda = (J H^{-1} J^T)^{-1}\)  
+1. 对每个接触点，用法向/切向 impulse 修正 $\dot{q}$  
+2. 用 `applyTestForce` 得 $\Lambda = (J H^{-1} J^T)^{-1}$  
 3. Projected Gauss-Seidel 迭代  
-4. 摩擦金字塔 + restitution on \(v_n\)  
+4. 摩擦金字塔 + restitution on $v_n$  
 
 | 方法 | 说明 |
 |------|------|
@@ -196,7 +196,7 @@ featuredImagePreview: ""
 
 | 方法 | 说明 |
 |------|------|
-| `UpdateExternalForces` | \(F_n = K \cdot \delta + D \cdot v_n\)，切向带 deflection 记忆 |
+| `UpdateExternalForces` | $F_n = K \cdot \delta + D \cdot v_n$，切向带 deflection 记忆 |
 | `UpdateQdot` | 无操作 |
 
 **选型**：`SimulatorControlParameters.use_spring_damper` — 弹簧阻尼更平滑，冲量更硬。
@@ -272,7 +272,7 @@ pseudoInverse(J, 0.001f, Jinv);  // sigma < 0.001 截断
 Vec3<float> tau = Jinv * force;
 ```
 
-SVD：\(J = U \Sigma V^T\)，\(\Sigma_i^{-1}\) 仅在 \(\Sigma_i > \sigma_{th}\) 时使用。
+SVD：$J = U \Sigma V^T$，$\Sigma_i^{-1}$ 仅在 $\Sigma_i > \sigma_{th}$ 时使用。
 
 ---
 

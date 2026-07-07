@@ -44,25 +44,25 @@ user/MIT_Controller/Controllers/WBC_Ctrl/
 
 ### 2.1 浮动基动力学
 
-\[
+$$
 H(q)\ddot{q} + C(q,\dot{q})\dot{q} + G(q) = J_c^T F_r + S^T \tau
-\]
+$$
 
-- \(q \in \mathbb{R}^{18}\)：6 浮基 + 12 关节  
-- \(F_r\)：接触力（GRF）  
-- \(\tau\)：关节力矩  
+- $q \in \mathbb{R}^{18}$：6 浮基 + 12 关节  
+- $F_r$：接触力（GRF）  
+- $\tau$：关节力矩  
 
 ### 2.2 任务
 
-每个 Task 定义期望加速度 \(\ddot{x}_{des}\) 与 Jacobian \(J_t\)：
+每个 Task 定义期望加速度 $\ddot{x}_{des}$ 与 Jacobian $J_t$：
 
-\[
+$$
 \ddot{x}_{des} = K_p (x_{des} - x) + K_d (\dot{x}_{des} - \dot{x}) + \ddot{x}_{ff}
-\]
+$$
 
 ### 2.3 接触
 
-stance 足：\(J_c \ddot{q} + \dot{J}_c \dot{q} = 0\)（加速度级非滑移）+ 摩擦不等式约束 GRF。
+stance 足：$J_c \ddot{q} + \dot{J}_c \dot{q} = 0$（加速度级非滑移）+ 摩擦不等式约束 GRF。
 
 ---
 
@@ -71,8 +71,8 @@ stance 足：\(J_c \ddot{q} + \dot{J}_c \dot{q} = 0\)（加速度级非滑移）
 | 方法 | 说明 |
 |------|------|
 | `WBC(num_qdot)` | 构造 |
-| `UpdateSetting(A, Ainv, cori, grav, extra)` | 注入 \(H, H^{-1}, C\dot{q}, G\) |
-| `MakeTorque(cmd, extra)` | 纯虚：计算 \(\tau\) |
+| `UpdateSetting(A, Ainv, cori, grav, extra)` | 注入 $H, H^{-1}, C\dot{q}, G$ |
+| `MakeTorque(cmd, extra)` | 纯虚：计算 $\tau$ |
 
 ---
 
@@ -80,9 +80,9 @@ stance 足：\(J_c \ddot{q} + \dot{J}_c \dot{q} = 0\)（加速度级非滑移）
 
 | 方法 | 说明 |
 |------|------|
-| `getCommand(op_cmd)` | 期望 \(\ddot{x}\) |
-| `getTaskJacobian(Jt)` | \(J_t\) |
-| `getTaskJacobianDotQdot(JtDotQdot)` | \(\dot{J}_t \dot{q}\) |
+| `getCommand(op_cmd)` | 期望 $\ddot{x}$ |
+| `getTaskJacobian(Jt)` | $J_t$ |
+| `getTaskJacobianDotQdot(JtDotQdot)` | $\dot{J}_t \dot{q}$ |
 | `UpdateTask(pos_des, vel_des, acc_des)` | 设置目标 |
 | `IsTaskSet()` / `UnsetTask()` | 状态 |
 | `getDim()` | 任务维数 |
@@ -96,7 +96,7 @@ stance 足：\(J_c \ddot{q} + \dot{J}_c \dot{q} = 0\)（加速度级非滑移）
 |------|------|
 | `getContactJacobian(Jc)` | 接触 Jacobian |
 | `getJcDotQdot(JcDotQdot)` | 漂移项 |
-| `getRFConstraintMtx(Uf)` / `getRFConstraintVec(ieq_vec)` | 摩擦不等式 \(U_f F \le \mathbf{ieq}\) |
+| `getRFConstraintMtx(Uf)` / `getRFConstraintVec(ieq_vec)` | 摩擦不等式 $U_f F \le \mathbf{ieq}$ |
 | `getRFDesired()` / `setRFDesired(Fr_des)` | MPC 力参考 |
 | `UpdateContactSpec()` | 更新接触几何 |
 | `getDim()` / `getDimRFConstraint()` / `getFzIndex()` | 维数信息 |
@@ -110,13 +110,13 @@ stance 足：\(J_c \ddot{q} + \dot{J}_c \dot{q} = 0\)（加速度级非滑移）
 
 对任务列表按优先级：
 
-\[
+$$
 N_{i+1} = N_i (I - J_{t,i\#}^+ J_{t,i\#}), \quad J_{t,i\#} = J_{t,i} N_i
-\]
+$$
 
-\[
+$$
 \ddot{q}_{pre} \mathrel{+}= J_{t,i\#}^+ (\ddot{x}_{des,i} - \dot{J}_{t,i}\dot{q} - J_{t,i}\ddot{q}_{pre})
-\]
+$$
 
 ### 6.2 方法
 
@@ -135,18 +135,20 @@ N_{i+1} = N_i (I - J_{t,i\#}^+ J_{t,i\#}), \quad J_{t,i\#} = J_{t,i} N_i
 ### 7.1 两阶段
 
 1. **接触约束投影**（若有接触）  
-   - 构建 \(J_c\)，加权伪逆 \(J_c^\#\)  
-   - \(\ddot{q}_{pre} = J_c^\# (-\dot{J}_c \dot{q})\)  
-   - \(N_{pre} = I - J_c^\# J_c\)
+   - 构建 $J_c$，加权伪逆 $J_c^\#$  
+   - $\ddot{q}_{pre} = J_c^\# (-\dot{J}_c \dot{q})$  
+   - $N_{pre} = I - J_c^\# J_c$
 
-2. **任务 null-space 叠加**（同 KinWBC，在 \(N_{pre}\) 上）
+2. **任务 null-space 叠加**（同 KinWBC，在 $N_{pre}$ 上）
 
-3. **QP 求 \(F_r\) 与 \(\ddot{q}\)**  
-   - 代价：\(\| \ddot{q} - \ddot{q}_{pre} \|_{W_1}^2 + \| F_r - F_{des} \|_{W_2}^2\)  
-   - 等式：动力学  
-   - 不等式：摩擦锥  
+3. **QP 求 $\delta\ddot{q}_{float}$ 与 $\delta F_r$**  
+   - 代价：$\|\delta\ddot{q}_{float}\|_{W_{float}}^2 + \|\delta F_r\|_{W_{rf}}^2$  
+   - 等式：$\mathbf{A}_{float}\ddot{q} - \mathbf{S}_v^T\mathbf{J}_c^T F_r = -\mathbf{S}_v^T(\mathbf{H}\ddot{q}_{pre}+\mathbf{C}\dot{q}+\mathbf{G}-\mathbf{J}_c^T F_{des})$  
+   - 不等式：$U_f F_r \le u_{ieq}$，$F_r = F_{des} + \delta F_r$
 
-4. **力矩**：\(\tau = S(H \ddot{q} + C\dot{q} + G - J_c^T F_r)\)
+4. **力矩**：$\tau = S(\mathbf{H}\ddot{q} + \mathbf{C}\dot{q} + \mathbf{G} - \mathbf{J}_c^T F_r)$
+
+完整 WBIC 公式见 [13-algorithms-and-formulas.md §8](./13-algorithms-and-formulas.md#8-全身控制-wbic)。
 
 ### 7.2 WBIC 方法
 

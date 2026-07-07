@@ -82,7 +82,25 @@ void computeLegJacobianAndPosition(
     Quadruped<T>& quad, Vec3<T> q, Mat3<T>* J, Vec3<T>* p, int leg);
 ```
 
-解析计算单腿 Jacobian 与足端位置（用于 WBC、安全检测）。
+解析计算单腿 Jacobian 与足端位置（用于 WBC、安全检测）。设 $c_{23}=\cos(q_{hip}+q_{knee})$，$s_{23}=\sin(q_{hip}+q_{knee})$，$s=\pm 1$ 为左右腿符号：
+
+**足端位置**（hip 系）：
+
+$$
+\begin{aligned}
+p_x &= l_3 s_{23} + l_2 s_2 \\
+p_y &= (l_1+l_4)s\cos q_{abd} + l_3 s_1 c_{23} + l_2 c_2 s_1 \\
+p_z &= (l_1+l_4)s\sin q_{abd} - l_3 c_1 c_{23} - l_2 c_1 c_2
+\end{aligned}
+$$
+
+**命令叠加**（`updateCommand`）：
+
+$$
+\boldsymbol{\tau} = \boldsymbol{\tau}_{ff} + \mathbf{J}^T\!\left(\mathbf{f}_{ff} + \mathbf{K}_p(\mathbf{p}_{des}-\mathbf{p}) + \mathbf{K}_d(\mathbf{v}_{des}-\mathbf{v})\right) + \mathbf{K}_q(\mathbf{q}_{des}-\mathbf{q}) + \mathbf{K}_{\dot{q}}(\dot{\mathbf{q}}_{des}-\dot{\mathbf{q}})
+$$
+
+详见 [13-algorithms-and-formulas.md §3](./13-algorithms-and-formulas.md#3-单腿运动学)。
 
 ### 2.6 低层执行
 
@@ -151,9 +169,9 @@ Mini Cheetah  onboard 关节 PD 约 **40 kHz**；`LegController` 层默认 ~1 kH
 
 **Bézier 基函数**（`Interpolation.h`）：
 
-\[
+$$
 B(x) = x^3 + 3x^2(1-x), \quad B'(x) = 6x(1-x), \quad B''(x) = 6 - 12x
-\]
+$$
 
 ### 4.3 方法
 

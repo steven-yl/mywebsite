@@ -147,33 +147,65 @@ Cheater 从仿真直接读取真值，用于隔离控制算法与估计误差。
 
 ### 6.2 状态向量（18 维）
 
-\[
+$$
 \mathbf{x} = [\mathbf{p}_b^T,\ \mathbf{v}_b^T,\ \mathbf{p}_{f0}^T,\ \mathbf{p}_{f1}^T,\ \mathbf{p}_{f2}^T,\ \mathbf{p}_{f3}^T]^T
-\]
+$$
 
-- \(\mathbf{p}_b\)：body 世界位置  
-- \(\mathbf{v}_b\)：body 世界速度  
-- \(\mathbf{p}_{fi}\)：第 i 足端世界位置（随 body 运动缓慢更新）
+- $\mathbf{p}_b$：body 世界位置  
+- $\mathbf{v}_b$：body 世界速度  
+- $\mathbf{p}_{fi}$：第 i 足端世界位置（随 body 运动缓慢更新）
 
 ### 6.2 测量向量（28 维）
 
 - 四足相对 body 的位置/速度（各 3D，共 24）
-- 四足高度约束 \(z_{foot}\)（各 1D，共 4）
+- 四足高度约束 $z_{foot}$（各 1D，共 4）
 
 ### 6.3 离散模型
 
-```cpp
-// setup() 中
-_A.block(0,0,3,3) = I;
-_A.block(0,3,3,3) = dt * I;   // p += v*dt
-_A.block(3,3,3,3) = I;
-_A.block(6,6,12,12) = I;      // 足端位置随机游走
-_B.block(3,0,3,3) = dt * I;   // 速度由 IMU 加速度驱动
-```
+**状态转移** $\mathbf{x}_{k+1} = \mathbf{A}\mathbf{x}_k + \mathbf{B}\mathbf{a}_k + \mathbf{w}_k$，其中 $\mathbf{a}_k = \mathbf{a}_{world} + \mathbf{g}$：
 
-**预测**：\(\hat{x}_{k|k-1} = A \hat{x}_{k-1} + B \mathbf{a}_{imu}\)
+$$
+\mathbf{A} = \begin{bmatrix}
+\mathbf{I}_3 & \Delta t \cdot \mathbf{I}_3 & \mathbf{0} \\
+\mathbf{0} & \mathbf{I}_3 & \mathbf{0} \\
+\mathbf{0} & \mathbf{0} & \mathbf{I}_{12}
+\end{bmatrix}, \quad
+\mathbf{B} = \begin{bmatrix} \mathbf{0} \\ \Delta t \cdot \mathbf{I}_3 \\ \mathbf{0} \end{bmatrix}
+$$
 
-**更新**：标准 Kalman，\(K = P C^T (C P C^T + R)^{-1}\)
+**观测模型** $\mathbf{y} = \mathbf{C}\mathbf{x} + \mathbf{v}$（28 维）。对第 $i$ 足，设 $R_b$ 为 body→world 旋转，$\mathbf{p}_{rel,i}$ 为 hip 系足端位置：
+
+$$
+\begin{aligned}
+\mathbf{y}_{p,i} &= \mathbf{p}_b - \mathbf{p}_{fi} \approx -R_b^T(\mathbf{p}_{hip,i}+\mathbf{p}_{rel,i}) \\
+\mathbf{y}_{v,i} &= \mathbf{v}_b - \dot{\mathbf{p}}_{fi} \approx -R_b^T(\boldsymbol{\omega}\times\mathbf{p}_{rel,i}+\dot{\mathbf{p}}_{rel,i}) \\
+z_{foot,i} &= p_{b,z} + (R_b^T\mathbf{p}_{rel,i})_z \approx 0
+\end{aligned}
+$$
+
+**卡尔曼递推**：
+
+$$
+\begin{aligned}
+\hat{\mathbf{x}}_{k|k-1} &= \mathbf{A}\hat{\mathbf{x}}_{k-1} + \mathbf{B}\mathbf{a}_k \\
+\mathbf{P}_m &= \mathbf{A}\mathbf{P}_{k-1}\mathbf{A}^T + \mathbf{Q} \\
+\mathbf{K} &= \mathbf{P}_m\mathbf{C}^T(\mathbf{C}\mathbf{P}_m\mathbf{C}^T + \mathbf{R})^{-1} \\
+\hat{\mathbf{x}}_{k} &= \hat{\mathbf{x}}_{k|k-1} + \mathbf{K}(\mathbf{y}_k - \mathbf{C}\hat{\mathbf{x}}_{k|k-1})
+\end{aligned}
+$$
+
+**接触信任度**（摆动相降低约束，$w=0.2$，$M=100$）：
+
+$$
+\text{trust}_i = \begin{cases}
+\phi_i/w & \phi_i < w \\
+1 & w \le \phi_i \le 1-w \\
+(1-\phi_i)/w & \phi_i > 1-w
+\end{cases}, \quad
+\mathbf{R}_i \leftarrow (1 + (1-\text{trust}_i)M)\mathbf{R}_i
+$$
+
+完整推导见 [13-algorithms-and-formulas.md §4](./13-algorithms-and-formulas.md#4-状态估计--线性卡尔曼滤波)。
 
 ### 6.4 噪声参数（RobotControlParameters）
 

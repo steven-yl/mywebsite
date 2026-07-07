@@ -144,11 +144,33 @@ addQuadraticControlCost()
 runSolverOSQP()  // 或 runSolver()
 ```
 
-### 3.6 连续动力学 buildCT
+### 4.4 动力学 buildCT
 
-对每个 timestep 构建 12×12 的 \(A\)，对每个 **接触足** 构建 12×3 的 \(B_i\) block（稀疏存储为 triples）。
+对每个 timestep 构建 12×12 的 $\mathbf{A}_c$，对每个 **接触足** 构建 12×3 的 $\mathbf{B}_i$ block（稀疏存储为 triples）。
 
-离散化 `c2d`  per interval `dt[i]`。
+**连续时间 $\mathbf{A}_c$**（RPY, pos, ω, vel 各 3 维）：
+
+$$
+\mathbf{A}_c = \begin{bmatrix}
+\mathbf{0} & \mathbf{0} & R_{yaw} & \mathbf{0} \\
+\mathbf{0} & \mathbf{0} & \mathbf{0} & \mathbf{I}_3 \\
+\mathbf{0} & \mathbf{0} & \mathbf{0} & \mathbf{0}
+\end{bmatrix}
+$$
+
+**每足 $\mathbf{B}_i$**（$\mathbf{r}_i$ 为相对质心位置）：
+
+$$
+\mathbf{B}_i = \begin{bmatrix} \mathbf{0} \\ \mathbf{0} \\ \mathbf{I}_w^{-1}[\mathbf{r}_i]_\times \\ \frac{1}{m}\mathbf{I}_3 \end{bmatrix}
+$$
+
+**动力学等式**（每步 $k$）：
+
+$$
+\mathbf{x}_k = \mathbf{A}_d^{(k)}\mathbf{x}_{k-1} + \sum_{i\in\text{contact}(k)} \mathbf{B}_{d,i}^{(k)}\mathbf{f}_{k,i} + \mathbf{g}\Delta t_k
+$$
+
+离散化 `c2d` per interval `dt[i]`（矩阵指数 ZOH）。详见 [13-algorithms-and-formulas.md §6](./13-algorithms-and-formulas.md#6-sparse-cmpc)。
 
 ### 3.7 与 Convex MPC 对比
 
@@ -189,7 +211,7 @@ runSolverOSQP()  // 或 runSolver()
 
 ### 4.3 FootplanCosts
 
-`distanceToGoal(state, goal)` — \(\|p_{base} - p_{goal}\|_2\)
+`distanceToGoal(state, goal)` — $\|p_{base} - p_{goal}\|_2$
 
 ### 4.4 与 SparseCMPC 关系
 

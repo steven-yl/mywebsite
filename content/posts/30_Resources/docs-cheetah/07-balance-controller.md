@@ -41,13 +41,32 @@ user/MIT_Controller/Controllers/BalanceController/
 
 ### 2.2 变量
 
-\(\mathbf{x}_{opt} \in \mathbb{R}^{12}\)：4 足 × 3D 力
+$\mathbf{x}_{opt} \in \mathbb{R}^{12}$：4 足 × 3D 力
 
-### 2.3 约束（每足 5 个，共 20）
+### 2.3 期望 wrench 与力映射
 
-- 摩擦金字塔：\(f_x \le \mu f_z\), \(-f_x \le \mu f_z\), 同理 \(f_y\)  
-- 法向：\(f_z \ge f_{min}\)（接触时）或 \(f=0\)（摆动）  
-- 上界：\(\|f\| \le f_{max}\)
+PD 在 yaw 对齐坐标系生成期望加速度，再组装 6D wrench 目标：
+
+$$
+\begin{aligned}
+\ddot{\mathbf{x}}_{des} &\mathrel{+}= \mathbf{K}_{p,com}(\mathbf{x}_{des}-\mathbf{x}) + \mathbf{K}_{d,com}(\dot{\mathbf{x}}_{des}-\dot{\mathbf{x}}) \\
+\dot{\boldsymbol{\omega}}_{des} &= \mathbf{K}_{p,base}\,\log(R_{yaw}^T R_{des} R^T R_{yaw}) + \mathbf{K}_{d,base}(\boldsymbol{\omega}_{des}-\boldsymbol{\omega}) \\
+\mathbf{b} &= \begin{bmatrix} m(\ddot{\mathbf{x}}_{des}+\mathbf{g}) \\ \mathbf{I}_{yaw}\,\dot{\boldsymbol{\omega}}_{des} \end{bmatrix}
+\end{aligned}
+$$
+
+力-wrench 平衡等式 $\mathbf{A}_{ctrl}\mathbf{f}=\mathbf{b}$，其中第 $i$ 足贡献：
+
+$$
+\mathbf{A}_{ctrl}(0:2,\ 3i:3i+2) = R_{yaw}^T, \quad
+\mathbf{A}_{ctrl}(3:5,\ 3i:3i+2) = R_{yaw}^T[\mathbf{r}_i]_\times
+$$
+
+### 2.4 约束（每足 5 个，共 20）
+
+- 摩擦金字塔：$f_x \le \mu f_z$, $-f_x \le \mu f_z$, 同理 $f_y$  
+- 法向：$f_z \ge f_{min}$（接触时）或 $f=0$（摆动）  
+- 上界：$\|f\| \le f_{max}$
 
 ---
 
@@ -86,19 +105,28 @@ user/MIT_Controller/Controllers/BalanceController/
 - `xfb`：浮基状态向量（位置、姿态、速度等 packed）  
 - `p_feet`：四足位置  
 - `O_err`：姿态误差  
-- 内部计算 **期望 wrench** \(\mathbf{w}_{des} = [F_{com}; \tau_{base}]\) via PD
+- 内部计算 **期望 wrench** $\mathbf{w}_{des} = [F_{com}; \tau_{base}]$ via PD
 
 ### 3.3 QP 目标（Focchi 质心 wrench 跟踪）
 
-**PD 阶段**（yaw 系）：由位置/姿态误差得期望线加速度 \(\ddot{x}_{des}\) 与角加速度 \(\dot{\omega}_{des}\)。
+**PD 阶段**（yaw 系）：由位置/姿态误差得期望线加速度 $\ddot{x}_{des}$ 与角加速度 $\dot{\omega}_{des}$。
 
-**Wrench 平衡等式**：\(A f = b\)，其中 \(b = [m(\ddot{x}_{des}+g);\ I\dot{\omega}_{des}]\)，\(A\) 堆叠四足力与力臂。
+**Wrench 平衡等式**：$A f = b$，其中 $b = [m(\ddot{x}_{des}+g);\ I\dot{\omega}_{des}]$，$A$ 堆叠四足力与力臂。
 
-**QP**：
-\[
-\min_f \ (Af-b)^T S (Af-b) + \alpha \|f - f_{prev}\|^2
-\]
+**QP**（`calc_H_qpOASES` / `calc_g_qpOASES`）：
+
+$$
+\min_{\mathbf{f}} \ (\mathbf{A}_{ctrl}\mathbf{f}-\mathbf{b})^T \mathbf{S}_{ctrl} (\mathbf{A}_{ctrl}\mathbf{f}-\mathbf{b}) + \alpha \|\mathbf{f} - \mathbf{f}_{prev}\|^2
+$$
+
+$$
+\mathbf{H} = 2(\mathbf{A}_{ctrl}^T\mathbf{S}_{ctrl}\mathbf{A}_{ctrl} + (\alpha+10^{-3})\mathbf{W}), \quad
+\mathbf{g} = -2\mathbf{A}_{ctrl}^T\mathbf{S}_{ctrl}\mathbf{b} - 2\alpha\mathbf{f}_{prev}
+$$
+
 约束同 MPC 摩擦金字塔（12 变量，20 不等式）。求解器：`qpOASES QProblem(12,20)`，`nWSR=100`。
+
+完整推导见 [13-algorithms-and-formulas.md §7](./13-algorithms-and-formulas.md#7-平衡控制器-qp)。
 
 ---
 
