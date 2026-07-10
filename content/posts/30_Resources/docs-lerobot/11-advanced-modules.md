@@ -1,3 +1,21 @@
+---
+title: "11 扩展模块"
+subtitle: ""
+date: 2026-07-10T17:44:00+08:00
+draft: false
+authors: [Steven]
+description: "奖励模型、RL、标注工具与 utils 等扩展模块。"
+summary: "LeRobot 奖励、RL、标注与工具扩展模块。"
+tags: [lerobot, robots]
+categories: [docs lerobot, robots]
+series: [lerobot-docs]
+weight: 11
+series_weight: 11
+hiddenFromHomePage: false
+hiddenFromSearch: false
+featuredImage: ""
+featuredImagePreview: ""
+---
 # 11 — 扩展模块（Rewards / RL / Annotations / Utils）
 
 ## 1. 模块概览
@@ -27,14 +45,16 @@
 
 ### 2.2 四种类型
 
-| type | 类 | 用途 |
-|------|-----|------|
-| `reward_classifier` | `RewardClassifier` | 图像/状态二分类 success |
-| `sarm` | `SARM` | Stage-Aware Reward Model；分阶段进度 |
-| `robometer` | `Robometer` | 细粒度操作质量评分 |
-| `topreward` | `TOPReward` | 轨迹排序 reward |
+| type | 类 | 用途 | 损失（概要） |
+|------|-----|------|--------------|
+| `reward_classifier` | `RewardClassifier` | 成功/阶段二分类 | BCE / CE |
+| `sarm` | `SARM` | 阶段 index + 段内 τ | $\mathcal{L}_{\text{CE}} + \mathcal{L}_{\text{MSE}(\tau)}$ |
+| `robometer` | `Robometer` | 操作质量评分 | 回归 / ranking |
+| `topreward` | `TOPReward` | 轨迹 preference | ranking loss |
 
 每种含：`configuration_*.py`, `modeling_*.py`, `processor_*.py`, 可选 `compute_rabc_weights.py`
+
+**公式与 RA-BC 推导** → [13-algorithms §6](./13-algorithms-and-mathematics.md#6-奖励模型与-ra-bc)
 
 ### 2.3 RA-BC 样本加权
 

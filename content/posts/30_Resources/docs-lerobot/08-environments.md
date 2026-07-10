@@ -1,3 +1,21 @@
+---
+title: "08 仿真环境"
+subtitle: ""
+date: 2026-07-10T17:44:00+08:00
+draft: false
+authors: [Steven]
+description: "12 种 EnvConfig、Gymnasium 封装与 HIL-SERL 人机在环强化学习。"
+summary: "LeRobot 仿真环境配置与 HIL-SERL。"
+tags: [lerobot, robots]
+categories: [docs lerobot, robots]
+series: [lerobot-docs]
+weight: 8
+series_weight: 8
+hiddenFromHomePage: false
+hiddenFromSearch: false
+featuredImage: ""
+featuredImagePreview: ""
+---
 # 08 — 仿真环境（Envs）
 
 ## 1. 模块边界

@@ -1,21 +1,3 @@
----
-title: "01 架构总览"
-subtitle: ""
-date: 2026-07-01T21:10:00+08:00
-draft: false
-authors: [Steven]
-description: "openpi 整体认知框架：问题定义、子系统构成、协作方式与设计取舍。"
-summary: "openpi 架构总览：三类模型、五大子系统与数据流。"
-tags: [openpi, robots]
-categories: [docs openpi]
-series: [openpi-docs]
-weight: 1
-series_weight: 1
-hiddenFromHomePage: false
-hiddenFromSearch: false
-featuredImage: ""
-featuredImagePreview: ""
----
 # 01 架构总览
 
 > 本章给出 openpi 的整体认知框架：它解决什么问题、由哪些部分构成、各部分如何协作、关键设计取舍与适用场景。读完本章你应当能把后续任意一章「挂」到全局图景中的正确位置。

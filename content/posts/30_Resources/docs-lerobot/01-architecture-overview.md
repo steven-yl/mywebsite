@@ -1,3 +1,21 @@
+---
+title: "01 架构总览"
+subtitle: ""
+date: 2026-07-10T17:44:00+08:00
+draft: false
+authors: [Steven]
+description: "LeRobot 项目定位、分层架构、数据流、模块关系与设计权衡。"
+summary: "LeRobot 整体架构、数据流与模块关系总览。"
+tags: [lerobot, robots]
+categories: [docs lerobot, robots]
+series: [lerobot-docs]
+weight: 1
+series_weight: 1
+hiddenFromHomePage: false
+hiddenFromSearch: false
+featuredImage: ""
+featuredImagePreview: ""
+---
 # 01 — 架构总览
 
 ## 1. 项目定位
@@ -204,13 +222,14 @@ RolloutConfig
 
 ### 7.4 策略类别选型（概览）
 
-| 类别 | 代表 | 数据需求 | 算力 | 真机迁移 |
-|------|------|----------|------|----------|
-| 模仿学习 | ACT, Diffusion | 中等演示 | 中 | 较好 |
-| RL | TDMPC, HIL-SERL | 交互/奖励 | 中–高 | 任务相关 |
-| VLA | PI0, SmolVLA, GR00T | 多模态+语言 | 高 | SOTA 方向 |
+| 类别 | 代表 | 数据需求 | 算力 | 真机迁移 | 损失族 |
+|------|------|----------|------|----------|--------|
+| 模仿学习 | ACT, Diffusion | 中等演示 | 中 | 较好 | L1 / ε-扩散 |
+| RL | TDMPC, HIL-SERL | 交互/奖励 | 中–高 | 任务相关 | TD + expectile |
+| VLA | PI0, SmolVLA, GR00T | 多模态+语言 | 高 | SOTA 方向 | Flow matching |
 
-详细策略解读见 [05-policies.md](./05-policies.md)。
+**算法公式、论文与开源链接** → [13-algorithms-and-mathematics.md](./13-algorithms-and-mathematics.md)  
+**策略架构与 API** → [05-policies.md](./05-policies.md)
 
 ---
 

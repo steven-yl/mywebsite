@@ -1,3 +1,21 @@
+---
+title: "07 硬件层"
+subtitle: ""
+date: 2026-07-10T17:44:00+08:00
+draft: false
+authors: [Steven]
+description: "Robot、Teleoperator、Camera、Motors 抽象与真机控制接口。"
+summary: "LeRobot 硬件抽象层：机器人、遥操作、相机与电机。"
+tags: [lerobot, robots]
+categories: [docs lerobot, robots]
+series: [lerobot-docs]
+weight: 7
+series_weight: 7
+hiddenFromHomePage: false
+hiddenFromSearch: false
+featuredImage: ""
+featuredImagePreview: ""
+---
 # 07 — 硬件层（Robot / Teleoperator / Camera / Motors）
 
 ## 1. 设计目标

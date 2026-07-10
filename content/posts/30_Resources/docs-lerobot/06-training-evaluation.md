@@ -1,3 +1,21 @@
+---
+title: "06 训练与评估"
+subtitle: ""
+date: 2026-07-10T17:44:00+08:00
+draft: false
+authors: [Steven]
+description: "lerobot-train/eval 流程、优化器、Accelerate 分布式与评估循环。"
+summary: "LeRobot 训练与评估流程、优化器与分布式配置。"
+tags: [lerobot, robots]
+categories: [docs lerobot, robots]
+series: [lerobot-docs]
+weight: 6
+series_weight: 6
+hiddenFromHomePage: false
+hiddenFromSearch: false
+featuredImage: ""
+featuredImagePreview: ""
+---
 # 06 — 训练与评估
 
 ## 1. 模块边界

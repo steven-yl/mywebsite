@@ -1,3 +1,21 @@
+---
+title: "04 Processor 处理器管道"
+subtitle: ""
+date: 2026-07-10T17:44:00+08:00
+draft: false
+authors: [Steven]
+description: "ProcessorPipeline、30 种 ProcessorStep、管道序列化与 Hub 共享。"
+summary: "LeRobot 可序列化 Processor 管道与步骤详解。"
+tags: [lerobot, robots]
+categories: [docs lerobot, robots]
+series: [lerobot-docs]
+weight: 4
+series_weight: 4
+hiddenFromHomePage: false
+hiddenFromSearch: false
+featuredImage: ""
+featuredImagePreview: ""
+---
 # 04 — Processor 处理器管道
 
 ## 1. 为什么需要 Processor？
@@ -152,9 +170,9 @@ input
 
 **公式（MEAN_STD）**：
 
-\[
+$$
 x' = \frac{x - \mu}{\sigma + \epsilon}
-\]
+$$
 
 配置：`features`, `norm_map`, `stats`（来自 dataset 或 checkpoint state_dict）
 

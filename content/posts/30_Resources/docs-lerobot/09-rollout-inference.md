@@ -1,3 +1,21 @@
+---
+title: "09 部署推理"
+subtitle: ""
+date: 2026-07-10T17:44:00+08:00
+draft: false
+authors: [Steven]
+description: "Rollout、Sync/RTC 异步推理与 gRPC 真机部署链路。"
+summary: "LeRobot Rollout 与异步推理部署。"
+tags: [lerobot, robots]
+categories: [docs lerobot, robots]
+series: [lerobot-docs]
+weight: 9
+series_weight: 9
+hiddenFromHomePage: false
+hiddenFromSearch: false
+featuredImage: ""
+featuredImagePreview: ""
+---
 # 09 — 部署推理（Rollout & Async Inference）
 
 ## 1. 模块边界

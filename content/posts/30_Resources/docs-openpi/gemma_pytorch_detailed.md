@@ -1,21 +1,3 @@
----
-title: "PaliGemmaWithExpertModel 详细技术文档"
-subtitle: ""
-date: 2026-07-01T21:10:00+08:00
-draft: false
-authors: [Steven]
-description: "PaliGemmaWithExpertModel 双塔共享注意力架构的 PyTorch 实现、前向流程与张量形状详解。"
-summary: "OpenPI 核心模块 PaliGemmaWithExpertModel 深度技术解读。"
-tags: [openpi, robots, PyTorch]
-categories: [docs openpi]
-series: [openpi-docs]
-weight: 11
-series_weight: 11
-hiddenFromHomePage: false
-hiddenFromSearch: false
-featuredImage: ""
-featuredImagePreview: ""
----
 # PaliGemmaWithExpertModel 详细技术文档
 
 ## 概述

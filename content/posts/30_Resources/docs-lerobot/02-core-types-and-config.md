@@ -1,3 +1,21 @@
+---
+title: "02 核心类型与配置系统"
+subtitle: ""
+date: 2026-07-10T17:44:00+08:00
+draft: false
+authors: [Steven]
+description: "EnvTransition、ChoiceRegistry、配置注册表与插件扩展机制。"
+summary: "LeRobot 核心类型、Draccus 配置与注册表详解。"
+tags: [lerobot, robots]
+categories: [docs lerobot, robots]
+series: [lerobot-docs]
+weight: 2
+series_weight: 2
+hiddenFromHomePage: false
+hiddenFromSearch: false
+featuredImage: ""
+featuredImagePreview: ""
+---
 # 02 — 核心类型与配置系统
 
 ## 1. 模块边界

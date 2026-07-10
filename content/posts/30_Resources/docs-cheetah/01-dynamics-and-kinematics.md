@@ -37,6 +37,8 @@ featuredImagePreview: ""
 
 ## 2. 空间向量代数 (`spatial.h`)
 
+> **详细参考**：[14-spatial-vector-algebra.md](./14-spatial-vector-algebra.md) — 约定、公式、完整 API 与 FloatingBaseModel 调用关系。
+
 ### 2.1 为什么需要
 
 传统 Newton-Euler 逐连杆写方程繁琐且易错。Featherstone **空间向量**将 6D 速度/力统一表示，使递归动力学（RNEA/ABA）为 O(n) 复杂度。

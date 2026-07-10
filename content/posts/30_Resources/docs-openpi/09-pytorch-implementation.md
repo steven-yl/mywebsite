@@ -1,21 +1,3 @@
----
-title: "09 PyTorch 实现细节"
-subtitle: ""
-date: 2026-07-01T21:10:00+08:00
-draft: false
-authors: [Steven]
-description: "解读 PI0Pytorch、PaliGemmaWithExpertModel、预处理与 transformers 补丁等 PyTorch 实现。"
-summary: "openpi PyTorch 实现：PI0Pytorch 与 Gemma 双塔架构详解。"
-tags: [openpi, robots, PyTorch]
-categories: [docs openpi]
-series: [openpi-docs]
-weight: 9
-series_weight: 9
-hiddenFromHomePage: false
-hiddenFromSearch: false
-featuredImage: ""
-featuredImagePreview: ""
----
 # 09 PyTorch 实现细节
 
 > 本章解读 `models_pytorch/pi0_pytorch.py`（`PI0Pytorch`）、`models_pytorch/gemma_pytorch.py`（`PaliGemmaWithExpertModel`）、`models_pytorch/preprocessing_pytorch.py`，以及 `transformers_replace` 补丁机制。本章是 [02 章](02-models-flow-matching.md) 流匹配模型的 PyTorch 镜像，对照阅读效果最佳。

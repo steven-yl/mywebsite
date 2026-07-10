@@ -1,3 +1,21 @@
+---
+title: "10 CLI 命令参考"
+subtitle: ""
+date: 2026-07-10T17:44:00+08:00
+draft: false
+authors: [Steven]
+description: "18 个 lerobot 控制台命令入口、参数与典型用法。"
+summary: "LeRobot CLI 命令完整参考。"
+tags: [lerobot, robots]
+categories: [docs lerobot, robots]
+series: [lerobot-docs]
+weight: 10
+series_weight: 10
+hiddenFromHomePage: false
+hiddenFromSearch: false
+featuredImage: ""
+featuredImagePreview: ""
+---
 # 10 — CLI 命令参考
 
 ## 1. 概览

@@ -1,21 +1,3 @@
----
-title: "05 数据管线：Transform 体系、归一化与数据加载"
-subtitle: ""
-date: 2026-07-01T21:10:00+08:00
-draft: false
-authors: [Steven]
-description: "解读 Transform 体系、归一化统计、机器人 policy 适配与 LeRobot/RLDS 数据加载。"
-summary: "openpi 数据管线：Transform、归一化与 DataLoader 详解。"
-tags: [openpi, robots]
-categories: [docs openpi]
-series: [openpi-docs]
-weight: 5
-series_weight: 5
-hiddenFromHomePage: false
-hiddenFromSearch: false
-featuredImage: ""
-featuredImagePreview: ""
----
 # 05 数据管线：Transform 体系、归一化与数据加载
 
 > 本章解读 `transforms.py`（变换核心）、`shared/normalize.py`（归一化统计）、机器人适配 policy（`aloha_policy.py`/`libero_policy.py`/`droid_policy.py`）、`training/data_loader.py`（数据加载）与 `training/droid_rlds_dataset.py`（RLDS）。这是训练与推理**共享**的数据"翻译层"。

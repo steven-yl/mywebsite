@@ -1,21 +1,3 @@
----
-title: "04 骨干网络与分词器"
-subtitle: ""
-date: 2026-07-01T21:10:00+08:00
-draft: false
-authors: [Steven]
-description: "解读 Gemma 混合专家、SigLIP/ViT、LoRA 与四类 Tokenizer 等 openpi 模型底层构件。"
-summary: "openpi 骨干网络与分词器模块详解。"
-tags: [openpi, robots]
-categories: [docs openpi]
-series: [openpi-docs]
-weight: 4
-series_weight: 4
-hiddenFromHomePage: false
-hiddenFromSearch: false
-featuredImage: ""
-featuredImagePreview: ""
----
 # 04 骨干网络与分词器
 
 > 本章解读模型的"零件库"：`gemma.py`（混合专家 Transformer）、`gemma_fast.py`（FAST 用、带 KV 缓存的 Gemma）、`siglip.py`（视觉塔/ViT）、`lora.py`（低秩适配）、`tokenizer.py`（四种分词器）。这些是 [02](02-models-flow-matching.md)/[03](03-models-pi0-fast.md) 章模型的底层构件。
