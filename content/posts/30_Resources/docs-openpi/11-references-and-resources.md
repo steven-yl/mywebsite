@@ -11,6 +11,7 @@ categories: [docs openpi]
 series: [openpi-docs]
 weight: 11
 series_weight: 11
+---
 
 > 本章汇总 openpi 涉及的核心论文、官方博客、开源项目与文档链接，按主题分类，便于延伸阅读与算法溯源。
 
