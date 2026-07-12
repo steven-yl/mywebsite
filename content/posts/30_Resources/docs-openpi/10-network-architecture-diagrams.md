@@ -1,3 +1,22 @@
+---
+title: "10 模型网络结构框架图（完整版）"
+subtitle: ""
+date: 2026-07-01T21:10:00+08:00
+draft: false
+authors: [Steven]
+description: "逐层张量形状标注的 π₀ / π₀.₅ / π₀-FAST 三类模型网络结构框架图与维度对照。"
+summary: "openpi 三类模型网络结构框架图与张量维度详解。"
+tags: [openpi, robots]
+categories: [docs openpi]
+series: [openpi-docs]
+weight: 10
+series_weight: 10
+hiddenFromHomePage: false
+hiddenFromSearch: false
+featuredImage: ""
+featuredImagePreview: ""
+---
+
 # 10 模型网络结构框架图（完整版）
 
 > 本章用逐层、带张量形状标注的框架图，完整呈现 π₀ / π₀.₅ / π₀-FAST 三类模型的网络结构。配合 [02](02-models-flow-matching.md)/[03](03-models-pi0-fast.md)/[04](04-backbone-tokenizers.md)/[09](09-pytorch-implementation.md) 章阅读。所有维度均来自仓库实际配置（`gemma.py`、`siglip.py`、`pi0_config.py`）。

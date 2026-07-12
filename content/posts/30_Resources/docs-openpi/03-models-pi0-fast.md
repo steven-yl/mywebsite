@@ -1,3 +1,22 @@
+---
+title: "03 自回归模型：π₀-FAST"
+subtitle: ""
+date: 2026-07-01T21:10:00+08:00
+draft: false
+authors: [Steven]
+description: "解读 π₀-FAST 自回归 VLA：FAST 动作分词、序列结构、teacher forcing 训练与 KV 缓存推理。"
+summary: "π₀-FAST 自回归模型与 FAST 动作分词器详解。"
+tags: [openpi, robots]
+categories: [docs openpi]
+series: [openpi-docs]
+weight: 3
+series_weight: 3
+hiddenFromHomePage: false
+hiddenFromSearch: false
+featuredImage: ""
+featuredImagePreview: ""
+---
+
 # 03 自回归模型：π₀-FAST
 
 > 本章解读 `src/openpi/models/pi0_fast.py`。π₀-FAST 走的是与流匹配完全不同的路线：把连续动作用 **FAST 分词器**离散成 token，再像语言模型一样**自回归生成**。本章讲清它的动机、序列结构、训练（teacher forcing）与推理（KV 缓存逐 token 解码）。

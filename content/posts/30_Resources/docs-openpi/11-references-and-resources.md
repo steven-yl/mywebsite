@@ -1,4 +1,16 @@
-# 11 参考文献与外部资源
+---
+title: "11 参考文献与外部资源"
+subtitle: ""
+date: 2026-07-01T21:10:00+08:00
+draft: false
+authors: [Steven]
+description: "汇总 openpi 涉及的核心论文、官方博客、开源项目与文档链接，按主题分类便于延伸阅读。"
+summary: "openpi 参考文献与外部资源索引。"
+tags: [openpi, robots]
+categories: [docs openpi]
+series: [openpi-docs]
+weight: 11
+series_weight: 11
 
 > 本章汇总 openpi 涉及的核心论文、官方博客、开源项目与文档链接，按主题分类，便于延伸阅读与算法溯源。
 

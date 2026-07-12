@@ -1,3 +1,41 @@
+---
+title: "08 客户端运行时（openpi-client）"
+subtitle: ""
+date: 2026-07-01T21:10:00+08:00
+draft: false
+authors: [Steven]
+description: "解读 openpi-client 轻量包：WebSocket 客户端、动作分块、msgpack 协议与 Runtime 循环。"
+summary: "openpi 客户端运行时：openpi-client 包与机器人侧集成详解。"
+tags: [openpi, robots]
+categories: [docs openpi]
+series: [openpi-docs]
+weight: 8
+series_weight: 8
+hiddenFromHomePage: false
+hiddenFromSearch: false
+featuredImage: ""
+featuredImagePreview: ""
+---
+
+---
+title: "08 客户端运行时（openpi-client）"
+subtitle: ""
+date: 2026-07-01T21:10:00+08:00
+draft: false
+authors: [Steven]
+description: "解读 openpi-client 轻量包：WebSocket 客户端、动作分块、msgpack 协议与 Runtime 循环。"
+summary: "openpi 客户端运行时：openpi-client 包与机器人侧集成详解。"
+tags: [openpi, robots]
+categories: [docs openpi]
+series: [openpi-docs]
+weight: 8
+series_weight: 8
+hiddenFromHomePage: false
+hiddenFromSearch: false
+featuredImage: ""
+featuredImagePreview: ""
+---
+
 # 08 客户端运行时（openpi-client）
 
 > 本章解读独立包 `packages/openpi-client/`：`websocket_client_policy.py`、`action_chunk_broker.py`、`base_policy.py`、`msgpack_numpy.py`、`image_tools.py`，以及 `runtime/` 下的 `Runtime`、`Agent`、`Environment`、`Subscriber`。这是部署在机器人侧的轻量库。

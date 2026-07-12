@@ -1,3 +1,22 @@
+---
+title: "openpi 技术文档索引"
+subtitle: ""
+date: 2026-07-01T21:10:00+08:00
+draft: false
+authors: [Steven]
+description: "openpi 机器人 VLA 库的技术文档索引，涵盖架构、模型、训练、推理与客户端运行时。"
+summary: "openpi 技术文档索引、术语表与代码地图。"
+tags: [openpi, robots]
+categories: [docs openpi]
+series: [openpi-docs]
+weight: 0
+series_weight: 0
+hiddenFromHomePage: false
+hiddenFromSearch: false
+featuredImage: ""
+featuredImagePreview: ""
+---
+
 # openpi 技术文档
 
 本套文档对 [docs openpi](https://github.com/Physical-Intelligence/openpi)（Physical Intelligence 团队开源的机器人视觉-语言-动作模型库）进行系统化的技术解读。文档遵循「先总体、后局部」的组织方式：先给出整体架构与知识结构，再按逻辑分章节深入到每个模块的类、函数、算法与数据流。

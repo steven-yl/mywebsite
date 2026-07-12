@@ -1,3 +1,41 @@
+---
+title: "07 推理与策略服务"
+subtitle: ""
+date: 2026-07-01T21:10:00+08:00
+draft: false
+authors: [Steven]
+description: "解读 Policy 封装、策略工厂、WebSocket 服务端与归一化往返等 openpi 推理部署流程。"
+summary: "openpi 推理与策略服务：Policy 封装与 WebSocket 部署详解。"
+tags: [openpi, robots]
+categories: [docs openpi]
+series: [openpi-docs]
+weight: 7
+series_weight: 7
+hiddenFromHomePage: false
+hiddenFromSearch: false
+featuredImage: ""
+featuredImagePreview: ""
+---
+
+---
+title: "07 推理与策略服务"
+subtitle: ""
+date: 2026-07-01T21:10:00+08:00
+draft: false
+authors: [Steven]
+description: "解读 Policy 封装、策略工厂、WebSocket 服务端与归一化往返等 openpi 推理部署流程。"
+summary: "openpi 推理与策略服务：Policy 封装与 WebSocket 部署详解。"
+tags: [openpi, robots]
+categories: [docs openpi]
+series: [openpi-docs]
+weight: 7
+series_weight: 7
+hiddenFromHomePage: false
+hiddenFromSearch: false
+featuredImage: ""
+featuredImagePreview: ""
+---
+
 # 07 推理与策略服务
 
 > 本章解读 `policies/policy.py`（Policy 封装）、`policies/policy_config.py`（策略工厂）、`serving/websocket_policy_server.py`（WebSocket 服务端）、`scripts/serve_policy.py`（服务入口），以及 `shared/download.py`、`shared/image_tools.py`、`shared/array_typing.py` 等支撑。

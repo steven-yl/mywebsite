@@ -1,3 +1,22 @@
+---
+title: "12 示例、脚本与扩展指南"
+subtitle: ""
+date: 2026-07-01T21:10:00+08:00
+draft: false
+authors: [Steven]
+description: "覆盖 examples/、scripts/、training/misc/ 等入口代码，说明职责、调用关系与典型用法。"
+summary: "openpi 示例脚本与扩展新平台工程指南。"
+tags: [openpi, robots]
+categories: [docs openpi]
+series: [openpi-docs]
+weight: 12
+series_weight: 12
+hiddenFromHomePage: false
+hiddenFromSearch: false
+featuredImage: ""
+featuredImagePreview: ""
+---
+
 # 12 示例、脚本与扩展指南
 
 > 本章覆盖 `examples/`、`scripts/`、`training/misc/` 等入口代码，说明各文件的职责、调用关系与典型用法，补全主文档未单独展开的「工程落地」部分。

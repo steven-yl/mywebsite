@@ -1,3 +1,22 @@
+---
+title: "06 训练系统"
+subtitle: ""
+date: 2026-07-01T21:10:00+08:00
+draft: false
+authors: [Steven]
+description: "解读 openpi 训练配置、JAX/PyTorch 双训练循环、FSDP、EMA、检查点与权重加载机制。"
+summary: "openpi 训练系统：配置注册、训练循环与分布式策略详解。"
+tags: [openpi, robots]
+categories: [docs openpi]
+series: [openpi-docs]
+weight: 6
+series_weight: 6
+hiddenFromHomePage: false
+hiddenFromSearch: false
+featuredImage: ""
+featuredImagePreview: ""
+---
+
 # 06 训练系统
 
 > 本章解读 `training/config.py`（配置中枢）、`training/optimizer.py`、`training/utils.py`、`training/sharding.py`、`training/weight_loaders.py`、`training/checkpoints.py`、`scripts/train.py`（JAX 训练）与 `scripts/train_pytorch.py`（PyTorch DDP 训练）。重点讲清：配置如何驱动一切、两条训练循环的步骤、FSDP/EMA/检查点/权重加载等机制。

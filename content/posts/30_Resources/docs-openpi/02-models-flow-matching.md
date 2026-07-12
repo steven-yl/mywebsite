@@ -1,3 +1,22 @@
+---
+title: "02 流匹配模型：π₀ 与 π₀.₅"
+subtitle: ""
+date: 2026-07-01T21:10:00+08:00
+draft: false
+authors: [Steven]
+description: "解读 π₀ / π₀.₅ 流匹配 VLA 的模型抽象、JAX 实现与配置，涵盖训练与推理算法。"
+summary: "π₀ 与 π₀.₅ 流匹配模型原理与 JAX 实现详解。"
+tags: [openpi, robots, diffusion/flow]
+categories: [docs openpi]
+series: [openpi-docs]
+weight: 2
+series_weight: 2
+hiddenFromHomePage: false
+hiddenFromSearch: false
+featuredImage: ""
+featuredImagePreview: ""
+---
+
 # 02 流匹配模型：π₀ 与 π₀.₅
 
 > 本章解读 `src/openpi/models/model.py`（模型通用抽象）、`src/openpi/models/pi0.py`（π₀/π₀.₅ 的 JAX 实现）与 `src/openpi/models/pi0_config.py`（配置）。重点讲清：流匹配是什么、为什么用它、模型如何把多模态输入变成动作、训练与推理的算法步骤。
