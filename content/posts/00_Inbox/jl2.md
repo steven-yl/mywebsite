@@ -1,7 +1,7 @@
 ---
 title: jl2
 date: 2025-07-23
-tags: [.]
+tags: [jl]
 ---
 
 # 详细补充
